@@ -62,4 +62,4 @@ MIT — ver [LICENSE](LICENSE).
 
 ## Website
 
-🌐 [forzen.app](https://FernandezIvan323.github.io/Forzen/website/) *(GitHub Pages)*
+🌐 [forzen.app](https://FernandezIvan323.github.io/Forzen/) *(GitHub Pages)*
