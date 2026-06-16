@@ -1,332 +1,274 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Forzen — Lupa de pantalla gratuita y de código abierto para personas con baja visión. Amplía cualquier área de Windows al instante. Zoom 1x–8x, 60 FPS, filtros de color y atajos de teclado." />
-    <meta name="keywords" content="lupa pantalla, zoom pantalla, baja visión, accesibilidad Windows, lupa inteligente, agrandar pantalla, discapacidad visual, screen magnifier, Forzen, lupa gratis" />
-    <meta name="author" content="Forzen Project" />
-    <meta name="robots" content="index, follow" />
-    <meta property="og:title" content="Forzen — Lupa Inteligente para Windows" />
-    <meta property="og:description" content="Amplía cualquier área de tu pantalla al instante. Gratuito, código abierto, sin publicidad." />
-    <meta property="og:url" content="https://FernandezIvan323.github.io/Forzen/" />
-    <meta property="og:type" content="software" />
-    <meta property="og:locale" content="es_ES" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <title>Forzen — Lupa Inteligente para Windows (gratis, código abierto)</title>
-    <link rel="canonical" href="https://FernandezIvan323.github.io/Forzen/" />
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
-      "name": "Forzen",
-      "operatingSystem": "Windows 10/11",
-      "applicationCategory": "Accessibility",
-      "description": "Screen magnifier for visually impaired users. Lupa de pantalla inteligente y gratuita.",
-      "url": "https://FernandezIvan323.github.io/Forzen/",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-      }
-    }
-    </script>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet" />
-    <style>
-        :root {
-            --black: #0D0D0D;
-            --panel: #1A1A1A;
-            --green: #00FF41;
-            --red: #FF003C;
-            --text: #EAEAEA;
-            --muted: #888;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { font-size: 18px; scroll-behavior: smooth; }
-        body {
-            font-family: 'Space Grotesk', sans-serif;
-            background: var(--black);
-            color: var(--text);
-            line-height: 1.6;
-            min-height: 100vh;
-        }
-        a { color: var(--green); text-decoration: none; }
-        a:hover { text-decoration: underline; }
-        img { max-width: 100%; display: block; }
-
-        .container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
-
-        header {
-            padding: 24px 0;
-            border-bottom: 1px solid var(--panel);
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        header .logo { font-weight: 700; font-size: 1.3rem; color: var(--green); letter-spacing: 2px; }
-        header nav a { color: var(--muted); margin-left: 24px; font-size: 0.85rem; }
-        header nav a:hover { color: var(--green); }
-
-        .hero {
-            padding: 120px 0 80px;
-            text-align: center;
-            position: relative;
-        }
-        .hero::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 50%; transform: translateX(-50%);
-            width: 600px; height: 600px;
-            background: radial-gradient(circle, rgba(0,255,65,0.06) 0%, transparent 70%);
-            pointer-events: none;
-        }
-        .hero h1 {
-            font-size: 3.5rem;
-            font-weight: 700;
-            line-height: 1.1;
-            margin-bottom: 20px;
-            position: relative;
-        }
-        .hero h1 span { color: var(--green); }
-        .hero p {
-            font-size: 1.2rem;
-            color: var(--muted);
-            max-width: 600px;
-            margin: 0 auto 40px;
-            position: relative;
-        }
-        .hero .cta {
-            display: inline-block;
-            background: var(--green);
-            color: var(--black);
-            font-weight: 700;
-            font-size: 1.1rem;
-            padding: 18px 48px;
-            border-radius: 4px;
-            position: relative;
-            transition: box-shadow 0.2s;
-        }
-        .hero .cta:hover {
-            box-shadow: 0 0 30px rgba(0,255,65,0.3);
-            text-decoration: none;
-        }
-        .hero .version { color: var(--muted); font-size: 0.8rem; margin-top: 12px; }
-
-        .features {
-            padding: 100px 0;
-            border-top: 1px solid var(--panel);
-        }
-        .features h2 {
-            font-size: 1.8rem;
-            margin-bottom: 60px;
-            text-align: center;
-        }
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 24px;
-        }
-        .card {
-            background: var(--panel);
-            border-radius: 8px;
-            padding: 32px 24px;
-            border: 1px solid #222;
-            transition: border-color 0.2s;
-        }
-        .card:hover { border-color: var(--green); }
-        .card .icon { font-size: 2rem; margin-bottom: 12px; }
-        .card h3 { font-size: 1.1rem; margin-bottom: 8px; }
-        .card p { color: var(--muted); font-size: 0.9rem; }
-
-        .hotkeys {
-            padding: 80px 0;
-            border-top: 1px solid var(--panel);
-        }
-        .hotkeys h2 { text-align: center; font-size: 1.8rem; margin-bottom: 40px; }
-        .hotkey-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
-            max-width: 700px;
-            margin: 0 auto;
-        }
-        .hotkey-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 16px;
-            background: var(--panel);
-            border-radius: 4px;
-            font-size: 0.85rem;
-        }
-        .hotkey-item .key {
-            background: var(--black);
-            padding: 4px 10px;
-            border-radius: 3px;
-            font-family: monospace;
-            font-size: 0.8rem;
-            color: var(--green);
-            border: 1px solid #333;
-        }
-
-        .download {
-            padding: 100px 0;
-            border-top: 1px solid var(--panel);
-            text-align: center;
-        }
-        .download h2 { font-size: 1.8rem; margin-bottom: 12px; }
-        .download p { color: var(--muted); margin-bottom: 40px; }
-        .download .card {
-            display: inline-block;
-            text-align: left;
-            min-width: 300px;
-        }
-        .download .card .file {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--green);
-        }
-        .download .card .meta { color: var(--muted); font-size: 0.8rem; margin: 8px 0 16px; }
-        .download .card .btn {
-            display: inline-block;
-            background: var(--green);
-            color: var(--black);
-            font-weight: 700;
-            padding: 12px 32px;
-            border-radius: 4px;
-            transition: box-shadow 0.2s;
-        }
-        .download .card .btn:hover {
-            box-shadow: 0 0 20px rgba(0,255,65,0.3);
-            text-decoration: none;
-        }
-
-        .footer {
-            padding: 40px 0;
-            border-top: 1px solid var(--panel);
-            text-align: center;
-            color: var(--muted);
-            font-size: 0.8rem;
-        }
-        .footer a { color: var(--green); }
-
-        @media (max-width: 600px) {
-            html { font-size: 16px; }
-            .hero h1 { font-size: 2.2rem; }
-            .hero { padding: 80px 0 60px; }
-            header nav a { margin-left: 12px; font-size: 0.75rem; }
-        }
-        @media (prefers-reduced-motion: reduce) {
-            .hero::after { display: none; }
-            .card { transition: none; }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Forzen — Lupa de pantalla gratuita para personas con baja visión. Amplía cualquier área de Windows al instante. Zoom 1x–8x, 60 FPS, filtros de color, código abierto." />
+  <meta name="keywords" content="lupa pantalla, zoom pantalla, baja visión, accesibilidad Windows, lupa inteligente, agrandar pantalla, discapacidad visual, screen magnifier, Forzen" />
+  <meta name="robots" content="index, follow" />
+  <meta property="og:title" content="Forzen — Lupa Inteligente para Windows" />
+  <meta property="og:description" content="Amplía cualquier área de tu pantalla al instante. Gratuito, código abierto, sin publicidad." />
+  <meta property="og:url" content="https://FernandezIvan323.github.io/Forzen/" />
+  <meta property="og:type" content="software" />
+  <meta property="og:locale" content="es_ES" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <title>Forzen — Lupa Inteligente para Windows (gratis, código abierto)</title>
+  <link rel="canonical" href="https://FernandezIvan323.github.io/Forzen/" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=IBM+Plex+Sans:wght@400;600&family=JetBrains+Mono&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Forzen",
+    "operatingSystem": "Windows 10/11",
+    "applicationCategory": "Accessibility",
+    "description": "Screen magnifier for visually impaired users. Lupa de pantalla inteligente y gratuita.",
+    "url": "https://FernandezIvan323.github.io/Forzen/",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+  }
+  </script>
 </head>
 <body>
 
-<div class="container">
-
-<header>
+<nav>
+  <div class="container" style="display:flex;justify-content:space-between;align-items:center;width:100%;">
     <div class="logo">⚡ FORZEN</div>
-    <nav>
-        <a href="#features">Funciones</a>
-        <a href="#hotkeys">Atajos</a>
-        <a href="#download">Descargar</a>
-        <a href="https://github.com/FernandezIvan323/Forzen" target="_blank">GitHub</a>
-    </nav>
-</header>
-
-<section class="hero">
-    <h1>Ve el mundo <span>más de cerca</span></h1>
-    <p>Lupa de sistema rápida para personas con baja visión. Amplía cualquier área de tu pantalla al instante.</p>
-    <a class="cta" href="#download">Descargar Forzen</a>
-    <div class="version">v1.0.0 · Windows 10/11 · 45 MB · código abierto</div>
-</section>
-
-<section class="features" id="features">
-    <h2>Hecho para quienes necesitan ver más</h2>
-    <div class="grid">
-        <div class="card">
-            <div class="icon">🔍</div>
-            <h3>Zoom instantáneo</h3>
-            <p>De 1x a 8x con solo presionar una tecla. La lupa sigue tu cursor en tiempo real.</p>
-        </div>
-        <div class="card">
-            <div class="icon">⚡</div>
-            <h3>60 FPS sin lag</h3>
-            <p>Captura directa de pantalla con aceleración GPU. Sin retrasos, sin cortes.</p>
-        </div>
-        <div class="card">
-            <div class="icon">🎨</div>
-            <h3>Filtros de color</h3>
-            <p>Alto contraste, inversión de colores, escalas de grises y filtros para daltonismo.</p>
-        </div>
-        <div class="card">
-            <div class="icon">⌨️</div>
-            <h3>Atajos globales</h3>
-            <p>Controla todo desde el teclado. Funciona sobre cualquier aplicación.</p>
-        </div>
-        <div class="card">
-            <div class="icon">📝</div>
-            <h3>Texto aumentado</h3>
-            <p>OCR integrado para detectar y agrandar texto selectivamente. (Próximamente)</p>
-        </div>
-        <div class="card">
-            <div class="icon">🎤</div>
-            <h3>Control por voz</h3>
-            <p>Comandos de voz offline. Di "aumentar" y el zoom crece. (Próximamente)</p>
-        </div>
+    <div class="nav-links">
+      <a href="#features">Funciones</a>
+      <a href="#screenshots">Capturas</a>
+      <a href="#download">Descargar</a>
+      <a href="#contact">Contacto</a>
     </div>
+  </div>
+</nav>
+
+<!-- ─── Hero ─── -->
+<section class="hero" id="hero">
+  <div class="container">
+    <div class="hero-text fade-in">
+      <h1>Ve el mundo <span class="green">más de cerca</span></h1>
+      <p class="sub">Lupa de sistema rápida para personas con baja visión. Amplía cualquier área de tu pantalla al instante. Gratuito, código abierto, sin publicidad.</p>
+      <div class="stats">
+        <div>
+          <div class="num"><span id="stat-counter">285M</span></div>
+          <div class="label">personas con baja visión en el mundo</div>
+        </div>
+        <div>
+          <div class="num">60</div>
+          <div class="label">FPS de captura</div>
+        </div>
+      </div>
+      <a class="cta-btn" href="#download">Descargar Forzen</a>
+    </div>
+    <div class="lens-mockup fade-in">
+      <div class="lens-ring">
+        <div class="lens-content">
+          <div class="window" style="align-self:flex-start;margin-left:40px;"></div>
+          <div class="window"></div>
+          <div style="display:flex;gap:4px;">
+            <div class="text-block"></div>
+            <div class="text-block green"></div>
+          </div>
+          <div class="text-block" style="width:60px;"></div>
+        </div>
+        <div class="lens-crosshair-h"></div>
+        <div class="lens-crosshair-v"></div>
+      </div>
+    </div>
+  </div>
 </section>
 
-<section class="hotkeys" id="hotkeys">
-    <h2>Atajos de teclado</h2>
+<!-- ─── Features ─── -->
+<section id="features">
+  <div class="container fade-in">
+    <h2 class="section-title"><span class="green">//</span> FUNCIONES</h2>
+    <p class="section-sub">Todo lo que necesitas para ver mejor tu pantalla</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="icon">🔍</div>
+        <h3>ZOOM INSTANTÁNEO</h3>
+        <p>De 1x a 8x con solo presionar una tecla. La lupa sigue tu cursor en tiempo real sin retraso.</p>
+        <span class="tag tag-now">Disponible</span>
+      </div>
+      <div class="feature-card">
+        <div class="icon">⚡</div>
+        <h3>60 FPS SIN LAG</h3>
+        <p>Captura directa de pantalla con aceleración GPU. Experiencia fluida sin cortes ni parpadeos.</p>
+        <span class="tag tag-now">Disponible</span>
+      </div>
+      <div class="feature-card">
+        <div class="icon">🎨</div>
+        <h3>FILTROS DE COLOR</h3>
+        <p>Alto contraste, inversión de colores, escala de grises y filtros para daltonismo (protanopía, deuteranopía, tritanopía).</p>
+        <span class="tag tag-now">Disponible</span>
+      </div>
+      <div class="feature-card">
+        <div class="icon">⌨️</div>
+        <h3>ATAJOS GLOBALES</h3>
+        <p>Controla todo desde el teclado con atajos personalizables. Funciona sobre cualquier aplicación.</p>
+        <span class="tag tag-now">Disponible</span>
+      </div>
+      <div class="feature-card">
+        <div class="icon">📝</div>
+        <h3>TEXTO AUMENTADO</h3>
+        <p>OCR integrado para detectar y agrandar texto selectivamente. Ideal para leer párrafos largos.</p>
+        <span class="tag tag-soon">Próximamente</span>
+      </div>
+      <div class="feature-card">
+        <div class="icon">🎤</div>
+        <h3>CONTROL POR VOZ</h3>
+        <p>Comandos de voz offline. Di "aumentar" y el zoom crece. Privacidad total, sin conexión a internet.</p>
+        <span class="tag tag-soon">Próximamente</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Screenshots ─── -->
+<section id="screenshots">
+  <div class="container fade-in">
+    <h2 class="section-title"><span class="green">//</span> CAPTURAS</h2>
+    <p class="section-sub">Así se ve Forzen en acción</p>
+    <div class="screenshots-grid">
+      <div class="mockup-card">
+        <div class="mock-lens-preview">
+          <div class="bg-grid"></div>
+          <div class="lens-overlay"></div>
+        </div>
+        <div class="label">🔍 Modo Lens — Lupa siguiendo al cursor</div>
+      </div>
+      <div class="mockup-card">
+        <div class="mock-settings">
+          <div class="sidebar">
+            <div class="active"></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+          <div class="main">
+            <div class="row green"></div>
+            <div class="row wide"></div>
+            <div class="row"></div>
+            <div class="row wide"></div>
+            <div class="row green" style="width:40%;"></div>
+          </div>
+        </div>
+        <div class="label">⚙️ Ventana de ajustes con panel lateral</div>
+      </div>
+      <div class="mockup-card">
+        <div class="mock-tray">
+          <div class="menu">
+            <div></div>
+            <div class="green"></div>
+            <div></div>
+          </div>
+          <div class="bar">
+            <span style="font-size:.45rem;color:#555;flex:1;text-align:right;">ENG</span>
+            <span style="font-size:.45rem;color:#555;">16:06</span>
+            <div class="dot"></div>
+          </div>
+        </div>
+        <div class="label">🖥️ Icono en bandeja con menú rápido</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── How It Works ─── -->
+<section id="how-it-works">
+  <div class="container fade-in">
+    <h2 class="section-title"><span class="green">//</span> CÓMO FUNCIONA</h2>
+    <p class="section-sub">Tres pasos simples para empezar</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>DESCARGA E INSTALA</h3>
+        <p>Descarga el instalador .msi y ejecútalo. No necesitas Java — el runtime viene incluido.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>ABRE FORZEN</h3>
+        <p>Aparecerá un icono verde en la bandeja del sistema. La lupa ya está activa.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>CONTROLA CON TECLAS</h3>
+        <p>Usa <strong>Ctrl+Alt+↑</strong> para aumentar el zoom. Cambia de modo con <strong>Ctrl+Alt+M</strong>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Hotkeys ─── -->
+<section id="hotkeys">
+  <div class="container fade-in">
+    <h2 class="section-title"><span class="green">//</span> ATAJOS</h2>
+    <p class="section-sub">Todo el control desde tu teclado</p>
     <div class="hotkey-grid">
-        <div class="hotkey-item">
-            <span>Zoom +</span>
-            <span class="key">Ctrl + Alt + ↑</span>
-        </div>
-        <div class="hotkey-item">
-            <span>Zoom -</span>
-            <span class="key">Ctrl + Alt + ↓</span>
-        </div>
-        <div class="hotkey-item">
-            <span>Pausar / Reanudar</span>
-            <span class="key">Ctrl + Alt + Z</span>
-        </div>
-        <div class="hotkey-item">
-            <span>Cambiar modo</span>
-            <span class="key">Ctrl + Alt + M</span>
-        </div>
-        <div class="hotkey-item">
-            <span>Abrir ajustes</span>
-            <span class="key">Ctrl + Alt + ,</span>
-        </div>
-        <div class="hotkey-item">
-            <span>Salir</span>
-            <span class="key">Ctrl + Alt + X</span>
-        </div>
+      <div class="hotkey-item"><span>Zoom +</span><span class="key">Ctrl + Alt + ↑</span></div>
+      <div class="hotkey-item"><span>Zoom -</span><span class="key">Ctrl + Alt + ↓</span></div>
+      <div class="hotkey-item"><span>Pausar / Reanudar</span><span class="key">Ctrl + Alt + Z</span></div>
+      <div class="hotkey-item"><span>Cambiar modo</span><span class="key">Ctrl + Alt + M</span></div>
+      <div class="hotkey-item"><span>Abrir ajustes</span><span class="key">Ctrl + Alt + ,</span></div>
+      <div class="hotkey-item"><span>Salir</span><span class="key">Ctrl + Alt + X</span></div>
     </div>
+  </div>
 </section>
 
-<section class="download" id="download">
-    <h2>Descargar</h2>
-    <p>Gratuito. Código abierto. Sin registros, sin publicidad.</p>
-    <div class="card">
-        <div class="file">📦 Forzen-1.0.0.msi</div>
-        <div class="meta">Windows 10/11 · 45 MB · Java Runtime incluido</div>
-        <a class="btn" href="https://github.com/FernandezIvan323/Forzen/releases/latest">Descargar .msi</a>
+<!-- ─── Download ─── -->
+<section id="download">
+  <div class="container fade-in">
+    <h2 class="section-title"><span class="green">//</span> DESCARGAR</h2>
+    <p class="section-sub">Gratuito. Código abierto. Sin registros, sin publicidad, sin telemetría.</p>
+    <div class="download-card">
+      <div class="file">📦 Forzen-1.0.0.msi</div>
+      <div class="meta">Windows 10/11 · 45 MB · Java Runtime incluido</div>
+      <ul class="features-list">
+        <li>Lupa de pantalla completa, lens y docked</li>
+        <li>Zoom 1x–8x con 60 FPS</li>
+        <li>Filtros de color y alto contraste</li>
+        <li>Atajos globales de teclado</li>
+        <li>OCR y control por voz (próximamente)</li>
+      </ul>
+      <a class="cta-btn" href="https://github.com/FernandezIvan323/Forzen/releases/latest">Descargar .msi</a>
     </div>
+  </div>
 </section>
 
-<footer class="footer">
+<!-- ─── Contact ─── -->
+<section id="contact">
+  <div class="container fade-in">
+    <h2 class="section-title"><span class="green">//</span> CONTACTO</h2>
+    <p class="section-sub">¿Tienes dudas, sugerencias o encontraste un bug?</p>
+    <div class="contact-grid">
+      <a class="contact-card" href="https://github.com/FernandezIvan323/Forzen/issues" target="_blank" style="display:block;">
+        <div class="icon">🐛</div>
+        <h3>REPORTAR BUG</h3>
+        <p>Abre un issue en GitHub. Resolvemos rápido.</p>
+      </a>
+      <a class="contact-card" href="https://github.com/FernandezIvan323/Forzen" target="_blank" style="display:block;">
+        <div class="icon">💻</div>
+        <h3>CÓDIGO FUENTE</h3>
+        <p>Todo el proyecto en GitHub. Contribuye o haz fork.</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
     <p>
-        Forzen — Proyecto de código abierto ·
-        <a href="https://github.com/FernandezIvan323/Forzen">GitHub</a> ·
-        <a href="https://github.com/FernandezIvan323/Forzen/issues">Reportar bug</a>
+      <strong style="color:var(--green);">⚡ FORZEN</strong> &nbsp;·&nbsp; Proyecto de código abierto &nbsp;·&nbsp;
+      <a href="https://github.com/FernandezIvan323/Forzen">GitHub</a> &nbsp;·&nbsp;
+      <a href="https://github.com/FernandezIvan323/Forzen/issues">Reportar bug</a>
     </p>
-    <p style="margin-top:8px;font-size:0.75rem;">MIT License · 2026</p>
+    <p style="margin-top:8px;opacity:.5;">MIT License &nbsp;·&nbsp; 2026</p>
+  </div>
 </footer>
 
-</div>
+<script src="app.js"></script>
 </body>
 </html>
