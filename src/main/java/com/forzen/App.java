@@ -3,6 +3,7 @@ package com.forzen;
 import com.forzen.capture.CaptureFactory;
 import com.forzen.capture.ScreenCapture;
 import com.forzen.core.ZoomController;
+import com.forzen.input.HotkeyManager;
 import com.forzen.render.ImagePipeline;
 import com.forzen.ui.ForzenOverlay;
 import com.forzen.ui.ForzenTray;
@@ -16,6 +17,7 @@ public class App extends Application {
     private ZoomController zoomController;
     private ScreenCapture screenCapture;
     private ImagePipeline imagePipeline;
+    private HotkeyManager hotkeyManager;
     private ForzenOverlay overlay;
     private ForzenTray tray;
 
@@ -31,10 +33,16 @@ public class App extends Application {
 
         overlay = new ForzenOverlay(zoomController, screenCapture, imagePipeline);
         tray = new ForzenTray(zoomController, this);
+
+        hotkeyManager = new HotkeyManager(zoomController, this);
+        hotkeyManager.register();
+
+        System.out.println("Hotkeys: Ctrl+Alt+Up/Down = zoom, Z = pause, M = mode, , = settings, X = exit");
     }
 
     @Override
     public void stop() {
+        if (hotkeyManager != null) hotkeyManager.unregister();
         if (screenCapture != null) screenCapture.dispose();
         if (imagePipeline != null) imagePipeline.dispose();
         if (tray != null) tray.shutdown();
