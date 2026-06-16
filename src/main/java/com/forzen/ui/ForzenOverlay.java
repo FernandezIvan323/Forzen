@@ -1,6 +1,8 @@
 package com.forzen.ui;
 
+import com.forzen.capture.ScreenCapture;
 import com.forzen.core.ZoomController;
+import com.forzen.render.ImagePipeline;
 
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
@@ -14,11 +16,15 @@ import javafx.stage.StageStyle;
 public class ForzenOverlay extends Stage {
 
     private final ZoomController zoomController;
+    private final ScreenCapture screenCapture;
+    private final ImagePipeline imagePipeline;
     private final Pane root;
     private final Circle lensCircle;
 
-    public ForzenOverlay(ZoomController zoomController) {
+    public ForzenOverlay(ZoomController zoomController, ScreenCapture screenCapture, ImagePipeline imagePipeline) {
         this.zoomController = zoomController;
+        this.screenCapture = screenCapture;
+        this.imagePipeline = imagePipeline;
 
         initStyle(StageStyle.TRANSPARENT);
         setAlwaysOnTop(true);
@@ -49,6 +55,14 @@ public class ForzenOverlay extends Stage {
         });
 
         show();
+    }
+
+    public ScreenCapture getScreenCapture() {
+        return screenCapture;
+    }
+
+    public ImagePipeline getImagePipeline() {
+        return imagePipeline;
     }
 
     public Pane getRoot() {
