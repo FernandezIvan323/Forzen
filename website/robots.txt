@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://FernandezIvan323.github.io/Forzen/sitemap.xml
