@@ -2,6 +2,7 @@ package com.forzen;
 
 import com.forzen.capture.CaptureFactory;
 import com.forzen.capture.ScreenCapture;
+import com.forzen.config.ConfigStore;
 import com.forzen.core.ZoomController;
 import com.forzen.input.HotkeyManager;
 import com.forzen.render.ImagePipeline;
@@ -18,12 +19,17 @@ public class App extends Application {
     private ScreenCapture screenCapture;
     private ImagePipeline imagePipeline;
     private HotkeyManager hotkeyManager;
+    private ConfigStore configStore;
     private ForzenOverlay overlay;
     private ForzenTray tray;
 
     @Override
     public void start(Stage primaryStage) {
+        configStore = new ConfigStore();
+
         zoomController = new ZoomController();
+        configStore.applyTo(zoomController);
+
         screenCapture = CaptureFactory.create();
         imagePipeline = new ImagePipeline();
 
@@ -42,6 +48,7 @@ public class App extends Application {
 
     @Override
     public void stop() {
+        if (configStore != null) configStore.saveFrom(zoomController);
         if (hotkeyManager != null) hotkeyManager.unregister();
         if (screenCapture != null) screenCapture.dispose();
         if (imagePipeline != null) imagePipeline.dispose();
@@ -49,6 +56,7 @@ public class App extends Application {
     }
 
     public void shutdown() {
+        if (configStore != null) configStore.saveFrom(zoomController);
         Platform.exit();
         System.exit(0);
     }
