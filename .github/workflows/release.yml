@@ -23,7 +23,7 @@ jobs:
 
       - name: Create runtime image with jlink
         run: |
-          jlink --module-path "%JAVA_HOME%\jmods;target\forzen-1.0.0-shaded.jar" `
+          jlink --module-path "%JAVA_HOME%\jmods;target\forzen-1.1.0-shaded.jar" `
             --add-modules java.base,java.desktop,java.prefs,javafx.controls,javafx.swing `
             --output target\runtime --strip-debug --no-header-files --no-man-pages `
             --compress=2

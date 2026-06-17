@@ -97,32 +97,32 @@
       <div class="feature-card">
         <div class="icon">⚡</div>
         <h3>60 FPS SIN LAG</h3>
-        <p>Captura directa de pantalla con aceleración GPU. Experiencia fluida sin cortes ni parpadeos.</p>
+        <p>Captura directa de pantalla con aceleración GDI. Experiencia fluida sin cortes ni parpadeos.</p>
         <span class="tag tag-now">Disponible</span>
+      </div>
+      <div class="feature-card">
+        <div class="icon">🖥️</div>
+        <h3>FULL-SCREEN</h3>
+        <p>Pantalla completa ampliada que sigue tu cursor. Todo el monitor se convierte en una lupa gigante.</p>
+        <span class="tag tag-now">Nuevo</span>
+      </div>
+      <div class="feature-card">
+        <div class="icon">🪟</div>
+        <h3>MODO DOCKED</h3>
+        <p>Panel de aumento acoplado a la esquina de la pantalla. Ideal para ver detalles sin obstruir tu trabajo.</p>
+        <span class="tag tag-now">Nuevo</span>
       </div>
       <div class="feature-card">
         <div class="icon">🎨</div>
         <h3>FILTROS DE COLOR</h3>
-        <p>Alto contraste, inversión de colores, escala de grises y filtros para daltonismo (protanopía, deuteranopía, tritanopía).</p>
-        <span class="tag tag-now">Disponible</span>
-      </div>
-      <div class="feature-card">
-        <div class="icon">⌨️</div>
-        <h3>ATAJOS GLOBALES</h3>
-        <p>Controla todo desde el teclado con atajos personalizables. Funciona sobre cualquier aplicación.</p>
+        <p>Alto contraste, inversión, escala de grises y filtros para daltonismo (protanopía, deuteranopía, tritanopía) con brillo y contraste ajustables.</p>
         <span class="tag tag-now">Disponible</span>
       </div>
       <div class="feature-card">
         <div class="icon">📝</div>
-        <h3>TEXTO AUMENTADO</h3>
-        <p>OCR integrado para detectar y agrandar texto selectivamente. Ideal para leer párrafos largos.</p>
-        <span class="tag tag-soon">Próximamente</span>
-      </div>
-      <div class="feature-card">
-        <div class="icon">🎤</div>
-        <h3>CONTROL POR VOZ</h3>
-        <p>Comandos de voz offline. Di "aumentar" y el zoom crece. Privacidad total, sin conexión a internet.</p>
-        <span class="tag tag-soon">Próximamente</span>
+        <h3>OCR + TTS</h3>
+        <p>Reconocimiento de texto con OCR y lectura en voz alta con Windows Speech API. Detecta texto en español e inglés.</p>
+        <span class="tag tag-now">Nuevo</span>
       </div>
     </div>
   </div>
@@ -140,6 +140,29 @@
           <div class="lens-overlay"></div>
         </div>
         <div class="label">🔍 Modo Lens — Lupa siguiendo al cursor</div>
+      </div>
+      <div class="mockup-card">
+        <div class="mock-lens-preview">
+          <div class="bg-grid" style="transform:scale(1.5);"></div>
+          <div class="lens-overlay" style="width:100%;height:100%;border-radius:0;border:none;box-shadow:inset 0 0 60px var(--glow);"></div>
+        </div>
+        <div class="label">🖥️ Modo Full-Screen — Pantalla completa ampliada</div>
+      </div>
+      <div class="mockup-card">
+        <div class="mock-tray">
+          <div class="menu" style="width:140px;height:100px;bottom:40px;right:10px;">
+            <div style="height:60px;background:var(--card);border:1px solid var(--border);border-radius:4px;display:flex;align-items:center;justify-content:center;">
+              <div style="width:80%;height:4px;background:var(--green);border-radius:2px;"></div>
+            </div>
+            <div style="height:6px;background:#333;border-radius:2px;margin:4px 0;"></div>
+          </div>
+          <div class="bar">
+            <span style="font-size:.45rem;color:#555;flex:1;text-align:right;">ENG</span>
+            <span style="font-size:.45rem;color:#555;">16:06</span>
+            <div class="dot"></div>
+          </div>
+        </div>
+        <div class="label">🪟 Modo Docked — Lupa acoplada a la esquina</div>
       </div>
       <div class="mockup-card">
         <div class="mock-settings">
@@ -226,14 +249,15 @@
     <h2 class="section-title"><span class="green">//</span> DESCARGAR</h2>
     <p class="section-sub">Gratuito. Código abierto. Sin registros, sin publicidad, sin telemetría.</p>
     <div class="download-card">
-      <div class="file">📦 Forzen-1.0.0.msi</div>
-      <div class="meta">Windows 10/11 · 45 MB · Java Runtime incluido</div>
+      <div class="file">📦 Forzen-1.1.0.msi</div>
+      <div class="meta">Windows 10/11 · 48 MB · Java Runtime incluido</div>
       <ul class="features-list">
-        <li>Lupa de pantalla completa, lens y docked</li>
-        <li>Zoom 1x–8x con 60 FPS</li>
-        <li>Filtros de color y alto contraste</li>
+        <li>3 modos: Lens, Full-Screen y Docked</li>
+        <li>Zoom 1x–8x con captura GDI acelerada</li>
+        <li>Filtros de color: inversión, alto contraste, grises, daltonismo</li>
+        <li>Ajustes de brillo, contraste y saturación</li>
+        <li>OCR + TTS (lectura de texto en voz alta)</li>
         <li>Atajos globales de teclado</li>
-        <li>OCR y control por voz (próximamente)</li>
       </ul>
       <a class="cta-btn" href="https://github.com/FernandezIvan323/Forzen/releases/latest">Descargar .msi</a>
     </div>

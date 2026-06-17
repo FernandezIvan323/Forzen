@@ -5,7 +5,7 @@
 
     <groupId>com.forzen</groupId>
     <artifactId>forzen</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <packaging>jar</packaging>
 
     <name>Forzen</name>
@@ -33,6 +33,16 @@
             <groupId>com.github.kwhat</groupId>
             <artifactId>jnativehook</artifactId>
             <version>${jnativehook.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna</artifactId>
+            <version>5.15.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna-platform</artifactId>
+            <version>5.15.0</version>
         </dependency>
     </dependencies>
 

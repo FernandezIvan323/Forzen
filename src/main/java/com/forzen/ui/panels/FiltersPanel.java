@@ -1,6 +1,7 @@
 package com.forzen.ui.panels;
 
 import com.forzen.core.ZoomController;
+import com.forzen.filter.FilterMode;
 
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
@@ -19,33 +20,38 @@ public class FiltersPanel extends VBox {
         Label title = new Label("🌈 FILTROS DE COLOR");
         title.setStyle("-fx-text-fill: " + GREEN_NEON + "; -fx-font-size: 20px; -fx-font-weight: bold;");
 
-        CheckBox invertColors = new CheckBox("Invertir colores");
-        invertColors.setStyle("-fx-text-fill: " + TEXT_LIGHT + ";");
+        ToggleGroup filterGroup = new ToggleGroup();
 
-        CheckBox highContrast = new CheckBox("Alto contraste");
-        highContrast.setStyle("-fx-text-fill: " + TEXT_LIGHT + ";");
+        RadioButton none = filterRadio("Ninguno", FilterMode.NONE, filterGroup, zoomController);
+        RadioButton invert = filterRadio("Invertir colores", FilterMode.INVERT, filterGroup, zoomController);
+        RadioButton highContrast = filterRadio("Alto contraste", FilterMode.HIGH_CONTRAST, filterGroup, zoomController);
+        RadioButton grayscale = filterRadio("Escala de grises", FilterMode.GRAYSCALE, filterGroup, zoomController);
 
-        CheckBox grayscale = new CheckBox("Escala de grises");
-        grayscale.setStyle("-fx-text-fill: " + TEXT_LIGHT + ";");
+        none.setSelected(zoomController.getFilterMode() == FilterMode.NONE);
 
         VBox colorBlind = section("Filtros de daltonismo");
-        CheckBox protanopia = new CheckBox("Protanopía (rojo)");
-        protanopia.setStyle("-fx-text-fill: " + TEXT_LIGHT + ";");
-        CheckBox deuteranopia = new CheckBox("Deuteranopía (verde)");
-        deuteranopia.setStyle("-fx-text-fill: " + TEXT_LIGHT + ";");
-        CheckBox tritanopia = new CheckBox("Tritanopía (azul)");
-        tritanopia.setStyle("-fx-text-fill: " + TEXT_LIGHT + ";");
+        RadioButton protanopia = filterRadio("Protanopía (rojo)", FilterMode.PROTANOPIA, filterGroup, zoomController);
+        RadioButton deuteranopia = filterRadio("Deuteranopía (verde)", FilterMode.DEUTERANOPIA, filterGroup, zoomController);
+        RadioButton tritanopia = filterRadio("Tritanopía (azul)", FilterMode.TRITANOPIA, filterGroup, zoomController);
 
         VBox adjustments = section("Ajustes de imagen");
-        Slider brightness = slider("Brillo", zoomController.getZoomLevel(), 0, 200);
-        brightness.setValue(100);
-        Slider contrast = slider("Contraste", zoomController.getZoomLevel(), 0, 200);
-        contrast.setValue(100);
-        Slider saturation = slider("Saturación", zoomController.getZoomLevel(), 0, 200);
-        saturation.setValue(100);
+        Slider brightness = slider("Brillo", zoomController.getBrightness(), 0, 200);
+        brightness.valueProperty().bindBidirectional(zoomController.brightnessProperty());
+        Slider contrast = slider("Contraste", zoomController.getContrast(), 0, 200);
+        contrast.valueProperty().bindBidirectional(zoomController.contrastProperty());
+        Slider saturation = slider("Saturación", zoomController.getSaturation(), 0, 200);
+        saturation.valueProperty().bindBidirectional(zoomController.saturationProperty());
 
-        getChildren().addAll(title, invertColors, highContrast, grayscale, colorBlind,
+        getChildren().addAll(title, none, invert, highContrast, grayscale, colorBlind,
             protanopia, deuteranopia, tritanopia, adjustments, brightness, contrast, saturation);
+    }
+
+    private RadioButton filterRadio(String label, FilterMode mode, ToggleGroup group, ZoomController zc) {
+        RadioButton rb = new RadioButton(label);
+        rb.setToggleGroup(group);
+        rb.setStyle("-fx-text-fill: " + TEXT_LIGHT + ";");
+        rb.setOnAction(e -> zc.setFilterMode(mode));
+        return rb;
     }
 
     private VBox section(String label) {

@@ -1,6 +1,7 @@
 package com.forzen.config;
 
 import com.forzen.core.ZoomMode;
+import com.forzen.filter.FilterMode;
 
 import java.util.prefs.Preferences;
 
@@ -21,6 +22,7 @@ public class ConfigStore {
     private static final String KEY_SATURATION = "saturation";
     private static final String KEY_START_WITH_OS = "startWithOs";
     private static final String KEY_AUTO_OCR = "autoOcr";
+    private static final String KEY_FILTER_MODE = "filterMode";
 
     private final Preferences prefs;
 
@@ -76,12 +78,22 @@ public class ConfigStore {
     public boolean isAutoOcr() { return prefs.getBoolean(KEY_AUTO_OCR, false); }
     public void setAutoOcr(boolean v) { prefs.putBoolean(KEY_AUTO_OCR, v); }
 
+    public FilterMode getFilterMode() {
+        try { return FilterMode.valueOf(prefs.get(KEY_FILTER_MODE, FilterMode.NONE.name())); }
+        catch (Exception e) { return FilterMode.NONE; }
+    }
+    public void setFilterMode(FilterMode v) { prefs.put(KEY_FILTER_MODE, v.name()); }
+
     public void applyTo(com.forzen.core.ZoomController zoomController) {
         zoomController.setZoomLevel(getZoomLevel());
         zoomController.setMode(getZoomMode());
         zoomController.setLensWidth(getLensWidth());
         zoomController.setLensHeight(getLensHeight());
         zoomController.setShowFps(isShowFps());
+        zoomController.setFilterMode(getFilterMode());
+        zoomController.setBrightness(getBrightness());
+        zoomController.setContrast(getContrast());
+        zoomController.setSaturation(getSaturation());
     }
 
     public void saveFrom(com.forzen.core.ZoomController zoomController) {
@@ -90,5 +102,9 @@ public class ConfigStore {
         setLensWidth(zoomController.getLensWidth());
         setLensHeight(zoomController.getLensHeight());
         setShowFps(zoomController.isShowFps());
+        setFilterMode(zoomController.getFilterMode());
+        setBrightness(zoomController.getBrightness());
+        setContrast(zoomController.getContrast());
+        setSaturation(zoomController.getSaturation());
     }
 }

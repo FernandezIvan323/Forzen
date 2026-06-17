@@ -9,6 +9,7 @@ Amplía cualquier área de tu pantalla al instante. Hecho en Java, para Windows.
 [![Build](https://github.com/FernandezIvan323/Forzen/actions/workflows/release.yml/badge.svg)](https://github.com/FernandezIvan323/Forzen/actions)
 
 ---
+
 ## Funcionalidades
 
 | | |
