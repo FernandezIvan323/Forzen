@@ -33,6 +33,12 @@ jobs:
             --output target\runtime --strip-debug --no-header-files --no-man-pages `
             --compress=2
 
+      - name: Get version
+        id: version
+        run: |
+          $v = "${{ github.ref_name }}" -replace '^v',''
+          echo "VERSION=$v" >> $env:GITHUB_OUTPUT
+
       - name: Create MSI with jpackage
         run: |
           jpackage --type msi `
@@ -41,7 +47,7 @@ jobs:
             --main-jar forzen-1.1.0-shaded.jar `
             --main-class com.forzen.App `
             --name Forzen `
-            --app-version ${{ github.ref_name }} `
+            --app-version ${{ steps.version.outputs.VERSION }} `
             --vendor "Forzen Project" `
             --description "Screen magnifier for visually impaired users" `
             --win-dir-chooser `
