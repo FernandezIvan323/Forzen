@@ -22,12 +22,8 @@ jobs:
       - name: Build with Maven
         run: mvn package -DskipTests
 
-      - name: Create runtime image with jlink
-        run: |
-          jlink --module-path "%JAVA_HOME%\jmods;target\forzen-1.1.0-shaded.jar" `
-            --add-modules java.base,java.desktop,java.prefs,javafx.controls,javafx.swing `
-            --output target\runtime --strip-debug --no-header-files --no-man-pages `
-            --compress=2
+      - name: List target contents
+        run: Get-ChildItem -LiteralPath target\*.jar
 
       - name: Get version
         id: version
@@ -39,8 +35,7 @@ jobs:
         run: |
           jpackage --type msi `
             --input target `
-            --runtime-image target\runtime `
-            --main-jar forzen-1.1.0-shaded.jar `
+            --main-jar forzen-${{ steps.version.outputs.VERSION }}-shaded.jar `
             --main-class com.forzen.App `
             --name Forzen `
             --app-version ${{ steps.version.outputs.VERSION }} `
@@ -49,7 +44,8 @@ jobs:
             --win-dir-chooser `
             --win-menu `
             --win-shortcut `
-            --dest target\installer
+            --dest target\installer `
+            --java-options "--add-modules javafx.controls,javafx.swing"
 
       - name: Upload MSI artifact
         uses: actions/upload-artifact@v4
