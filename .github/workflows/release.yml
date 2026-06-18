@@ -23,7 +23,7 @@ jobs:
         run: mvn package -DskipTests
 
       - name: List target contents
-        run: Get-ChildItem -LiteralPath target\*.jar
+        run: Get-ChildItem -Path target -Filter *.jar
 
       - name: Get version
         id: version
