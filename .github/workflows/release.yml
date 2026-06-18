@@ -21,9 +21,14 @@ jobs:
       - name: Build with Maven
         run: mvn package -DskipTests
 
+      - name: Download JavaFX jmods
+        run: |
+          curl -L -o javafx-jmods.zip "https://download2.gluonhq.com/openjfx/21.0.6/openjfx-21.0.6_windows-x64_bin-jmods.zip"
+          Expand-Archive -Path javafx-jmods.zip -DestinationPath .
+
       - name: Create runtime image with jlink
         run: |
-          jlink --module-path "%JAVA_HOME%\jmods;target\forzen-1.1.0-shaded.jar" `
+          jlink --module-path "%JAVA_HOME%\jmods;javafx-jmods-21.0.6;target\forzen-1.1.0-shaded.jar" `
             --add-modules java.base,java.desktop,java.prefs,javafx.controls,javafx.swing `
             --output target\runtime --strip-debug --no-header-files --no-man-pages `
             --compress=2
@@ -32,7 +37,7 @@ jobs:
         run: |
           jpackage --type msi `
             --input target\runtime `
-            --main-jar forzen-1.0.0-shaded.jar `
+            --main-jar forzen-1.1.0-shaded.jar `
             --main-class com.forzen.App `
             --name Forzen `
             --app-version ${{ github.ref_name }} `
