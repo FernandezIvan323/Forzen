@@ -36,7 +36,8 @@ jobs:
       - name: Create MSI with jpackage
         run: |
           jpackage --type msi `
-            --input target\runtime `
+            --input target `
+            --runtime-image target\runtime `
             --main-jar forzen-1.1.0-shaded.jar `
             --main-class com.forzen.App `
             --name Forzen `
