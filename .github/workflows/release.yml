@@ -34,24 +34,42 @@ jobs:
         run: mvn -B package -DskipTests
 
       - name: Stage clean jpackage input
+        id: stage
         shell: pwsh
         run: |
           $v = "${{ steps.version.outputs.VERSION }}"
           $stage = "target/jpackage-input"
+          if (Test-Path $stage) { Remove-Item $stage -Recurse -Force }
           New-Item -ItemType Directory -Force -Path $stage | Out-Null
-          $jar = "target/forzen-$v.jar"
-          if (-not (Test-Path $jar)) {
+
+          # Prefer jar matching the tag; else any forzen-*.jar except original-/shaded name noise
+          $candidates = @()
+          if (Test-Path "target/forzen-$v.jar") {
+            $candidates = @(Get-Item "target/forzen-$v.jar")
+          }
+          if (-not $candidates -or $candidates.Count -eq 0) {
+            $candidates = Get-ChildItem target -Filter "forzen-*.jar" |
+              Where-Object { $_.Name -notlike "original-*" -and $_.Name -notlike "*-shaded.jar" } |
+              Sort-Object Length -Descending
+          }
+          if (-not $candidates -or $candidates.Count -eq 0) {
             Write-Host "Available jars:"
             Get-ChildItem target -Filter *.jar | ForEach-Object { $_.Name }
-            throw "Missing $jar"
+            throw "No forzen jar found in target/"
           }
-          Copy-Item $jar "$stage/forzen-$v.jar"
-          Get-ChildItem $stage
+
+          $src = $candidates[0]
+          $mainJar = "forzen-$v.jar"
+          Copy-Item $src.FullName (Join-Path $stage $mainJar)
+          Write-Host "Staged $($src.Name) as $mainJar ($([math]::Round($src.Length/1MB,1)) MB)"
+          echo "MAIN_JAR=$mainJar" >> $env:GITHUB_OUTPUT
+          Get-ChildItem $stage | Format-Table Name, Length
 
       - name: Create EXE installer (wizard for end users)
         shell: pwsh
         run: |
           $v = "${{ steps.version.outputs.VERSION }}"
+          $mainJar = "${{ steps.stage.outputs.MAIN_JAR }}"
           $icon = "src/main/resources/icons/forzen.ico"
           $iconArgs = @()
           if (Test-Path $icon) { $iconArgs = @("--icon", $icon) }
@@ -59,7 +77,7 @@ jobs:
           jpackage `
             --type exe `
             --input target/jpackage-input `
-            --main-jar "forzen-$v.jar" `
+            --main-jar $mainJar `
             --main-class com.forzen.App `
             --name Forzen `
             --app-version $v `
@@ -72,10 +90,9 @@ jobs:
             --win-per-user-install `
             --java-options "--add-modules=javafx.controls,javafx.swing" `
             @iconArgs
-          # Friendly name
           Get-ChildItem target/installer -Filter *.exe | ForEach-Object {
             $dest = "target/installer/Forzen-Setup-$v.exe"
-            if ($_.FullName -ne (Resolve-Path $dest -ErrorAction SilentlyContinue)) {
+            if ($_.Name -ne "Forzen-Setup-$v.exe") {
               Move-Item $_.FullName $dest -Force
             }
           }
@@ -84,13 +101,14 @@ jobs:
         shell: pwsh
         run: |
           $v = "${{ steps.version.outputs.VERSION }}"
+          $mainJar = "${{ steps.stage.outputs.MAIN_JAR }}"
           $icon = "src/main/resources/icons/forzen.ico"
           $iconArgs = @()
           if (Test-Path $icon) { $iconArgs = @("--icon", $icon) }
           jpackage `
             --type msi `
             --input target/jpackage-input `
-            --main-jar "forzen-$v.jar" `
+            --main-jar $mainJar `
             --main-class com.forzen.App `
             --name Forzen `
             --app-version $v `
