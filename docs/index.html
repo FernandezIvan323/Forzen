@@ -4,20 +4,21 @@
   <meta charset="UTF-8" />
   <meta name="google-site-verification" content="HSvwSOgh6Ow3iwodJZuZifrRcxq3Qrqe3rwcxoVWljc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Forzen — Lupa de pantalla gratuita para personas con baja visión. Amplía cualquier área de Windows al instante. Zoom 1x–8x, 60 FPS, filtros de color, código abierto." />
-  <meta name="keywords" content="lupa pantalla, zoom pantalla, baja visión, accesibilidad Windows, lupa inteligente, agrandar pantalla, discapacidad visual, screen magnifier, Forzen" />
+  <meta name="description" content="Forzen — Lupa de pantalla gratuita para personas con baja visión. Zoom 1x–8x, multi-monitor, filtros, OCR/TTS, atajos personalizables. Código abierto." />
+  <meta name="keywords" content="lupa pantalla, zoom pantalla, baja visión, accesibilidad Windows, screen magnifier, Forzen, OCR" />
   <meta name="author" content="Forzen Project" />
   <meta name="robots" content="index, follow" />
   <meta property="og:title" content="Forzen — Lupa Inteligente para Windows" />
   <meta property="og:description" content="Amplía cualquier área de tu pantalla al instante. Gratuito, código abierto, sin publicidad." />
   <meta property="og:url" content="https://FernandezIvan323.github.io/Forzen/" />
-  <meta property="og:type" content="software" />
+  <meta property="og:type" content="website" />
   <meta property="og:locale" content="es_ES" />
   <meta name="twitter:card" content="summary_large_image" />
-  <title>Forzen — Lupa Inteligente para Windows (gratis, código abierto)</title>
+  <title>Forzen — Lupa inteligente para Windows</title>
   <link rel="canonical" href="https://FernandezIvan323.github.io/Forzen/" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=IBM+Plex+Sans:wght@400;600&family=JetBrains+Mono&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
   <script type="application/ld+json">
   {
@@ -25,276 +26,384 @@
     "@type": "SoftwareApplication",
     "name": "Forzen",
     "operatingSystem": "Windows 10/11",
-    "applicationCategory": "Accessibility",
-    "description": "Screen magnifier for visually impaired users. Lupa de pantalla inteligente y gratuita.",
+    "applicationCategory": "AccessibilityApplication",
+    "description": "Lupa de pantalla inteligente y gratuita para personas con baja visión.",
     "url": "https://FernandezIvan323.github.io/Forzen/",
-    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "license": "https://opensource.org/licenses/MIT"
   }
   </script>
 </head>
 <body>
-
-<nav>
-  <div class="container" style="display:flex;justify-content:space-between;align-items:center;width:100%;">
-    <div class="logo">⚡ FORZEN</div>
-    <div class="nav-links">
-      <a href="#features">Funciones</a>
-      <a href="#screenshots">Capturas</a>
-      <a href="#download">Descargar</a>
-      <a href="#contact">Contacto</a>
-    </div>
+  <div class="bg-fx" aria-hidden="true">
+    <div class="orb orb-a"></div>
+    <div class="orb orb-b"></div>
+    <div class="noise"></div>
   </div>
-</nav>
 
-<!-- ─── Hero ─── -->
-<section class="hero" id="hero">
-  <div class="container">
-    <div class="hero-text fade-in">
-      <h1>Ve el mundo <span class="green">más de cerca</span></h1>
-      <p class="sub">Lupa de sistema rápida para personas con baja visión. Amplía cualquier área de tu pantalla al instante. Gratuito, código abierto, sin publicidad.</p>
-      <div class="stats">
-        <div>
-          <div class="num"><span id="stat-counter">285M</span></div>
-          <div class="label">personas con baja visión en el mundo</div>
-        </div>
-        <div>
-          <div class="num">60</div>
-          <div class="label">FPS de captura</div>
-        </div>
-      </div>
-      <a class="cta-btn" href="#download">Descargar Forzen</a>
+  <header class="site-header">
+    <div class="container nav-inner">
+      <a class="logo" href="#top" aria-label="Forzen inicio">
+        <span class="logo-mark" aria-hidden="true"></span>
+        FOR<span>ZEN</span>
+      </a>
+
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" aria-label="Abrir menú">
+        <span></span>
+      </button>
+
+      <nav class="nav-links" id="primary-nav" aria-label="Principal">
+        <a href="#features">Funciones</a>
+        <a href="#modes">Modos</a>
+        <a href="#hotkeys">Atajos</a>
+        <a class="nav-cta" href="#download">Descargar</a>
+      </nav>
     </div>
-    <div class="lens-mockup fade-in">
-      <div class="lens-ring">
-        <div class="lens-content">
-          <div class="window" style="align-self:flex-start;margin-left:40px;"></div>
-          <div class="window"></div>
-          <div style="display:flex;gap:4px;">
-            <div class="text-block"></div>
-            <div class="text-block green"></div>
+  </header>
+
+  <main id="top">
+    <!-- Hero -->
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="reveal">
+          <p class="eyebrow">
+            <span class="eyebrow-dot" aria-hidden="true"></span>
+            Accesibilidad · Windows · Open source
+          </p>
+          <h1>Ve el mundo <em>más de cerca</em></h1>
+          <p class="hero-lead">
+            Lupa de sistema rápida para baja visión. Zoom 1x–8x, multi-monitor,
+            filtros de color, OCR y atajos personalizables. Sin publicidad ni telemetría.
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="https://github.com/FernandezIvan323/Forzen/releases/latest">
+              Descargar Forzen
+            </a>
+            <a class="btn btn-ghost" href="https://github.com/FernandezIvan323/Forzen">
+              Ver código en GitHub
+            </a>
           </div>
-          <div class="text-block" style="width:60px;"></div>
-        </div>
-        <div class="lens-crosshair-h"></div>
-        <div class="lens-crosshair-v"></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ─── Features ─── -->
-<section id="features">
-  <div class="container fade-in">
-    <h2 class="section-title"><span class="green">//</span> FUNCIONES</h2>
-    <p class="section-sub">Todo lo que necesitas para ver mejor tu pantalla</p>
-    <div class="features-grid">
-      <div class="feature-card">
-        <div class="icon">🔍</div>
-        <h3>ZOOM INSTANTÁNEO</h3>
-        <p>De 1x a 8x con solo presionar una tecla. La lupa sigue tu cursor en tiempo real sin retraso.</p>
-        <span class="tag tag-now">Disponible</span>
-      </div>
-      <div class="feature-card">
-        <div class="icon">⚡</div>
-        <h3>60 FPS SIN LAG</h3>
-        <p>Captura directa de pantalla con aceleración GDI. Experiencia fluida sin cortes ni parpadeos.</p>
-        <span class="tag tag-now">Disponible</span>
-      </div>
-      <div class="feature-card">
-        <div class="icon">🖥️</div>
-        <h3>FULL-SCREEN</h3>
-        <p>Pantalla completa ampliada que sigue tu cursor. Todo el monitor se convierte en una lupa gigante.</p>
-        <span class="tag tag-now">Nuevo</span>
-      </div>
-      <div class="feature-card">
-        <div class="icon">🪟</div>
-        <h3>MODO DOCKED</h3>
-        <p>Panel de aumento acoplado a la esquina de la pantalla. Ideal para ver detalles sin obstruir tu trabajo.</p>
-        <span class="tag tag-now">Nuevo</span>
-      </div>
-      <div class="feature-card">
-        <div class="icon">🎨</div>
-        <h3>FILTROS DE COLOR</h3>
-        <p>Alto contraste, inversión, escala de grises y filtros para daltonismo (protanopía, deuteranopía, tritanopía) con brillo y contraste ajustables.</p>
-        <span class="tag tag-now">Disponible</span>
-      </div>
-      <div class="feature-card">
-        <div class="icon">📝</div>
-        <h3>OCR + TTS</h3>
-        <p>Reconocimiento de texto con OCR y lectura en voz alta con Windows Speech API. Detecta texto en español e inglés.</p>
-        <span class="tag tag-now">Nuevo</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ─── Screenshots ─── -->
-<section id="screenshots">
-  <div class="container fade-in">
-    <h2 class="section-title"><span class="green">//</span> CAPTURAS</h2>
-    <p class="section-sub">Así se ve Forzen en acción</p>
-    <div class="screenshots-grid">
-      <div class="mockup-card">
-        <div class="mock-lens-preview">
-          <div class="bg-grid"></div>
-          <div class="lens-overlay"></div>
-        </div>
-        <div class="label">🔍 Modo Lens — Lupa siguiendo al cursor</div>
-      </div>
-      <div class="mockup-card">
-        <div class="mock-lens-preview">
-          <div class="bg-grid" style="transform:scale(1.5);"></div>
-          <div class="lens-overlay" style="width:100%;height:100%;border-radius:0;border:none;box-shadow:inset 0 0 60px var(--glow);"></div>
-        </div>
-        <div class="label">🖥️ Modo Full-Screen — Pantalla completa ampliada</div>
-      </div>
-      <div class="mockup-card">
-        <div class="mock-tray">
-          <div class="menu" style="width:140px;height:100px;bottom:40px;right:10px;">
-            <div style="height:60px;background:var(--card);border:1px solid var(--border);border-radius:4px;display:flex;align-items:center;justify-content:center;">
-              <div style="width:80%;height:4px;background:var(--green);border-radius:2px;"></div>
+          <div class="hero-stats" role="list">
+            <div class="stat" role="listitem">
+              <strong id="stat-counter">285M</strong>
+              <span>personas con baja visión en el mundo</span>
             </div>
-            <div style="height:6px;background:#333;border-radius:2px;margin:4px 0;"></div>
-          </div>
-          <div class="bar">
-            <span style="font-size:.45rem;color:#555;flex:1;text-align:right;">ENG</span>
-            <span style="font-size:.45rem;color:#555;">16:06</span>
-            <div class="dot"></div>
-          </div>
-        </div>
-        <div class="label">🪟 Modo Docked — Lupa acoplada a la esquina</div>
-      </div>
-      <div class="mockup-card">
-        <div class="mock-settings">
-          <div class="sidebar">
-            <div class="active"></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-          </div>
-          <div class="main">
-            <div class="row green"></div>
-            <div class="row wide"></div>
-            <div class="row"></div>
-            <div class="row wide"></div>
-            <div class="row green" style="width:40%;"></div>
+            <div class="stat" role="listitem">
+              <strong>3</strong>
+              <span>modos de aumento</span>
+            </div>
+            <div class="stat" role="listitem">
+              <strong>60</strong>
+              <span>FPS objetivo</span>
+            </div>
           </div>
         </div>
-        <div class="label">⚙️ Ventana de ajustes con panel lateral</div>
-      </div>
-      <div class="mockup-card">
-        <div class="mock-tray">
-          <div class="menu">
-            <div></div>
-            <div class="green"></div>
-            <div></div>
+
+        <!-- Placeholder de producto de calidad (CSS, no captura real) -->
+        <div class="product-stage reveal" aria-label="Vista previa ilustrada de Forzen">
+          <div class="product-glow" aria-hidden="true"></div>
+          <div class="desktop-frame">
+            <div class="desktop-chrome" aria-hidden="true">
+              <i></i><i></i><i></i>
+              <span class="title">Escritorio · Forzen en segundo plano</span>
+            </div>
+            <div class="desktop-body">
+              <div class="desk-window w1" aria-hidden="true">
+                <div class="bar"><b></b><b></b><b></b></div>
+                <div class="lines">
+                  <span></span><span></span><span></span><span></span><span></span>
+                </div>
+              </div>
+              <div class="desk-window w2" aria-hidden="true">
+                <div class="bar"><b></b><b></b><b></b></div>
+                <div class="lines">
+                  <span></span><span></span><span></span><span></span>
+                </div>
+              </div>
+              <div class="lens" aria-hidden="true">
+                <div class="lens-glass"></div>
+                <div class="lens-cross-h"></div>
+                <div class="lens-cross-v"></div>
+              </div>
+            </div>
           </div>
-          <div class="bar">
-            <span style="font-size:.45rem;color:#555;flex:1;text-align:right;">ENG</span>
-            <span style="font-size:.45rem;color:#555;">16:06</span>
-            <div class="dot"></div>
+          <p class="product-caption">Ilustración · Modo Lens · sigue el cursor · click-through</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Trust -->
+    <section class="trust" aria-label="Garantías">
+      <div class="container">
+        <div class="trust-row reveal">
+          <span class="trust-pill">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+            100% gratis
+          </span>
+          <span class="trust-pill">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+            Código abierto MIT
+          </span>
+          <span class="trust-pill">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+            Sin telemetría
+          </span>
+          <span class="trust-pill">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+            Windows 10 / 11
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features bento -->
+    <section class="section" id="features">
+      <div class="container">
+        <div class="section-head reveal">
+          <p class="section-kicker">// funciones</p>
+          <h2>Hecho para usarse todo el día</h2>
+          <p>No es una demo. Es una lupa de sistema con los detalles que importan en el uso real.</p>
+        </div>
+
+        <div class="bento">
+          <article class="bento-card wide reveal">
+            <div class="bento-icon" aria-hidden="true">🔍</div>
+            <h3>Zoom instantáneo 1x–8x</h3>
+            <p>La lupa sigue el cursor con corrección DPI y multi-monitor. Amplía lo que miras sin pelearte con el escritorio.</p>
+            <span class="bento-tag">Disponible</span>
+          </article>
+          <article class="bento-card wide reveal">
+            <div class="bento-icon" aria-hidden="true">⚡</div>
+            <h3>Captura estable</h3>
+            <p>GDI BitBlt con exclusión de la propia ventana. Sin eco infinito de la lupa sobre sí misma.</p>
+            <span class="bento-tag">Disponible</span>
+          </article>
+          <article class="bento-card reveal">
+            <div class="bento-icon" aria-hidden="true">🖱️</div>
+            <h3>Click-through</h3>
+            <p>En Lens y Docked sigues usando otras apps. Full-Screen se comporta como lupa clásica.</p>
+            <span class="bento-tag">Disponible</span>
+          </article>
+          <article class="bento-card reveal">
+            <div class="bento-icon" aria-hidden="true">🎨</div>
+            <h3>Filtros de color</h3>
+            <p>Inversión, alto contraste, grises y daltonismo, con brillo, contraste y saturación.</p>
+            <span class="bento-tag">Disponible</span>
+          </article>
+          <article class="bento-card reveal">
+            <div class="bento-icon" aria-hidden="true">⌨️</div>
+            <h3>Atajos a medida</h3>
+            <p>Hooks globales. Reasigna cada combinación desde Ajustes → Controles.</p>
+            <span class="bento-tag">Disponible</span>
+          </article>
+          <article class="bento-card tall reveal">
+            <div class="bento-icon" aria-hidden="true">📝</div>
+            <h3>OCR + TTS</h3>
+            <p>Reconoce el texto bajo la lupa (Tesseract) y léelo con Windows Speech. Opcional, offline.</p>
+            <span class="bento-tag optional">Opcional</span>
+          </article>
+          <article class="bento-card reveal">
+            <div class="bento-icon" aria-hidden="true">🚀</div>
+            <h3>Iniciar con Windows</h3>
+            <p>Actívalo en ajustes y Forzen arranca con tu sesión.</p>
+            <span class="bento-tag">Disponible</span>
+          </article>
+          <article class="bento-card reveal">
+            <div class="bento-icon" aria-hidden="true">📊</div>
+            <h3>FPS en pantalla</h3>
+            <p>Contador opcional y tope de FPS configurable para equilibrar fluidez y CPU.</p>
+            <span class="bento-tag">Disponible</span>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Modes -->
+    <section class="section" id="modes">
+      <div class="container">
+        <div class="section-head reveal">
+          <p class="section-kicker">// modos</p>
+          <h2>Tres formas de ver</h2>
+          <p>Cambia al vuelo con un atajo. Placeholders ilustrados de cada modo.</p>
+        </div>
+        <div class="modes-grid">
+          <article class="mode-card reveal">
+            <div class="mode-preview" aria-hidden="true">
+              <div class="fake-ui">
+                <span></span><span></span><span></span><span></span>
+              </div>
+              <div class="lens-dot"></div>
+            </div>
+            <div class="mode-body">
+              <h3>Lens</h3>
+              <p>Lupa circular o rectangular que sigue el cursor. Ideal para el día a día.</p>
+            </div>
+          </article>
+          <article class="mode-card reveal">
+            <div class="mode-preview full" aria-hidden="true">
+              <div class="fake-ui">
+                <span></span><span></span><span></span><span></span>
+              </div>
+              <div class="lens-dot"></div>
+            </div>
+            <div class="mode-body">
+              <h3>Full-Screen</h3>
+              <p>Todo el monitor del cursor ampliado. Como la lupa clásica del sistema.</p>
+            </div>
+          </article>
+          <article class="mode-card reveal">
+            <div class="mode-preview dock" aria-hidden="true">
+              <div class="fake-ui">
+                <span></span><span></span><span></span><span></span>
+              </div>
+              <div class="lens-dot"></div>
+            </div>
+            <div class="mode-body">
+              <h3>Docked</h3>
+              <p>Panel acoplado a la esquina. Aumenta sin tapar todo el escritorio.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="section" id="how">
+      <div class="container">
+        <div class="section-head reveal">
+          <p class="section-kicker">// empezar</p>
+          <h2>Listo en tres pasos</h2>
+          <p>Sin cuentas, sin tiendas raras, sin bloatware.</p>
+        </div>
+        <div class="steps">
+          <article class="step reveal">
+            <div class="step-num">1</div>
+            <h3>Descarga</h3>
+            <p>Pulsa <strong>Descargar Forzen</strong>. Obtienes un instalador de Windows (doble clic).</p>
+          </article>
+          <article class="step reveal">
+            <div class="step-num">2</div>
+            <h3>Instala</h3>
+            <p>Sigue el asistente: Siguiente → Instalar. Acepta permisos si Windows los pide.</p>
+          </article>
+          <article class="step reveal">
+            <div class="step-num">3</div>
+            <h3>Usa la lupa</h3>
+            <p>Forzen queda en el menú Inicio. Icono en la bandeja. Sin terminal ni Java aparte.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Hotkeys -->
+    <section class="section" id="hotkeys">
+      <div class="container">
+        <div class="section-head reveal">
+          <p class="section-kicker">// atajos</p>
+          <h2>Control total desde el teclado</h2>
+          <p>Valores por defecto. Todos reasignables en Ajustes.</p>
+        </div>
+        <div class="hotkey-panel reveal" role="table" aria-label="Atajos de teclado">
+          <div class="hotkey-row" role="row"><span>Zoom +</span><kbd class="kbd">Ctrl + Alt + ↑</kbd></div>
+          <div class="hotkey-row" role="row"><span>Zoom −</span><kbd class="kbd">Ctrl + Alt + ↓</kbd></div>
+          <div class="hotkey-row" role="row"><span>Pausar / Reanudar</span><kbd class="kbd">Ctrl + Alt + Z</kbd></div>
+          <div class="hotkey-row" role="row"><span>Cambiar modo</span><kbd class="kbd">Ctrl + Alt + M</kbd></div>
+          <div class="hotkey-row" role="row"><span>Abrir ajustes</span><kbd class="kbd">Ctrl + Alt + ,</kbd></div>
+          <div class="hotkey-row" role="row"><span>OCR + leer</span><kbd class="kbd">Ctrl + Alt + T</kbd></div>
+          <div class="hotkey-row" role="row"><span>Salir</span><kbd class="kbd">Ctrl + Alt + X</kbd></div>
+        </div>
+        <p class="hotkey-note reveal">Personaliza cada atajo en Ajustes → Controles.</p>
+      </div>
+    </section>
+
+    <!-- Download wizard -->
+    <section class="section" id="download">
+      <div class="container">
+        <div class="section-head reveal">
+          <p class="section-kicker">// descargar</p>
+          <h2>Instálalo como cualquier programa</h2>
+          <p>Sin comandos. Sin instalar Java a mano. Solo el asistente de Windows.</p>
+        </div>
+
+        <div class="install-wizard reveal">
+          <div class="wizard-cta">
+            <div>
+              <p class="wizard-label">Forzen para Windows 10 y 11</p>
+              <h3>Forzen-Setup.exe</h3>
+              <p class="wizard-meta">Instalador con asistente · runtime incluido · gratuito</p>
+            </div>
+            <a class="btn btn-primary btn-download"
+               href="https://github.com/FernandezIvan323/Forzen/releases/latest"
+               id="download-btn">
+              Descargar Forzen
+            </a>
+          </div>
+
+          <ol class="wizard-steps">
+            <li class="wizard-step">
+              <span class="wizard-num" aria-hidden="true">1</span>
+              <div>
+                <h4>Descargar</h4>
+                <p>Pulsa el botón verde. Se baja <strong>Forzen-Setup</strong> a tu carpeta de Descargas.</p>
+              </div>
+            </li>
+            <li class="wizard-step">
+              <span class="wizard-num" aria-hidden="true">2</span>
+              <div>
+                <h4>Abrir el instalador</h4>
+                <p>Haz <strong>doble clic</strong> en el archivo. Se abre el asistente de Windows (Siguiente / Instalar).</p>
+              </div>
+            </li>
+            <li class="wizard-step">
+              <span class="wizard-num" aria-hidden="true">3</span>
+              <div>
+                <h4>Permisos</h4>
+                <p>Si Windows pregunta “¿Desea permitir…?”, pulsa <strong>Sí</strong>. Es el control de seguridad habitual.</p>
+              </div>
+            </li>
+            <li class="wizard-step">
+              <span class="wizard-num" aria-hidden="true">4</span>
+              <div>
+                <h4>Listo</h4>
+                <p>Forzen queda en el <strong>menú Inicio</strong> y en la <strong>bandeja del sistema</strong>. Ya puedes usar la lupa.</p>
+              </div>
+            </li>
+          </ol>
+
+          <div class="wizard-faq">
+            <details>
+              <summary>Windows dice “Windows protegió tu PC” (SmartScreen)</summary>
+              <p>Es normal en programas nuevos sin certificado de pago. Pulsa <strong>Más información</strong> y luego <strong>Ejecutar de todos modos</strong>. Forzen es código abierto y no instala publicidad.</p>
+            </details>
+            <details>
+              <summary>¿Necesito saber de programación o comandos?</summary>
+              <p>No. Solo descarga, doble clic e instalar. Como cualquier otra app de Windows.</p>
+            </details>
+            <details>
+              <summary>¿Cómo lo desinstalo?</summary>
+              <p>Configuración de Windows → Aplicaciones → Forzen → Desinstalar. También desde el menú Inicio.</p>
+            </details>
           </div>
         </div>
-        <div class="label">🖥️ Icono en bandeja con menú rápido</div>
       </div>
-    </div>
-  </div>
-</section>
+    </section>
+  </main>
 
-<!-- ─── How It Works ─── -->
-<section id="how-it-works">
-  <div class="container fade-in">
-    <h2 class="section-title"><span class="green">//</span> CÓMO FUNCIONA</h2>
-    <p class="section-sub">Tres pasos simples para empezar</p>
-    <div class="steps">
-      <div class="step">
-        <div class="step-num">1</div>
-        <h3>DESCARGA E INSTALA</h3>
-        <p>Descarga el instalador .msi y ejecútalo. No necesitas Java — el runtime viene incluido.</p>
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">FOR<span>ZEN</span></div>
+      <div class="footer-links">
+        <a href="https://github.com/FernandezIvan323/Forzen">GitHub</a>
+        <a href="https://github.com/FernandezIvan323/Forzen/issues">Reportar bug</a>
+        <a href="https://github.com/FernandezIvan323/Forzen/releases">Releases</a>
+        <a href="https://github.com/FernandezIvan323/Forzen/blob/main/LICENSE">MIT</a>
       </div>
-      <div class="step">
-        <div class="step-num">2</div>
-        <h3>ABRE FORZEN</h3>
-        <p>Aparecerá un icono verde en la bandeja del sistema. La lupa ya está activa.</p>
-      </div>
-      <div class="step">
-        <div class="step-num">3</div>
-        <h3>CONTROLA CON TECLAS</h3>
-        <p>Usa <strong>Ctrl+Alt+↑</strong> para aumentar el zoom. Cambia de modo con <strong>Ctrl+Alt+M</strong>.</p>
-      </div>
+      <p class="footer-copy">
+        Proyecto open source · 2026 · Sin telemetría · Sin control por voz (aún)
+      </p>
     </div>
-  </div>
-</section>
+  </footer>
 
-<!-- ─── Hotkeys ─── -->
-<section id="hotkeys">
-  <div class="container fade-in">
-    <h2 class="section-title"><span class="green">//</span> ATAJOS</h2>
-    <p class="section-sub">Todo el control desde tu teclado</p>
-    <div class="hotkey-grid">
-      <div class="hotkey-item"><span>Zoom +</span><span class="key">Ctrl + Alt + ↑</span></div>
-      <div class="hotkey-item"><span>Zoom -</span><span class="key">Ctrl + Alt + ↓</span></div>
-      <div class="hotkey-item"><span>Pausar / Reanudar</span><span class="key">Ctrl + Alt + Z</span></div>
-      <div class="hotkey-item"><span>Cambiar modo</span><span class="key">Ctrl + Alt + M</span></div>
-      <div class="hotkey-item"><span>Abrir ajustes</span><span class="key">Ctrl + Alt + ,</span></div>
-      <div class="hotkey-item"><span>Salir</span><span class="key">Ctrl + Alt + X</span></div>
-    </div>
-  </div>
-</section>
-
-<!-- ─── Download ─── -->
-<section id="download">
-  <div class="container fade-in">
-    <h2 class="section-title"><span class="green">//</span> DESCARGAR</h2>
-    <p class="section-sub">Gratuito. Código abierto. Sin registros, sin publicidad, sin telemetría.</p>
-    <div class="download-card">
-      <div class="file">📦 Forzen-1.1.0.msi</div>
-      <div class="meta">Windows 10/11 · 48 MB · Java Runtime incluido</div>
-      <ul class="features-list">
-        <li>3 modos: Lens, Full-Screen y Docked</li>
-        <li>Zoom 1x–8x con captura GDI acelerada</li>
-        <li>Filtros de color: inversión, alto contraste, grises, daltonismo</li>
-        <li>Ajustes de brillo, contraste y saturación</li>
-        <li>OCR + TTS (lectura de texto en voz alta)</li>
-        <li>Atajos globales de teclado</li>
-      </ul>
-      <a class="cta-btn" href="https://github.com/FernandezIvan323/Forzen/releases/latest">Descargar .msi</a>
-    </div>
-  </div>
-</section>
-
-<!-- ─── Contact ─── -->
-<section id="contact">
-  <div class="container fade-in">
-    <h2 class="section-title"><span class="green">//</span> CONTACTO</h2>
-    <p class="section-sub">¿Tienes dudas, sugerencias o encontraste un bug?</p>
-    <div class="contact-grid">
-      <a class="contact-card" href="https://github.com/FernandezIvan323/Forzen/issues" target="_blank" style="display:block;">
-        <div class="icon">🐛</div>
-        <h3>REPORTAR BUG</h3>
-        <p>Abre un issue en GitHub. Resolvemos rápido.</p>
-      </a>
-      <a class="contact-card" href="https://github.com/FernandezIvan323/Forzen" target="_blank" style="display:block;">
-        <div class="icon">💻</div>
-        <h3>CÓDIGO FUENTE</h3>
-        <p>Todo el proyecto en GitHub. Contribuye o haz fork.</p>
-      </a>
-    </div>
-  </div>
-</section>
-
-<footer>
-  <div class="container">
-    <p>
-      <strong style="color:var(--green);">⚡ FORZEN</strong> &nbsp;·&nbsp; Proyecto de código abierto &nbsp;·&nbsp;
-      <a href="https://github.com/FernandezIvan323/Forzen">GitHub</a> &nbsp;·&nbsp;
-      <a href="https://github.com/FernandezIvan323/Forzen/issues">Reportar bug</a>
-    </p>
-    <p style="margin-top:8px;opacity:.5;">MIT License &nbsp;·&nbsp; 2026</p>
-  </div>
-</footer>
-
-<script src="app.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>

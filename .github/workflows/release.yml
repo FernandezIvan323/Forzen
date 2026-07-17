@@ -22,42 +22,120 @@ jobs:
           distribution: 'liberica'
           java-package: 'jdk+fx'
 
-      - name: Build with Maven
-        run: mvn package -DskipTests
-
-      - name: List target contents
-        run: Get-ChildItem -Path target -Filter *.jar
-
-      - name: Get version
+      - name: Get version from tag
         id: version
+        shell: pwsh
         run: |
           $v = "${{ github.ref_name }}" -replace '^v',''
           echo "VERSION=$v" >> $env:GITHUB_OUTPUT
+          Write-Host "Release version: $v"
 
-      - name: Create MSI with jpackage
+      - name: Build with Maven
+        run: mvn -B package -DskipTests
+
+      - name: Stage clean jpackage input
+        shell: pwsh
         run: |
-          jpackage --type msi `
-            --input target `
-            --main-jar forzen-${{ steps.version.outputs.VERSION }}.jar `
+          $v = "${{ steps.version.outputs.VERSION }}"
+          $stage = "target/jpackage-input"
+          New-Item -ItemType Directory -Force -Path $stage | Out-Null
+          $jar = "target/forzen-$v.jar"
+          if (-not (Test-Path $jar)) {
+            Write-Host "Available jars:"
+            Get-ChildItem target -Filter *.jar | ForEach-Object { $_.Name }
+            throw "Missing $jar"
+          }
+          Copy-Item $jar "$stage/forzen-$v.jar"
+          Get-ChildItem $stage
+
+      - name: Create EXE installer (wizard for end users)
+        shell: pwsh
+        run: |
+          $v = "${{ steps.version.outputs.VERSION }}"
+          $icon = "src/main/resources/icons/forzen.ico"
+          $iconArgs = @()
+          if (Test-Path $icon) { $iconArgs = @("--icon", $icon) }
+          New-Item -ItemType Directory -Force -Path target/installer | Out-Null
+          jpackage `
+            --type exe `
+            --input target/jpackage-input `
+            --main-jar "forzen-$v.jar" `
             --main-class com.forzen.App `
             --name Forzen `
-            --app-version ${{ steps.version.outputs.VERSION }} `
+            --app-version $v `
             --vendor "Forzen Project" `
-            --description "Screen magnifier for visually impaired users" `
+            --description "Lupa de pantalla para baja vision" `
+            --dest target/installer `
             --win-dir-chooser `
             --win-menu `
             --win-shortcut `
-            --dest target\installer `
-            --java-options "--add-modules javafx.controls,javafx.swing"
+            --win-per-user-install `
+            --java-options "--add-modules=javafx.controls,javafx.swing" `
+            @iconArgs
+          # Friendly name
+          Get-ChildItem target/installer -Filter *.exe | ForEach-Object {
+            $dest = "target/installer/Forzen-Setup-$v.exe"
+            if ($_.FullName -ne (Resolve-Path $dest -ErrorAction SilentlyContinue)) {
+              Move-Item $_.FullName $dest -Force
+            }
+          }
 
-      - name: Upload MSI artifact
+      - name: Create MSI installer (optional)
+        shell: pwsh
+        run: |
+          $v = "${{ steps.version.outputs.VERSION }}"
+          $icon = "src/main/resources/icons/forzen.ico"
+          $iconArgs = @()
+          if (Test-Path $icon) { $iconArgs = @("--icon", $icon) }
+          jpackage `
+            --type msi `
+            --input target/jpackage-input `
+            --main-jar "forzen-$v.jar" `
+            --main-class com.forzen.App `
+            --name Forzen `
+            --app-version $v `
+            --vendor "Forzen Project" `
+            --description "Lupa de pantalla para baja vision" `
+            --dest target/installer `
+            --win-dir-chooser `
+            --win-menu `
+            --win-shortcut `
+            --win-per-user-install `
+            --java-options "--add-modules=javafx.controls,javafx.swing" `
+            @iconArgs
+          Get-ChildItem target/installer -Filter *.msi | ForEach-Object {
+            $dest = "target/installer/Forzen-Setup-$v.msi"
+            if ($_.Name -ne "Forzen-Setup-$v.msi") {
+              Move-Item $_.FullName $dest -Force
+            }
+          }
+
+      - name: List installer outputs
+        shell: pwsh
+        run: Get-ChildItem target/installer | Format-Table Name, Length
+
+      - name: Upload installer artifacts
         uses: actions/upload-artifact@v4
         with:
           name: Forzen-${{ github.ref_name }}-windows
-          path: target\installer\*.msi
+          path: |
+            target/installer/Forzen-Setup-*.exe
+            target/installer/Forzen-Setup-*.msi
 
-      - name: Create Release
+      - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: target\installer\*.msi
+          files: |
+            target/installer/Forzen-Setup-*.exe
+            target/installer/Forzen-Setup-*.msi
           generate_release_notes: true
+          body: |
+            ## Forzen para Windows
+
+            1. Descarga **Forzen-Setup-*.exe**
+            2. Doble clic para abrir el asistente
+            3. Si Windows pregunta por permisos, pulsa **Sí**
+            4. Si aparece SmartScreen: **Más información** → **Ejecutar de todos modos**
+            5. Listo — Forzen queda en el menú Inicio
+
+            No necesitas instalar Java ni usar la terminal.

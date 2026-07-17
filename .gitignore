@@ -16,3 +16,6 @@ Thumbs.db
 ### Maven ###
 log/
 *.log
+dependency-reduced-pom.xml
+target/jpackage-input/
+target/installer/

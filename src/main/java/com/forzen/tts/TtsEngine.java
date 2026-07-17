@@ -1,25 +1,29 @@
 package com.forzen.tts;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class TtsEngine {
 
     private final ExecutorService executor;
+    private final AtomicBoolean speaking = new AtomicBoolean(false);
     private boolean available;
-    private boolean speaking;
+    private Process currentProcess;
 
     public TtsEngine() {
-        this.executor = Executors.newSingleThreadExecutor();
+        this.executor = Executors.newSingleThreadExecutor(r -> {
+            Thread t = new Thread(r, "forzen-tts");
+            t.setDaemon(true);
+            return t;
+        });
         try {
-            Process p = Runtime.getRuntime().exec(new String[]{
-                "powershell", "-Command",
-                "Add-Type -AssemblyName System.Speech; (New-Object System.Speech.Synthesis.SpeechSynthesizer)"
-            });
-            p.waitFor();
-            available = p.exitValue() == 0;
+            Process p = new ProcessBuilder(
+                    "powershell", "-NoProfile", "-Command",
+                    "Add-Type -AssemblyName System.Speech; $null = New-Object System.Speech.Synthesis.SpeechSynthesizer"
+            ).redirectErrorStream(true).start();
+            boolean finished = p.waitFor(8, java.util.concurrent.TimeUnit.SECONDS);
+            available = finished && p.exitValue() == 0;
             if (available) {
                 System.out.println("TTS: Windows Speech API available");
             } else {
@@ -32,22 +36,29 @@ public class TtsEngine {
     }
 
     public void speak(String text) {
-        if (!available || text == null || text.isEmpty() || speaking) return;
-        speaking = true;
+        if (!available || text == null || text.isBlank()) return;
+        if (!speaking.compareAndSet(false, true)) {
+            // Busy: cancel and re-queue
+            stop();
+            speaking.set(true);
+        }
+        final String payload = text.length() > 800 ? text.substring(0, 800) : text;
         executor.submit(() -> {
             try {
-                String escaped = text.replace("'", "''").replace("\"", "\"\"");
-                Process p = Runtime.getRuntime().exec(new String[]{
-                    "powershell", "-Command",
-                    "Add-Type -AssemblyName System.Speech; " +
-                    "$s = New-Object System.Speech.Synthesis.SpeechSynthesizer; " +
-                    "$s.Speak('" + escaped + "'); $s.Dispose()"
-                });
-                p.waitFor();
+                // Escape for single-quoted PowerShell string
+                String escaped = payload.replace("'", "''");
+                currentProcess = new ProcessBuilder(
+                        "powershell", "-NoProfile", "-Command",
+                        "Add-Type -AssemblyName System.Speech; "
+                                + "$s = New-Object System.Speech.Synthesis.SpeechSynthesizer; "
+                                + "$s.Rate = 0; $s.Speak('" + escaped + "'); $s.Dispose()"
+                ).redirectErrorStream(true).start();
+                currentProcess.waitFor();
             } catch (Exception e) {
                 System.err.println("TTS error: " + e.getMessage());
             } finally {
-                speaking = false;
+                currentProcess = null;
+                speaking.set(false);
             }
         });
     }
@@ -56,15 +67,24 @@ public class TtsEngine {
         speak(text);
     }
 
+    public void stop() {
+        Process p = currentProcess;
+        if (p != null) {
+            p.destroyForcibly();
+        }
+        speaking.set(false);
+    }
+
     public boolean isAvailable() {
         return available;
     }
 
     public boolean isSpeaking() {
-        return speaking;
+        return speaking.get();
     }
 
     public void shutdown() {
+        stop();
         executor.shutdownNow();
     }
 }

@@ -14,7 +14,7 @@ public class FiltersPanel extends VBox {
     private static final String BORDER_GREEN = "#005A2E";
 
     public FiltersPanel(ZoomController zoomController) {
-        setSpacing(20);
+        setSpacing(16);
         setStyle("-fx-padding: 30;");
 
         Label title = new Label("🌈 FILTROS DE COLOR");
@@ -27,23 +27,39 @@ public class FiltersPanel extends VBox {
         RadioButton highContrast = filterRadio("Alto contraste", FilterMode.HIGH_CONTRAST, filterGroup, zoomController);
         RadioButton grayscale = filterRadio("Escala de grises", FilterMode.GRAYSCALE, filterGroup, zoomController);
 
-        none.setSelected(zoomController.getFilterMode() == FilterMode.NONE);
-
         VBox colorBlind = section("Filtros de daltonismo");
         RadioButton protanopia = filterRadio("Protanopía (rojo)", FilterMode.PROTANOPIA, filterGroup, zoomController);
         RadioButton deuteranopia = filterRadio("Deuteranopía (verde)", FilterMode.DEUTERANOPIA, filterGroup, zoomController);
         RadioButton tritanopia = filterRadio("Tritanopía (azul)", FilterMode.TRITANOPIA, filterGroup, zoomController);
+        colorBlind.getChildren().addAll(protanopia, deuteranopia, tritanopia);
+
+        selectFilter(zoomController.getFilterMode(), none, invert, highContrast, grayscale,
+                protanopia, deuteranopia, tritanopia);
+        zoomController.filterModeProperty().addListener((obs, o, m) ->
+                selectFilter(m, none, invert, highContrast, grayscale, protanopia, deuteranopia, tritanopia));
 
         VBox adjustments = section("Ajustes de imagen");
-        Slider brightness = slider("Brillo", zoomController.getBrightness(), 0, 200);
-        brightness.valueProperty().bindBidirectional(zoomController.brightnessProperty());
-        Slider contrast = slider("Contraste", zoomController.getContrast(), 0, 200);
-        contrast.valueProperty().bindBidirectional(zoomController.contrastProperty());
-        Slider saturation = slider("Saturación", zoomController.getSaturation(), 0, 200);
-        saturation.valueProperty().bindBidirectional(zoomController.saturationProperty());
+        VBox brightness = labeledSlider("Brillo", zoomController.getBrightness(), 0, 200, zoomController.brightnessProperty());
+        VBox contrast = labeledSlider("Contraste", zoomController.getContrast(), 0, 200, zoomController.contrastProperty());
+        VBox saturation = labeledSlider("Saturación", zoomController.getSaturation(), 0, 200, zoomController.saturationProperty());
+        adjustments.getChildren().addAll(brightness, contrast, saturation);
 
-        getChildren().addAll(title, none, invert, highContrast, grayscale, colorBlind,
-            protanopia, deuteranopia, tritanopia, adjustments, brightness, contrast, saturation);
+        getChildren().addAll(title, none, invert, highContrast, grayscale, colorBlind, adjustments);
+    }
+
+    private void selectFilter(FilterMode mode, RadioButton none, RadioButton invert,
+                              RadioButton highContrast, RadioButton grayscale,
+                              RadioButton protanopia, RadioButton deuteranopia, RadioButton tritanopia) {
+        if (mode == null) mode = FilterMode.NONE;
+        switch (mode) {
+            case INVERT -> invert.setSelected(true);
+            case HIGH_CONTRAST -> highContrast.setSelected(true);
+            case GRAYSCALE -> grayscale.setSelected(true);
+            case PROTANOPIA -> protanopia.setSelected(true);
+            case DEUTERANOPIA -> deuteranopia.setSelected(true);
+            case TRITANOPIA -> tritanopia.setSelected(true);
+            default -> none.setSelected(true);
+        }
     }
 
     private RadioButton filterRadio(String label, FilterMode mode, ToggleGroup group, ZoomController zc) {
@@ -55,19 +71,23 @@ public class FiltersPanel extends VBox {
     }
 
     private VBox section(String label) {
-        VBox box = new VBox(5);
+        VBox box = new VBox(8);
         Label lbl = new Label(label);
         lbl.setStyle("-fx-text-fill: " + TEXT_MUTED + "; -fx-font-size: 13px; -fx-font-weight: bold;");
         box.getChildren().add(lbl);
         return box;
     }
 
-    private Slider slider(String name, double val, double min, double max) {
-        Slider s = new Slider(min, max, val);
+    private VBox labeledSlider(String name, double val, double min, double max,
+                               javafx.beans.property.DoubleProperty property) {
+        VBox box = new VBox(4);
         Label l = new Label(name + ": " + (int) val + "%");
         l.setStyle("-fx-text-fill: " + TEXT_LIGHT + ";");
-        s.valueProperty().addListener((obs, o, v) -> l.setText(name + ": " + v.intValue() + "%"));
+        Slider s = new Slider(min, max, val);
         s.setStyle("-fx-control-inner-background: " + BORDER_GREEN + ";");
-        return s;
+        s.valueProperty().bindBidirectional(property);
+        s.valueProperty().addListener((obs, o, v) -> l.setText(name + ": " + v.intValue() + "%"));
+        box.getChildren().addAll(l, s);
+        return box;
     }
 }
