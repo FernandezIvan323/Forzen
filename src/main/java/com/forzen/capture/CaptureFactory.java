@@ -5,14 +5,14 @@ import java.awt.AWTException;
 public class CaptureFactory {
 
     public static ScreenCapture create() {
-        DxgiCapture dxgi = new DxgiCapture();
-        if (dxgi.isAvailable()) {
-            System.out.println("Using DxgiCapture (GDI)");
-            return dxgi;
+        GdiCapture gdi = new GdiCapture();
+        if (gdi.isAvailable()) {
+            System.out.println("Using GdiCapture (BitBlt + exclude-from-capture overlay)");
+            return gdi;
         }
         FastRobotCapture fastRobot = new FastRobotCapture();
         if (fastRobot.isAvailable()) {
-            System.out.println("Using FastRobotCapture (DXGI)");
+            System.out.println("Using FastRobotCapture");
             return fastRobot;
         }
         try {

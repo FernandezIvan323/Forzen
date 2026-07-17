@@ -5,7 +5,6 @@ import com.forzen.core.ZoomController;
 
 import javafx.application.Platform;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
@@ -15,6 +14,7 @@ public class ForzenTray {
     private final App app;
     private TrayIcon trayIcon;
     private SystemTray systemTray;
+    private MenuItem toggleItem;
 
     public ForzenTray(ZoomController zoomController, App app) {
         this.zoomController = zoomController;
@@ -29,27 +29,26 @@ public class ForzenTray {
         }
 
         systemTray = SystemTray.getSystemTray();
-
         Image image = createTrayImage();
-        trayIcon = new TrayIcon(image, "Forzen - Lupa Inteligente");
+        trayIcon = new TrayIcon(image, "Forzen — Lupa inteligente");
         trayIcon.setImageAutoSize(true);
 
         PopupMenu popup = new PopupMenu();
 
-        MenuItem toggleItem = new MenuItem("Pausar / Reanudar");
+        toggleItem = new MenuItem(zoomController.isRunning() ? "Pausar" : "Reanudar");
         toggleItem.addActionListener(e -> {
             zoomController.toggleRunning();
-            if (zoomController.isRunning()) {
-                toggleItem.setLabel("Pausar");
-            } else {
-                toggleItem.setLabel("Reanudar");
-            }
+            updateToggleLabel();
         });
         popup.add(toggleItem);
 
         MenuItem settingsItem = new MenuItem("Ajustes");
-        settingsItem.addActionListener(e -> Platform.runLater(() -> openSettings()));
+        settingsItem.addActionListener(e -> Platform.runLater(app::openSettings));
         popup.add(settingsItem);
+
+        MenuItem ocrItem = new MenuItem("OCR ahora (Ctrl+Alt+T)");
+        ocrItem.addActionListener(e -> Platform.runLater(app::runOcrOnce));
+        popup.add(ocrItem);
 
         popup.addSeparator();
 
@@ -58,11 +57,21 @@ public class ForzenTray {
         popup.add(exitItem);
 
         trayIcon.setPopupMenu(popup);
+        trayIcon.addActionListener(e -> Platform.runLater(app::openSettings));
+
+        zoomController.runningProperty().addListener((obs, o, v) ->
+                Platform.runLater(this::updateToggleLabel));
 
         try {
             systemTray.add(trayIcon);
         } catch (AWTException e) {
             System.err.println("Could not add tray icon: " + e.getMessage());
+        }
+    }
+
+    private void updateToggleLabel() {
+        if (toggleItem != null) {
+            toggleItem.setLabel(zoomController.isRunning() ? "Pausar" : "Reanudar");
         }
     }
 
@@ -78,10 +87,6 @@ public class ForzenTray {
         g.drawString("Z", 4, 12);
         g.dispose();
         return img;
-    }
-
-    private void openSettings() {
-        new SettingsWindow(zoomController);
     }
 
     public void shutdown() {

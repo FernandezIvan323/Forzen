@@ -1,6 +1,8 @@
 package com.forzen.ui.panels;
 
 import com.forzen.core.ZoomController;
+import com.forzen.ocr.OcrEngine;
+import com.forzen.tts.TtsEngine;
 
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
@@ -10,10 +12,8 @@ public class TextPanel extends VBox {
     private static final String GREEN_NEON = "#00FF41";
     private static final String TEXT_LIGHT = "#EAEAEA";
     private static final String TEXT_MUTED = "#AAAAAA";
-    private static final String BORDER_GREEN = "#005A2E";
-    private static final String BG_PANEL = "#1A1A1A";
 
-    public TextPanel(ZoomController zoomController) {
+    public TextPanel(ZoomController zoomController, OcrEngine ocrEngine, TtsEngine ttsEngine) {
         setSpacing(20);
         setStyle("-fx-padding: 30;");
 
@@ -21,31 +21,41 @@ public class TextPanel extends VBox {
         title.setStyle("-fx-text-fill: " + GREEN_NEON + "; -fx-font-size: 20px; -fx-font-weight: bold;");
 
         VBox ocrSection = section("Reconocimiento de texto (OCR)");
-        CheckBox autoOcr = new CheckBox("Detectar texto automáticamente");
+        boolean ocrOk = ocrEngine != null && ocrEngine.isAvailable();
+        Label ocrStatus = new Label(ocrOk
+                ? "Estado: disponible (Tess4J)"
+                : "Estado: no disponible — instala Tesseract + tessdata (spa/eng).");
+        ocrStatus.setStyle("-fx-text-fill: " + (ocrOk ? GREEN_NEON : "#FF003C") + "; -fx-font-size: 12px;");
+        ocrStatus.setWrapText(true);
+
+        CheckBox autoOcr = new CheckBox("Recordar preferencia OCR automático (experimental)");
         autoOcr.setStyle("-fx-text-fill: " + TEXT_LIGHT + ";");
-        autoOcr.setSelected(zoomController.isShowFps()); // placeholder
-        Label ocrInfo = new Label("OCR offline con Tesseract. Idiomas: español, inglés.");
+        autoOcr.selectedProperty().bindBidirectional(zoomController.autoOcrProperty());
+        autoOcr.setDisable(!ocrOk);
+
+        Label ocrInfo = new Label("Atajo por defecto: Ctrl+Alt+T — reconoce el área actual de la lupa y muestra el texto.");
         ocrInfo.setStyle("-fx-text-fill: " + TEXT_MUTED + "; -fx-font-size: 12px;");
-        ocrSection.getChildren().addAll(autoOcr, ocrInfo);
+        ocrInfo.setWrapText(true);
+        ocrSection.getChildren().addAll(ocrStatus, autoOcr, ocrInfo);
 
         VBox ttsSection = section("Texto a voz (TTS)");
-        CheckBox autoRead = new CheckBox("Leer texto automáticamente");
-        autoRead.setStyle("-fx-text-fill: " + TEXT_LIGHT + ";");
-        Label ttsInfo = new Label("Síntesis de voz offline usando Windows Speech API.");
+        boolean ttsOk = ttsEngine != null && ttsEngine.isAvailable();
+        Label ttsStatus = new Label(ttsOk
+                ? "Estado: Windows Speech API disponible"
+                : "Estado: TTS no disponible en este sistema");
+        ttsStatus.setStyle("-fx-text-fill: " + (ttsOk ? GREEN_NEON : "#FF003C") + "; -fx-font-size: 12px;");
+
+        CheckBox autoTts = new CheckBox("Leer en voz alta tras OCR");
+        autoTts.setStyle("-fx-text-fill: " + TEXT_LIGHT + ";");
+        autoTts.selectedProperty().bindBidirectional(zoomController.autoTtsProperty());
+        autoTts.setDisable(!ttsOk);
+
+        Label ttsInfo = new Label("Síntesis offline con System.Speech (PowerShell). Se activa al usar OCR si esta opción está marcada.");
         ttsInfo.setStyle("-fx-text-fill: " + TEXT_MUTED + "; -fx-font-size: 12px;");
-        ttsSection.getChildren().addAll(autoRead, ttsInfo);
+        ttsInfo.setWrapText(true);
+        ttsSection.getChildren().addAll(ttsStatus, autoTts, ttsInfo);
 
-        VBox zoomSection = section("Zoom de texto");
-        Label zoomInfo = new Label("El aumento de texto se aplica automáticamente\nen los modos Lens, Full-Screen y Docked.");
-        zoomInfo.setStyle("-fx-text-fill: " + TEXT_MUTED + "; -fx-font-size: 13px;");
-        Slider textSize = new Slider(1, 5, 2);
-        textSize.setShowTickLabels(true);
-        textSize.setShowTickMarks(true);
-        textSize.setMajorTickUnit(1);
-        textSize.setStyle("-fx-control-inner-background: " + BORDER_GREEN + ";");
-        zoomSection.getChildren().addAll(zoomInfo, textSize);
-
-        getChildren().addAll(title, ocrSection, ttsSection, zoomSection);
+        getChildren().addAll(title, ocrSection, ttsSection);
     }
 
     private VBox section(String label) {
