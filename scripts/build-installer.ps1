@@ -38,11 +38,17 @@ Write-Host "==> mvn package"
 & mvn -q package -DskipTests
 if ($LASTEXITCODE -ne 0) { throw "Maven package failed" }
 
-$jarName = "forzen-$Version.jar"
-$jarPath = Join-Path $Root "target\$jarName"
+$jarPath = Join-Path $Root "target\forzen-$Version.jar"
 if (-not (Test-Path $jarPath)) {
-    throw "Expected jar not found: $jarPath"
+    $found = Get-ChildItem (Join-Path $Root "target") -Filter "forzen-*.jar" |
+        Where-Object { $_.Name -notlike "original-*" } |
+        Sort-Object Length -Descending |
+        Select-Object -First 1
+    if (-not $found) { throw "No forzen-*.jar found in target/" }
+    $jarPath = $found.FullName
+    Write-Host "Using jar: $($found.Name) (pom version may differ from -Version $Version)"
 }
+$jarName = "forzen-$Version.jar"
 
 # 2) Clean staging dir (only the app jar)
 $stage = Join-Path $Root "target\jpackage-input"
