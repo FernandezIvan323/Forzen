@@ -20,24 +20,29 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=16" />
+  <link rel="stylesheet" href="style.css?v=17" />
 </head>
 <body class="page-panel">
+  <div class="pc-page-shell">
   <div class="bg-fx" aria-hidden="true">
     <div class="orb orb-a"></div>
     <div class="orb orb-b"></div>
     <div class="noise"></div>
   </div>
+  <!-- Ambient fills full page height; lenses only in empty right rail (see CSS) -->
   <div class="pc-ambient" aria-hidden="true">
     <div class="pc-ambient-grid"></div>
-    <div class="pc-ambient-glow"></div>
+    <div class="pc-ambient-glow g1"></div>
+    <div class="pc-ambient-glow g2"></div>
     <span class="pc-float-lens l1"></span>
     <span class="pc-float-lens l2"></span>
     <span class="pc-float-lens l3"></span>
     <span class="pc-float-lens l4"></span>
     <span class="pc-float-lens l5"></span>
     <span class="pc-float-lens l6"></span>
-    <!-- Hero lens: larger path (option B) -->
+    <span class="pc-float-lens l7"></span>
+    <span class="pc-float-lens l8"></span>
+    <span class="pc-float-lens l9"></span>
     <span class="pc-hero-lens">
       <span class="pc-hero-lens-glass"></span>
     </span>
@@ -614,8 +619,9 @@
       <p class="footer-copy">Panel de control · Forzen 1.2.0 · Guía de Ajustes</p>
     </div>
   </footer>
+  </div><!-- /.pc-page-shell -->
 
-  <script src="a11y.js?v=16"></script>
-  <script src="app.js?v=16"></script>
+  <script src="a11y.js?v=17"></script>
+  <script src="app.js?v=17"></script>
 </body>
 </html>
