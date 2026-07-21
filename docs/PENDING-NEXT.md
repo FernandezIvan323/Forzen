@@ -10,6 +10,9 @@
    - Enlace: https://www.virustotal.com/gui/file/dc98e14c2c1d4fa9e1a55b77bed2882955c42549cb9617072ef695d3932bd2d2  
 3. ~~Banner OG 1200×630~~ — **hecho** (`docs/og-banner.png` + meta).
 4. ~~SHA-256 en body del release~~ — **hecho**.
+5. **Instalador 1.2.1:** al pulsar Finalizar a veces reaparece la 1.ª pantalla del wizard (app sí instaló).  
+   - Fix en scripts: `--win-upgrade-uuid` estable + `--win-menu-group Forzen` (menú ya no en “Unknown”).  
+   - Publicar tag `v1.2.1` cuando se quiera nuevo Setup.
 
 ## Media
 5. ~~Capturas reales del panel~~ — **descartado** (decisión del usuario).
