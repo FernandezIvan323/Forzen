@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Descarga Forzen 1.2.0 — Lupa de pantalla para Windows. Instalador con novedades y correcciones." />
+  <meta name="robots" content="index, follow" />
+  <title>Descargar Forzen 1.2.0 — Windows</title>
+  <link rel="canonical" href="https://FernandezIvan323.github.io/Forzen/download.html" />
+  <link rel="icon" href="favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" href="favicon-32.png" sizes="32x32" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="bg-fx" aria-hidden="true">
+    <div class="orb orb-a"></div>
+    <div class="orb orb-b"></div>
+    <div class="noise"></div>
+  </div>
+
+  <header class="site-header">
+    <div class="container nav-inner">
+      <a class="logo" href="index.html" aria-label="Forzen inicio">
+        <span class="logo-mark" aria-hidden="true"></span>
+        FOR<span>ZEN</span>
+      </a>
+      <nav class="nav-links" id="primary-nav" aria-label="Principal">
+        <a href="index.html">Inicio</a>
+        <a href="index.html#features">Funciones</a>
+        <a class="nav-cta" href="#installer">Descargar 1.2.0</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero" style="padding-bottom: 2rem;">
+      <div class="container" style="max-width: 720px;">
+        <p class="eyebrow">
+          <span class="eyebrow-dot" aria-hidden="true"></span>
+          Windows 10 / 11 · v1.2.0
+        </p>
+        <h1>Descargar <em>Forzen 1.2.0</em></h1>
+        <p class="hero-lead">
+          Instalador con asistente. Runtime incluido. Sin terminal ni Java aparte.
+        </p>
+        <div class="hero-actions" id="installer">
+          <a class="btn btn-primary"
+             href="https://github.com/FernandezIvan323/Forzen/releases/download/v1.2.0/Forzen-Setup-1.2.0.exe">
+            Descargar instalador (Windows)
+          </a>
+          <a class="btn btn-ghost"
+             href="https://github.com/FernandezIvan323/Forzen/releases/tag/v1.2.0">
+            Notas del release
+          </a>
+        </div>
+        <p class="hero-lead" style="font-size: 0.9rem; margin-bottom: 0;">
+          Archivo: <strong>Forzen-Setup-1.2.0.exe</strong> · Si el enlace no abre aún, usa las notas del release cuando el binario esté publicado.
+        </p>
+      </div>
+    </section>
+
+    <section class="section" style="padding-top: 1rem;">
+      <div class="container" style="max-width: 720px;">
+        <div class="section-head" style="text-align: left; margin-left: 0;">
+          <p class="section-kicker">// novedades</p>
+          <h2>Qué incluye esta versión</h2>
+        </div>
+
+        <article class="bento-card wide reveal is-visible" style="grid-column: auto; margin-bottom: 1rem; min-height: 0;">
+          <h3>Funciones nuevas</h3>
+          <ul style="color: var(--muted); font-size: 0.95rem; line-height: 1.7; padding-left: 1.2rem; margin-top: 0.75rem;">
+            <li><strong>Soft Dark UX</strong> en Ajustes: navegación lateral, cards, 5 temas (dark por defecto).</li>
+            <li><strong>2 modos:</strong> Lupa y Acoplado (panel en esquina). Se retiró Full-Screen por clip y borrosidad.</li>
+            <li><strong>DPI Per-Monitor V2</strong> y anclaje al píxel del cursor (mejor precisión).</li>
+            <li>Ajustes: <strong>minimizar</strong>, icono en la <strong>barra de tareas</strong>, guardado fiable de combos/spinners.</li>
+            <li>Bandeja: cambiar modo, zoom ±, restaurar lupa y atajos.</li>
+            <li>Captura GDI prioritaria (sin quedarse enganchado al fallback Robot).</li>
+            <li>Atajo de ajustes por defecto: <kbd class="kbd">Ctrl + Alt + O</kbd>.</li>
+          </ul>
+        </article>
+
+        <article class="bento-card wide reveal is-visible" style="grid-column: auto; margin-bottom: 1rem; min-height: 0;">
+          <h3>Bugs corregidos</h3>
+          <ul style="color: var(--muted); font-size: 0.95rem; line-height: 1.7; padding-left: 1.2rem; margin-top: 0.75rem;">
+            <li>Ajustes no abrían (error de <code>ScrollPane</code> null).</li>
+            <li>Selectores (combo/spinner) en blanco sobre tema oscuro.</li>
+            <li>Lupa estática o desfasada; acoplado en negro; solape con bandeja del sistema.</li>
+            <li>Desfase permanente al cambiar de GDI a Robot (HiDPI) a mitad de sesión.</li>
+            <li>Conflicto del atajo antiguo Ctrl+Alt+, con editores (VS).</li>
+          </ul>
+        </article>
+
+        <article class="bento-card wide reveal is-visible" style="grid-column: auto; margin-bottom: 1.5rem; min-height: 0;">
+          <h3>Instalación</h3>
+          <ol style="color: var(--muted); font-size: 0.95rem; line-height: 1.75; padding-left: 1.2rem; margin-top: 0.75rem;">
+            <li>Descarga <strong>Forzen-Setup-1.2.0.exe</strong>.</li>
+            <li>Doble clic → Siguiente → Instalar.</li>
+            <li>Si SmartScreen avisa: <strong>Más información</strong> → <strong>Ejecutar de todos modos</strong>.</li>
+            <li>Abre Forzen desde el menú Inicio; icono en la bandeja del sistema.</li>
+          </ol>
+          <p style="color: var(--muted-2); font-size: 0.85rem; margin-top: 1rem;">
+            Requisitos: Windows 10 o 11 (64 bits). Sin Java manual.
+          </p>
+        </article>
+
+        <div class="hero-actions">
+          <a class="btn btn-primary"
+             href="https://github.com/FernandezIvan323/Forzen/releases/download/v1.2.0/Forzen-Setup-1.2.0.exe">
+            Descargar Forzen-Setup-1.2.0.exe
+          </a>
+          <a class="btn btn-ghost" href="index.html">Volver al inicio</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">FOR<span>ZEN</span></div>
+      <div class="footer-links">
+        <a href="index.html">Inicio</a>
+        <a href="https://github.com/FernandezIvan323/Forzen/releases/tag/v1.2.0">Release v1.2.0</a>
+        <a href="https://github.com/FernandezIvan323/Forzen/blob/main/LICENSE">MIT</a>
+      </div>
+      <p class="footer-copy">Forzen 1.2.0 · Open source · Sin telemetría</p>
+    </div>
+  </footer>
+</body>
+</html>

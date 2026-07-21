@@ -1,0 +1,176 @@
+/* Forzen Settings — Soft Dark controls (palette also set via -fx-base on root) */
+
+.root-settings {
+    -fx-font-family: "Segoe UI", "Inter", system-ui, sans-serif;
+    -fx-font-size: 13px;
+}
+
+/* ---- Scroll ---- */
+.settings-scroll,
+.settings-scroll > .viewport {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+    -fx-border-color: transparent;
+}
+.settings-scroll .scroll-bar:vertical {
+    -fx-background-color: transparent;
+    -fx-pref-width: 10;
+}
+.settings-scroll .scroll-bar:vertical .track {
+    -fx-background-color: transparent;
+}
+.settings-scroll .scroll-bar:vertical .thumb {
+    -fx-background-color: derive(-fx-base, 20%);
+    -fx-background-radius: 6;
+}
+
+/* ---- Buttons ---- */
+.button {
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+
+/* ---- ComboBox (no more white boxes) ---- */
+.combo-box,
+.combo-box-base {
+    -fx-background-color: -fx-control-inner-background;
+    -fx-background-radius: 8;
+    -fx-border-color: derive(-fx-base, 25%);
+    -fx-border-radius: 8;
+    -fx-border-width: 1;
+    -fx-padding: 2 6;
+}
+.combo-box .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: -fx-text-base-color;
+    -fx-padding: 6 10;
+}
+.combo-box .arrow-button {
+    -fx-background-color: transparent;
+}
+.combo-box .arrow {
+    -fx-background-color: -fx-mark-color;
+}
+.combo-box-popup .list-view {
+    -fx-background-color: -fx-control-inner-background;
+    -fx-background-radius: 8;
+    -fx-border-color: derive(-fx-base, 25%);
+    -fx-border-radius: 8;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.35), 12, 0.1, 0, 4);
+}
+.combo-box-popup .list-view .list-cell {
+    -fx-background-color: -fx-control-inner-background;
+    -fx-text-fill: -fx-text-base-color;
+    -fx-padding: 8 12;
+}
+.combo-box-popup .list-view .list-cell:filled:hover,
+.combo-box-popup .list-view .list-cell:filled:selected {
+    -fx-background-color: derive(-fx-base, 18%);
+    -fx-text-fill: -fx-text-base-color;
+}
+
+/* ---- Spinner ---- */
+.spinner {
+    -fx-background-color: -fx-control-inner-background;
+    -fx-background-radius: 8;
+    -fx-border-color: derive(-fx-base, 25%);
+    -fx-border-radius: 8;
+    -fx-border-width: 1;
+}
+.spinner .text-field {
+    -fx-background-color: -fx-control-inner-background;
+    -fx-text-fill: -fx-text-inner-color;
+    -fx-background-radius: 8 0 0 8;
+}
+.spinner .increment-arrow-button,
+.spinner .decrement-arrow-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0 8 8 0;
+}
+.spinner .increment-arrow-button:hover,
+.spinner .decrement-arrow-button:hover {
+    -fx-background-color: derive(-fx-base, 15%);
+}
+.spinner .increment-arrow,
+.spinner .decrement-arrow {
+    -fx-background-color: -fx-mark-color;
+}
+
+/* ---- Slider ---- */
+.slider .track {
+    -fx-background-color: derive(-fx-base, -10%);
+    -fx-background-radius: 4;
+    -fx-pref-height: 6;
+}
+.slider .thumb {
+    -fx-background-color: -fx-accent;
+    -fx-pref-width: 16;
+    -fx-pref-height: 16;
+    -fx-background-radius: 8;
+}
+.slider .axis {
+    -fx-tick-label-fill: -fx-text-base-color;
+}
+
+/* ---- CheckBox / Radio ---- */
+.check-box {
+    -fx-text-fill: -fx-text-base-color;
+}
+.check-box .box {
+    -fx-background-color: -fx-control-inner-background;
+    -fx-border-color: derive(-fx-base, 30%);
+    -fx-background-radius: 4;
+    -fx-border-radius: 4;
+}
+.check-box:selected .mark {
+    -fx-background-color: -fx-accent;
+}
+.radio-button {
+    -fx-text-fill: -fx-text-base-color;
+}
+.radio-button .radio {
+    -fx-background-color: -fx-control-inner-background;
+    -fx-border-color: derive(-fx-base, 30%);
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+}
+.radio-button:selected .dot {
+    -fx-background-color: -fx-accent;
+}
+
+/* ---- ColorPicker ---- */
+.color-picker {
+    -fx-background-color: -fx-control-inner-background;
+    -fx-background-radius: 8;
+    -fx-border-color: derive(-fx-base, 25%);
+    -fx-border-radius: 8;
+    -fx-border-width: 1;
+}
+.color-picker .color-picker-label {
+    -fx-text-fill: -fx-text-base-color;
+}
+
+/* ---- Text inputs ---- */
+.text-field, .text-area {
+    -fx-background-color: -fx-control-inner-background;
+    -fx-text-fill: -fx-text-inner-color;
+    -fx-prompt-text-fill: derive(-fx-text-inner-color, -30%);
+    -fx-background-radius: 8;
+    -fx-border-color: derive(-fx-base, 25%);
+    -fx-border-radius: 8;
+    -fx-border-width: 1;
+}
+
+/* ---- Labels default ---- */
+.label {
+    -fx-text-fill: -fx-text-base-color;
+}
+
+.nav-item {
+    -fx-cursor: hand;
+}

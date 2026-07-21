@@ -8,14 +8,14 @@ Amplía cualquier área de tu pantalla al instante. Hecho en Java, para Windows 
 [![Java](https://img.shields.io/badge/Java-21-00FF41)](https://adoptium.net/)
 [![Build](https://github.com/FernandezIvan323/Forzen/actions/workflows/release.yml/badge.svg)](https://github.com/FernandezIvan323/Forzen/actions)
 
-🌐 [Página web](https://FernandezIvan323.github.io/Forzen/) · 📦 [Descargar instalador](https://github.com/FernandezIvan323/Forzen/releases/latest)
+🌐 [Página web](https://FernandezIvan323.github.io/Forzen/) · 📦 [Descargar 1.2.0](https://FernandezIvan323.github.io/Forzen/download.html)
 
 ---
 
 ## Para usuarios (sin comandos)
 
-1. Entra a [Releases](https://github.com/FernandezIvan323/Forzen/releases/latest) o a la [web](https://FernandezIvan323.github.io/Forzen/#download).
-2. Descarga **Forzen-Setup-….exe**.
+1. Entra a la [página de descarga](https://FernandezIvan323.github.io/Forzen/download.html).
+2. Descarga **Forzen-Setup-1.2.0.exe**.
 3. Doble clic → asistente de Windows (Siguiente / Instalar).
 4. Si pide permisos, pulsa **Sí**.
 5. Si SmartScreen avisa: **Más información** → **Ejecutar de todos modos**.
@@ -27,17 +27,17 @@ Desinstalar: **Configuración de Windows → Aplicaciones → Forzen**.
 
 ---
 
-## Funcionalidades
+## Funcionalidades (v1.2.0)
 
 | | |
 |---|---|
-| 🔍 | Zoom 1x–8x (modo Lens) |
-| 🖥️ | Modos **Lens**, **Full-Screen** y **Docked** |
+| 🔍 | Zoom 1x–8x (modo Lupa) |
+| 🖥️ | Modos **Lupa** y **Acoplado** |
 | ⚡ | Captura GDI + exclusión de la propia ventana |
-| 🖱️ | Click-through en Lens/Docked |
+| 🖱️ | Click-through (clics al escritorio) |
 | 🖥️ | Multi-monitor + corrección DPI |
 | 🎨 | Filtros de color + brillo/contraste/saturación |
-| ⌨️ | Atajos globales personalizables |
+| ⌨️ | Atajos globales personalizables · Soft Dark Ajustes |
 | 📝 | OCR opcional + TTS (Windows Speech) |
 | 🚀 | Iniciar con Windows |
 | 📊 | FPS opcional |
@@ -55,6 +55,7 @@ Desinstalar: **Configuración de Windows → Aplicaciones → Forzen**.
 | Abrir ajustes | `Ctrl + Alt + ,` |
 | OCR | `Ctrl + Alt + T` |
 | Salir | `Ctrl + Alt + X` |
+| **Salir de Full-Screen** | `Esc` (vuelve a lupa; no hace falta apagar el PC) |
 
 ---
 

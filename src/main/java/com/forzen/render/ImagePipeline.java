@@ -17,21 +17,45 @@ public class ImagePipeline {
     private float contrast = 1.0f;
     private float saturation = 1.0f;
     private FilterMode currentFilter = FilterMode.NONE;
+    private boolean smoothScaling = true;
 
     public BufferedImage scale(BufferedImage source, int targetWidth, int targetHeight) {
         if (source == null) return null;
+
+        // Fast path: same size + no filters → return source (avoids copy)
+        if (source.getWidth() == targetWidth
+                && source.getHeight() == targetHeight
+                && !needsFilter()) {
+            return source;
+        }
 
         if (scaledBuffer == null || scaledBuffer.getWidth() != targetWidth || scaledBuffer.getHeight() != targetHeight) {
             scaledBuffer = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_RGB);
         }
 
         Graphics2D g = scaledBuffer.createGraphics();
-        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-        g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        if (smoothScaling) {
+            g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        } else {
+            g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+            g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
+        }
         g.drawImage(source, 0, 0, targetWidth, targetHeight, null);
         g.dispose();
 
         return applyFilter(scaledBuffer);
+    }
+
+    public void setSmoothScaling(boolean smooth) {
+        this.smoothScaling = smooth;
+    }
+
+    private boolean needsFilter() {
+        return currentFilter != FilterMode.NONE
+                || brightness != 1.0f
+                || contrast != 1.0f
+                || saturation != 1.0f;
     }
 
     public BufferedImage applyFilter(BufferedImage image) {
