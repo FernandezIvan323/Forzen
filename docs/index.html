@@ -24,7 +24,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css?v=3" />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -110,7 +110,7 @@
               <span class="title">Forzen · modo Lupa</span>
               <span class="demo-badge">LIVE DEMO</span>
             </div>
-            <div class="desktop-body fx-demo fx-demo--lens" aria-hidden="true">
+            <div class="desktop-body fx-demo fx-demo--lens" data-fx="lens" aria-hidden="true">
               <div class="fx-win fx-win--mail">
                 <div class="fx-win-bar"><span class="fx-dots"></span><span>Correo — Bandeja</span></div>
                 <div class="fx-win-body">
@@ -129,18 +129,20 @@
                   <div class="fx-line">• Click-through nativo</div>
                 </div>
               </div>
-              <div class="fx-lens">
-                <div class="fx-lens-zoom">
-                  <div class="fx-zoom-card">
-                    <div class="fx-zoom-kicker">Correo</div>
-                    <div class="fx-zoom-title">Reunión de accesibilidad</div>
-                    <div class="fx-zoom-line">Mañana 10:00 · sala B</div>
-                    <div class="fx-zoom-line">Confirmar asistencia…</div>
+              <div class="fx-hotspot" data-fx-hot>
+                <div class="fx-lens">
+                  <div class="fx-lens-zoom" data-fx-zoom>
+                    <div class="fx-zoom-card">
+                      <div class="fx-zoom-kicker">Correo</div>
+                      <div class="fx-zoom-title">Reunión de accesibilidad</div>
+                      <div class="fx-zoom-line">Mañana 10:00 · sala B</div>
+                      <div class="fx-zoom-line">Confirmar asistencia…</div>
+                    </div>
                   </div>
+                  <div class="fx-cross"></div>
                 </div>
-                <div class="fx-cross"></div>
+                <div class="fx-cursor"></div>
               </div>
-              <div class="fx-cursor"></div>
             </div>
           </div>
           <p class="product-caption">Animación · Modo Lupa · sigue el cursor · zoom en vivo</p>
@@ -244,7 +246,7 @@
         </div>
         <div class="modes-grid modes-grid-2">
           <article class="mode-card reveal">
-            <div class="mode-preview fx-demo fx-demo--lens fx-demo--sm" aria-hidden="true">
+            <div class="mode-preview fx-demo fx-demo--lens fx-demo--sm" data-fx="lens" aria-hidden="true">
               <div class="fx-win fx-win--full">
                 <div class="fx-win-bar"><span class="fx-dots"></span><span>Navegador</span></div>
                 <div class="fx-win-body">
@@ -254,17 +256,19 @@
                   <div class="fx-line fx-muted">forzen.app · lectura cómoda</div>
                 </div>
               </div>
-              <div class="fx-lens fx-lens--sm">
-                <div class="fx-lens-zoom">
-                  <div class="fx-zoom-card">
-                    <div class="fx-zoom-kicker">Navegador</div>
-                    <div class="fx-zoom-title">Artículo de prensa</div>
-                    <div class="fx-zoom-line">La lupa sigue el puntero…</div>
+              <div class="fx-hotspot" data-fx-hot>
+                <div class="fx-lens fx-lens--sm">
+                  <div class="fx-lens-zoom" data-fx-zoom>
+                    <div class="fx-zoom-card">
+                      <div class="fx-zoom-kicker">Navegador</div>
+                      <div class="fx-zoom-title">Artículo de prensa</div>
+                      <div class="fx-zoom-line">La lupa sigue el puntero…</div>
+                    </div>
                   </div>
+                  <div class="fx-cross"></div>
                 </div>
-                <div class="fx-cross"></div>
+                <div class="fx-cursor"></div>
               </div>
-              <div class="fx-cursor"></div>
               <span class="mode-live">Animado</span>
             </div>
             <div class="mode-body">
@@ -273,7 +277,7 @@
             </div>
           </article>
           <article class="mode-card reveal">
-            <div class="mode-preview fx-demo fx-demo--dock" aria-hidden="true">
+            <div class="mode-preview fx-demo fx-demo--dock" data-fx="dock" aria-hidden="true">
               <div class="fx-win fx-win--full">
                 <div class="fx-win-bar"><span class="fx-dots"></span><span>Hoja de cálculo</span></div>
                 <div class="fx-win-body">
@@ -283,11 +287,13 @@
                   <div class="fx-line fx-muted">El panel no tapa todo el escritorio</div>
                 </div>
               </div>
-              <div class="fx-cursor fx-cursor--dock"></div>
+              <div class="fx-hotspot fx-hotspot--cursor-only" data-fx-hot>
+                <div class="fx-cursor"></div>
+              </div>
               <div class="fx-dock">
                 <div class="fx-dock-bar">Acoplado · 3×</div>
                 <div class="fx-dock-zoom">
-                  <div class="fx-zoom-card">
+                  <div class="fx-zoom-card" data-fx-dock-card>
                     <div class="fx-zoom-kicker">Celda C7</div>
                     <div class="fx-zoom-title">$4.280</div>
                     <div class="fx-zoom-line">Fila 12 · Total Q3</div>
@@ -443,6 +449,6 @@
     </div>
   </footer>
 
-  <script src="app.js"></script>
+  <script src="app.js?v=3"></script>
 </body>
 </html>
