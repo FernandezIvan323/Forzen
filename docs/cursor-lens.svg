@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <!-- Hotspot: center of glass (16,14) — declared in CSS as 16 14 -->
+  <circle cx="14" cy="14" r="9" fill="rgba(16,255,140,0.12)" stroke="#10ff8c" stroke-width="2"/>
+  <path d="M14 8.5v11M8.5 14h11" stroke="#10ff8c" stroke-width="1.25" stroke-linecap="round" opacity="0.85"/>
+  <line x1="20.5" y1="20.5" x2="27" y2="27" stroke="#10ff8c" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="14" cy="14" r="9" fill="none" stroke="rgba(16,255,140,0.35)" stroke-width="1"/>
+</svg>

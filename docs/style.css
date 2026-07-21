@@ -50,6 +50,39 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+  /* Forzen magnifier cursor (hotspot = center of glass). PNG first for Windows. */
+  cursor: url("cursor-lens.png") 14 14, url("cursor-lens.svg") 14 14, auto;
+}
+
+/* Clickable UI: system pointer is clearer than the lens */
+a,
+button,
+.a11y-btn,
+.a11y-toggle,
+.nav-cta,
+.nav-toggle,
+input,
+select,
+textarea,
+label,
+summary,
+[role="button"],
+[data-live-mode] {
+  cursor: pointer;
+}
+
+/* High-contrast reading mode: restore system cursors */
+html[data-hc] body {
+  cursor: auto;
+}
+html[data-hc] a,
+html[data-hc] button,
+html[data-hc] .a11y-btn,
+html[data-hc] .a11y-toggle,
+html[data-hc] .nav-cta,
+html[data-hc] .nav-toggle,
+html[data-hc] [role="button"] {
+  cursor: pointer;
 }
 
 /* Ambient background */
