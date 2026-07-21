@@ -1537,16 +1537,44 @@ section { position: relative; z-index: 1; }
 }
 
 /* ─── Panel de control (guía de Ajustes) ─── */
-.pc-hero {
-  padding-bottom: 1.25rem;
+/* Intro unido a la columna de contenido (junto al TOC) */
+.pc-intro {
+  text-align: center;
+  padding: 0.35rem 0 1.35rem;
+  margin-bottom: 0.35rem;
+  border-bottom: 1px solid var(--border);
 }
-.pc-hero .hero-lead {
+.pc-intro .eyebrow {
+  margin-left: auto;
+  margin-right: auto;
   margin-bottom: 0.85rem;
 }
-.pc-open-hint {
-  margin-top: 0;
-  font-size: 0.88rem;
+.pc-intro h1 {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 3.5vw, 2.35rem);
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+.pc-intro h1 em {
+  font-style: normal;
+  color: var(--green);
+  text-shadow: 0 0 40px var(--green-glow);
+}
+.pc-intro-lead {
   color: var(--muted);
+  font-size: 0.98rem;
+  line-height: 1.55;
+  max-width: 38ch;
+  margin: 0 auto 0.85rem;
+}
+.pc-open-hint {
+  margin: 0 auto;
+  font-size: 0.86rem;
+  color: var(--muted-2);
+  max-width: 42ch;
+  line-height: 1.5;
 }
 
 /* Floating magnifier icons — fill empty background (panel page only) */
@@ -1592,17 +1620,17 @@ section { position: relative; z-index: 1; }
   66% { transform: translate(-10px, 10px) rotate(-4deg); }
 }
 
-/* TOC pegado a la izquierda + contenido */
+/* TOC pegado a la izquierda + contenido (misma altura desde arriba) */
 .pc-layout {
   display: grid;
   grid-template-columns: 188px minmax(0, 720px);
-  gap: 1.5rem 2rem;
+  gap: 1.25rem 2rem;
   align-items: start;
   justify-content: start;
   width: 100%;
   max-width: none;
   margin: 0;
-  padding: 0 1.25rem 2.5rem 1rem;
+  padding: 1.15rem 1.25rem 2.5rem 1rem;
   position: relative;
   z-index: 1;
   box-sizing: border-box;
@@ -1621,6 +1649,8 @@ section { position: relative; z-index: 1; }
   -webkit-backdrop-filter: blur(10px);
   justify-self: start;
   width: 100%;
+  /* Alinea con el intro: mismo “techo” visual */
+  margin-top: 0;
 }
 .pc-toc-label {
   font-family: var(--font-mono);
@@ -1649,7 +1679,7 @@ section { position: relative; z-index: 1; }
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.75rem;
 }
 .pc-section {
   scroll-margin-top: calc(var(--nav-h) + 16px);

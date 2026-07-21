@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=9" />
+  <link rel="stylesheet" href="style.css?v=10" />
 </head>
 <body class="page-panel">
   <div class="bg-fx" aria-hidden="true">
@@ -47,23 +47,6 @@
   </header>
 
   <main id="top">
-    <section class="hero pc-hero">
-      <div class="container" style="max-width: 720px;">
-        <p class="eyebrow">
-          <span class="eyebrow-dot" aria-hidden="true"></span>
-          Guía de Ajustes · v1.2.0
-        </p>
-        <h1>Panel de <em>control</em></h1>
-        <p class="hero-lead">
-          Recorre cada sección de Ajustes como en la app. Qué hace cada control,
-          cómo se ve y tips para configurar Forzen antes de usarlo.
-        </p>
-        <p class="pc-open-hint">
-          En la app: <kbd class="kbd">Ctrl + Alt + O</kbd> o icono de bandeja → Ajustes.
-        </p>
-      </div>
-    </section>
-
     <div class="pc-layout">
       <aside class="pc-toc" aria-label="Secciones del panel">
         <p class="pc-toc-label">Secciones</p>
@@ -78,6 +61,20 @@
       </aside>
 
       <div class="pc-main">
+        <header class="pc-intro">
+          <p class="eyebrow">
+            <span class="eyebrow-dot" aria-hidden="true"></span>
+            Guía de Ajustes · v1.2.0
+          </p>
+          <h1>Panel de <em>control</em></h1>
+          <p class="pc-intro-lead">
+            Recorre cada sección de Ajustes como en la app. Qué hace cada control,
+            cómo se ve y tips para configurar Forzen antes de usarlo.
+          </p>
+          <p class="pc-open-hint">
+            En la app: <kbd class="kbd">Ctrl + Alt + O</kbd> o icono de bandeja → Ajustes.
+          </p>
+        </header>
 
         <!-- Abrir y guardar -->
         <section class="pc-section reveal" id="abrir">
@@ -586,6 +583,6 @@
     </div>
   </footer>
 
-  <script src="app.js?v=9"></script>
+  <script src="app.js?v=10"></script>
 </body>
 </html>
