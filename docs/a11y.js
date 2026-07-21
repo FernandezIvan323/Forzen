@@ -3,6 +3,7 @@
 
   var KEY = 'forzen-a11y-v1';
   var root = document.documentElement;
+  var DEFAULTS = { font: 100, hc: false, legible: false };
 
   function load() {
     try {
@@ -15,6 +16,12 @@
   function save(state) {
     try {
       localStorage.setItem(KEY, JSON.stringify(state));
+    } catch (e) { /* ignore */ }
+  }
+
+  function clearStorage() {
+    try {
+      localStorage.removeItem(KEY);
     } catch (e) { /* ignore */ }
   }
 
@@ -49,8 +56,6 @@
     var panel = document.getElementById('a11y-panel');
     if (toggle && panel) {
       toggle.addEventListener('click', function () {
-        var open = panel.hasAttribute('hidden') ? false : true;
-        // toggle: if currently hidden, open
         if (panel.hasAttribute('hidden')) {
           panel.removeAttribute('hidden');
           toggle.setAttribute('aria-expanded', 'true');
@@ -90,8 +95,17 @@
         apply(state);
       });
     });
+    document.querySelectorAll('[data-a11y-reset]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        state = { font: DEFAULTS.font, hc: DEFAULTS.hc, legible: DEFAULTS.legible };
+        clearStorage();
+        apply(state);
+        var prev = btn.textContent;
+        btn.textContent = 'Restaurado';
+        setTimeout(function () { btn.textContent = prev; }, 1400);
+      });
+    });
 
-    // Copy SHA buttons
     document.querySelectorAll('[data-copy-sha]').forEach(function (btn) {
       btn.addEventListener('click', function () {
         var sel = btn.getAttribute('data-copy-sha');
@@ -112,6 +126,38 @@
         }
       });
     });
+
+    // Audio summary (Web Speech API)
+    var speakBtn = document.getElementById('audio-summary-btn');
+    if (speakBtn && 'speechSynthesis' in window) {
+      var speaking = false;
+      speakBtn.addEventListener('click', function () {
+        if (speaking) {
+          window.speechSynthesis.cancel();
+          speaking = false;
+          speakBtn.textContent = 'Escuchar resumen';
+          speakBtn.setAttribute('aria-pressed', 'false');
+          return;
+        }
+        var text = speakBtn.getAttribute('data-speech') ||
+          'Forzen es una lupa de pantalla gratuita para Windows. Zoom de 1 a 8 veces, modos lupa y acoplado, filtros de color y atajos personalizables. Descarga el instalador sin necesidad de instalar Java.';
+        var u = new SpeechSynthesisUtterance(text);
+        u.lang = 'es-ES';
+        u.rate = 1;
+        u.onend = function () {
+          speaking = false;
+          speakBtn.textContent = 'Escuchar resumen';
+          speakBtn.setAttribute('aria-pressed', 'false');
+        };
+        speaking = true;
+        speakBtn.textContent = 'Detener audio';
+        speakBtn.setAttribute('aria-pressed', 'true');
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(u);
+      });
+    } else if (speakBtn) {
+      speakBtn.hidden = true;
+    }
   }
 
   function fallbackCopy(text) {

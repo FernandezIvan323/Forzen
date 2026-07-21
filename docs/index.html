@@ -24,7 +24,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=12" />
+  <link rel="stylesheet" href="style.css?v=13" />
   <meta property="og:image:alt" content="Forzen — Lupa rápida y sin anuncios para Windows" />
   <meta name="twitter:title" content="Forzen — Lupa Inteligente para Windows" />
   <meta name="twitter:description" content="Lupa rápida y sin anuncios para Windows. Gratuito, open source." />
@@ -77,6 +77,7 @@
             <button type="button" class="a11y-btn" data-a11y-hc aria-pressed="false">Ultra contraste</button>
             <button type="button" class="a11y-btn" data-a11y-legible aria-pressed="false">Fuente legible</button>
           </div>
+          <button type="button" class="a11y-btn a11y-btn-reset" data-a11y-reset>Restaurar página</button>
         </div>
       </div>
 
@@ -111,6 +112,10 @@
             <a class="btn btn-primary" href="download.html">
               Descargar Forzen
             </a>
+            <button type="button" class="btn btn-ghost" id="audio-summary-btn" aria-pressed="false"
+              data-speech="Forzen es una lupa de pantalla gratuita para Windows. Zoom de uno a ocho veces, modos lupa y acoplado, filtros de color y atajos personalizables. Sin publicidad ni telemetría. Descarga el instalador: no necesitas instalar Java a mano.">
+              Escuchar resumen
+            </button>
           </div>
           <div class="hero-stats" role="list">
             <div class="stat" role="listitem">
@@ -358,6 +363,101 @@
       </div>
     </section>
 
+    <!-- Try interactive lens -->
+    <section class="section" id="try">
+      <div class="container">
+        <div class="section-head reveal">
+          <p class="section-kicker">// prueba</p>
+          <h2>Prueba la lupa en el navegador</h2>
+          <p>Mueve el ratón sobre el texto. Es una simulación: en Windows la captura es del sistema real.</p>
+        </div>
+        <div class="reveal" style="max-width: 720px; margin-inline: auto;">
+          <div class="live-lens" id="live-lens" aria-label="Demo interactiva de lupa">
+            <div class="live-lens-scene" data-live-scene>
+              <h3>Texto de prueba · baja visión</h3>
+              <p>Esta línea es deliberadamente pequeña en el diseño base. Con la lupa del cursor deberías leerla con más comodidad.</p>
+              <p>Forzen en el escritorio amplía cualquier app: navegador, PDF, hojas de cálculo o el propio sistema.</p>
+              <p style="color: var(--muted-2); font-size: 0.8rem;">Zoom simulado ~2.2× · solo en esta caja</p>
+            </div>
+            <div class="live-lens-glass" data-live-glass aria-hidden="true">
+              <div class="live-lens-zoom" data-live-zoom></div>
+            </div>
+          </div>
+          <p class="live-lens-hint">Pasa el cursor por la caja · en móvil usa el dedo si el navegador lo permite</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Filter compare -->
+    <section class="section" id="filters-demo">
+      <div class="container">
+        <div class="section-head reveal">
+          <p class="section-kicker">// filtros</p>
+          <h2>Antes y después</h2>
+          <p>Arrastra el divisor: texto normal vs. alto contraste (como un filtro de Forzen).</p>
+        </div>
+        <div class="reveal" style="max-width: 720px; margin-inline: auto;">
+          <div class="compare" data-compare>
+            <div class="compare-pane compare-before">
+              <span class="compare-badge">Antes</span>
+              <h3>Contrato de servicios</h3>
+              <p>El presente acuerdo establece las condiciones de uso del software. La letra pequeña suele ser difícil de leer en pantallas con poco contraste o fatiga visual.</p>
+            </div>
+            <div class="compare-pane compare-after" data-compare-after>
+              <span class="compare-badge">Filtro</span>
+              <h3>Contrato de servicios</h3>
+              <p>El presente acuerdo establece las condiciones de uso del software. La letra pequeña suele ser difícil de leer en pantallas con poco contraste o fatiga visual.</p>
+            </div>
+            <div class="compare-handle" data-compare-handle aria-hidden="true"></div>
+            <input class="compare-range" data-compare-range type="range" min="0" max="100" value="52" aria-label="Comparar antes y después del filtro" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Hotkey play -->
+    <section class="section" id="hotkey-try">
+      <div class="container" style="max-width: 720px;">
+        <div class="section-head reveal">
+          <p class="section-kicker">// atajos</p>
+          <h2>Simula zoom con el teclado</h2>
+          <p>Haz clic en la caja y prueba <kbd class="kbd">Ctrl + Alt + ↑</kbd> / <kbd class="kbd">↓</kbd>. Es una demo de la página (no los hooks globales de Windows).</p>
+        </div>
+        <div class="hotkey-play reveal" id="hotkey-play" tabindex="0" role="region" aria-label="Simulador de zoom con teclado">
+          <p class="hotkey-play-sample">Texto de ejemplo que crece con el atajo simulado.</p>
+          <p class="hotkey-play-status" id="hotkey-play-status">Enfoca esta caja y pulsa Ctrl+Alt+↑ o ↓</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Roadmap -->
+    <section class="section" id="roadmap">
+      <div class="container">
+        <div class="section-head reveal">
+          <p class="section-kicker">// roadmap</p>
+          <h2>Próximamente</h2>
+          <p>El proyecto sigue vivo. Ideas en el radar para v1.3 y más allá.</p>
+        </div>
+        <div class="roadmap reveal">
+          <article class="roadmap-item">
+            <div class="tag">v1.3</div>
+            <h3>Seguimiento de foco</h3>
+            <p>Ampliar automáticamente lo que tiene el foco de teclado, no solo el cursor.</p>
+          </article>
+          <article class="roadmap-item">
+            <div class="tag">Explorar</div>
+            <h3>Mejor firma del instalador</h3>
+            <p>Reducir avisos de SmartScreen con firma de código y reportes VT actualizados.</p>
+          </article>
+          <article class="roadmap-item">
+            <div class="tag">Comunidad</div>
+            <h3>Tu feedback</h3>
+            <p>Priorizamos issues y peticiones reales de usuarios con baja visión.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
     <!-- How it works -->
     <section class="section" id="how">
       <div class="container">
@@ -494,7 +594,8 @@
     </div>
   </footer>
 
-  <script src="a11y.js?v=12"></script>
-  <script src="app.js?v=12"></script>
+  <script src="a11y.js?v=13"></script>
+  <script src="demo-interactive.js?v=13"></script>
+  <script src="app.js?v=13"></script>
 </body>
 </html>
