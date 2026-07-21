@@ -5,21 +5,37 @@ import java.awt.AWTException;
 public class CaptureFactory {
 
     public static ScreenCapture create() {
+        ScreenCapture primary = null;
         GdiCapture gdi = new GdiCapture();
         if (gdi.isAvailable()) {
-            System.out.println("Using GdiCapture (BitBlt + exclude-from-capture overlay)");
-            return gdi;
+            System.out.println("Primary capture: GdiCapture (BitBlt)");
+            primary = gdi;
         }
+
+        ScreenCapture fallback = null;
         FastRobotCapture fastRobot = new FastRobotCapture();
         if (fastRobot.isAvailable()) {
-            System.out.println("Using FastRobotCapture");
-            return fastRobot;
+            System.out.println("Fallback capture: FastRobotCapture");
+            fallback = fastRobot;
+        } else {
+            try {
+                System.out.println("Fallback capture: RobotCapture (AWT)");
+                fallback = new RobotCapture();
+            } catch (AWTException e) {
+                System.err.println("RobotCapture unavailable: " + e.getMessage());
+            }
         }
-        try {
-            System.out.println("Using RobotCapture (AWT fallback)");
-            return new RobotCapture();
-        } catch (AWTException e) {
-            throw new RuntimeException("Failed to initialize screen capture", e);
+
+        if (primary == null && fallback == null) {
+            throw new RuntimeException("Failed to initialize screen capture");
         }
+        if (primary == null) {
+            return fallback;
+        }
+        if (fallback == null) {
+            return primary;
+        }
+        System.out.println("Using ResilientCapture (GDI + Robot fallback on black frames)");
+        return new ResilientCapture(primary, fallback);
     }
 }

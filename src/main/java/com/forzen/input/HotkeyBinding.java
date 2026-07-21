@@ -74,7 +74,9 @@ public final class HotkeyBinding {
             case ZOOM_OUT -> new HotkeyBinding(true, true, false, NativeKeyEvent.VC_DOWN);
             case TOGGLE_PAUSE -> new HotkeyBinding(true, true, false, NativeKeyEvent.VC_Z);
             case CYCLE_MODE -> new HotkeyBinding(true, true, false, NativeKeyEvent.VC_M);
-            case OPEN_SETTINGS -> new HotkeyBinding(true, true, false, NativeKeyEvent.VC_COMMA);
+            // Ctrl+Alt+, conflicts with Visual Studio / several editors (opens random files).
+            // Ctrl+Alt+O = Options / Ajustes — uncommon in IDEs.
+            case OPEN_SETTINGS -> new HotkeyBinding(true, true, false, NativeKeyEvent.VC_O);
             case EXIT -> new HotkeyBinding(true, true, false, NativeKeyEvent.VC_X);
             case OCR_READ -> new HotkeyBinding(true, true, false, NativeKeyEvent.VC_T);
         };

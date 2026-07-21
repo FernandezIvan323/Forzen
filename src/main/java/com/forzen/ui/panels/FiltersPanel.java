@@ -2,49 +2,56 @@ package com.forzen.ui.panels;
 
 import com.forzen.core.ZoomController;
 import com.forzen.filter.FilterMode;
+import com.forzen.ui.theme.AppTheme;
+import com.forzen.ui.theme.ThemeManager;
 
-import javafx.scene.control.*;
+import javafx.beans.property.DoubleProperty;
+import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.Slider;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.VBox;
 
 public class FiltersPanel extends VBox {
 
-    private static final String GREEN_NEON = "#00FF41";
-    private static final String TEXT_LIGHT = "#EAEAEA";
-    private static final String TEXT_MUTED = "#AAAAAA";
-    private static final String BORDER_GREEN = "#005A2E";
-
     public FiltersPanel(ZoomController zoomController) {
-        setSpacing(16);
-        setStyle("-fx-padding: 30;");
-
-        Label title = new Label("🌈 FILTROS DE COLOR");
-        title.setStyle("-fx-text-fill: " + GREEN_NEON + "; -fx-font-size: 20px; -fx-font-weight: bold;");
+        AppTheme theme = ThemeManager.get().current();
+        setStyle("-fx-background-color: transparent;");
 
         ToggleGroup filterGroup = new ToggleGroup();
-
-        RadioButton none = filterRadio("Ninguno", FilterMode.NONE, filterGroup, zoomController);
-        RadioButton invert = filterRadio("Invertir colores", FilterMode.INVERT, filterGroup, zoomController);
-        RadioButton highContrast = filterRadio("Alto contraste", FilterMode.HIGH_CONTRAST, filterGroup, zoomController);
-        RadioButton grayscale = filterRadio("Escala de grises", FilterMode.GRAYSCALE, filterGroup, zoomController);
-
-        VBox colorBlind = section("Filtros de daltonismo");
-        RadioButton protanopia = filterRadio("Protanopía (rojo)", FilterMode.PROTANOPIA, filterGroup, zoomController);
-        RadioButton deuteranopia = filterRadio("Deuteranopía (verde)", FilterMode.DEUTERANOPIA, filterGroup, zoomController);
-        RadioButton tritanopia = filterRadio("Tritanopía (azul)", FilterMode.TRITANOPIA, filterGroup, zoomController);
-        colorBlind.getChildren().addAll(protanopia, deuteranopia, tritanopia);
+        RadioButton none = filterRadio("Ninguno", FilterMode.NONE, filterGroup, zoomController, theme);
+        RadioButton invert = filterRadio("Invertir colores", FilterMode.INVERT, filterGroup, zoomController, theme);
+        RadioButton highContrast = filterRadio("Alto contraste", FilterMode.HIGH_CONTRAST, filterGroup, zoomController, theme);
+        RadioButton grayscale = filterRadio("Escala de grises", FilterMode.GRAYSCALE, filterGroup, zoomController, theme);
+        RadioButton protanopia = filterRadio("Protanopía (rojo)", FilterMode.PROTANOPIA, filterGroup, zoomController, theme);
+        RadioButton deuteranopia = filterRadio("Deuteranopía (verde)", FilterMode.DEUTERANOPIA, filterGroup, zoomController, theme);
+        RadioButton tritanopia = filterRadio("Tritanopía (azul)", FilterMode.TRITANOPIA, filterGroup, zoomController, theme);
 
         selectFilter(zoomController.getFilterMode(), none, invert, highContrast, grayscale,
                 protanopia, deuteranopia, tritanopia);
         zoomController.filterModeProperty().addListener((obs, o, m) ->
                 selectFilter(m, none, invert, highContrast, grayscale, protanopia, deuteranopia, tritanopia));
 
-        VBox adjustments = section("Ajustes de imagen");
-        VBox brightness = labeledSlider("Brillo", zoomController.getBrightness(), 0, 200, zoomController.brightnessProperty());
-        VBox contrast = labeledSlider("Contraste", zoomController.getContrast(), 0, 200, zoomController.contrastProperty());
-        VBox saturation = labeledSlider("Saturación", zoomController.getSaturation(), 0, 200, zoomController.saturationProperty());
-        adjustments.getChildren().addAll(brightness, contrast, saturation);
+        VBox modesCard = PanelSupport.card(theme, "Modo de filtro",
+                none, invert, highContrast, grayscale,
+                PanelSupport.hint(theme, "Daltonismo"),
+                protanopia, deuteranopia, tritanopia);
 
-        getChildren().addAll(title, none, invert, highContrast, grayscale, colorBlind, adjustments);
+        VBox brightness = labeledSlider("Brillo", zoomController.getBrightness(), 0, 200,
+                zoomController.brightnessProperty(), theme);
+        VBox contrast = labeledSlider("Contraste", zoomController.getContrast(), 0, 200,
+                zoomController.contrastProperty(), theme);
+        VBox saturation = labeledSlider("Saturación", zoomController.getSaturation(), 0, 200,
+                zoomController.saturationProperty(), theme);
+
+        VBox adjCard = PanelSupport.card(theme, "Ajustes de imagen",
+                brightness, contrast, saturation,
+                PanelSupport.hint(theme, "Se aplican en vivo a la lupa."));
+
+        getChildren().setAll(PanelSupport.page(theme,
+                "Filtros",
+                "Color y legibilidad para baja visión.",
+                modesCard, adjCard));
     }
 
     private void selectFilter(FilterMode mode, RadioButton none, RadioButton invert,
@@ -62,32 +69,27 @@ public class FiltersPanel extends VBox {
         }
     }
 
-    private RadioButton filterRadio(String label, FilterMode mode, ToggleGroup group, ZoomController zc) {
+    private RadioButton filterRadio(String label, FilterMode mode, ToggleGroup group,
+                                    ZoomController zc, AppTheme theme) {
         RadioButton rb = new RadioButton(label);
         rb.setToggleGroup(group);
-        rb.setStyle("-fx-text-fill: " + TEXT_LIGHT + ";");
+        rb.setStyle(theme.bodyStyle());
         rb.setOnAction(e -> zc.setFilterMode(mode));
         return rb;
     }
 
-    private VBox section(String label) {
-        VBox box = new VBox(8);
-        Label lbl = new Label(label);
-        lbl.setStyle("-fx-text-fill: " + TEXT_MUTED + "; -fx-font-size: 13px; -fx-font-weight: bold;");
-        box.getChildren().add(lbl);
-        return box;
-    }
-
-    private VBox labeledSlider(String name, double val, double min, double max,
-                               javafx.beans.property.DoubleProperty property) {
+    private VBox labeledSlider(String name, double value, double min, double max,
+                               DoubleProperty property, AppTheme theme) {
         VBox box = new VBox(4);
-        Label l = new Label(name + ": " + (int) val + "%");
-        l.setStyle("-fx-text-fill: " + TEXT_LIGHT + ";");
-        Slider s = new Slider(min, max, val);
-        s.setStyle("-fx-control-inner-background: " + BORDER_GREEN + ";");
-        s.valueProperty().bindBidirectional(property);
-        s.valueProperty().addListener((obs, o, v) -> l.setText(name + ": " + v.intValue() + "%"));
-        box.getChildren().addAll(l, s);
+        Label lbl = new Label(name + ": " + (int) value);
+        lbl.setStyle(theme.bodyStyle());
+        Slider slider = new Slider(min, max, value);
+        slider.setShowTickLabels(true);
+        slider.setMajorTickUnit((max - min) / 4);
+        slider.valueProperty().bindBidirectional(property);
+        slider.valueProperty().addListener((obs, o, v) ->
+                lbl.setText(name + ": " + v.intValue()));
+        box.getChildren().addAll(lbl, slider);
         return box;
     }
 }

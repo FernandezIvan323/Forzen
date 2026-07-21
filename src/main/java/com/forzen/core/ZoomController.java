@@ -10,6 +10,8 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 public class ZoomController {
 
@@ -24,11 +26,19 @@ public class ZoomController {
     private final DoubleProperty contrast;
     private final DoubleProperty saturation;
     private final DoubleProperty borderWidth;
-    private final BooleanProperty lensCircular;
+    private final ObjectProperty<LensShape> lensShape;
+    private final DoubleProperty lensCornerRadius;
+    private final StringProperty borderColor;
+    private final DoubleProperty borderOpacity;
+    private final BooleanProperty showCrosshair;
+    private final StringProperty crosshairColor;
+    private final BooleanProperty smoothScaling;
+    private final ObjectProperty<DockPosition> dockPosition;
     private final BooleanProperty startWithOs;
     private final BooleanProperty autoOcr;
     private final BooleanProperty autoTts;
     private final IntegerProperty targetFps;
+    private final StringProperty uiTheme;
 
     public ZoomController() {
         this.zoomLevel = new SimpleDoubleProperty(2.0);
@@ -42,11 +52,20 @@ public class ZoomController {
         this.contrast = new SimpleDoubleProperty(100);
         this.saturation = new SimpleDoubleProperty(100);
         this.borderWidth = new SimpleDoubleProperty(2.5);
-        this.lensCircular = new SimpleBooleanProperty(true);
+        this.lensShape = new SimpleObjectProperty<>(LensShape.CIRCLE);
+        this.lensCornerRadius = new SimpleDoubleProperty(18);
+        this.borderColor = new SimpleStringProperty("#00FF41");
+        this.borderOpacity = new SimpleDoubleProperty(85);
+        this.showCrosshair = new SimpleBooleanProperty(true);
+        this.crosshairColor = new SimpleStringProperty("#FF003C");
+        this.smoothScaling = new SimpleBooleanProperty(true);
+        // TOP_RIGHT avoids the system-tray overflow (bottom-right on most PCs)
+        this.dockPosition = new SimpleObjectProperty<>(DockPosition.TOP_RIGHT);
         this.startWithOs = new SimpleBooleanProperty(false);
         this.autoOcr = new SimpleBooleanProperty(false);
         this.autoTts = new SimpleBooleanProperty(false);
         this.targetFps = new SimpleIntegerProperty(60);
+        this.uiTheme = new SimpleStringProperty("forzen_dark");
     }
 
     public double getZoomLevel() { return zoomLevel.get(); }
@@ -68,7 +87,9 @@ public class ZoomController {
 
     public ZoomMode getMode() { return mode.get(); }
     public ObjectProperty<ZoomMode> modeProperty() { return mode; }
-    public void setMode(ZoomMode m) { mode.set(m); }
+    public void setMode(ZoomMode m) {
+        mode.set(m == null ? ZoomMode.LENS : m);
+    }
 
     public boolean isRunning() { return running.get(); }
     public BooleanProperty runningProperty() { return running; }
@@ -100,9 +121,53 @@ public class ZoomController {
     public DoubleProperty borderWidthProperty() { return borderWidth; }
     public void setBorderWidth(double v) { borderWidth.set(Math.max(0, Math.min(10, v))); }
 
-    public boolean isLensCircular() { return lensCircular.get(); }
-    public BooleanProperty lensCircularProperty() { return lensCircular; }
-    public void setLensCircular(boolean v) { lensCircular.set(v); }
+    /** Convenience: true when shape is circle. Prefer {@link #getLensShape()}. */
+    public boolean isLensCircular() { return getLensShape() == LensShape.CIRCLE; }
+    public void setLensCircular(boolean v) {
+        if (v) {
+            setLensShape(LensShape.CIRCLE);
+        } else if (getLensShape() == LensShape.CIRCLE) {
+            setLensShape(LensShape.RECTANGLE);
+        }
+    }
+
+    public LensShape getLensShape() { return lensShape.get(); }
+    public ObjectProperty<LensShape> lensShapeProperty() { return lensShape; }
+    public void setLensShape(LensShape s) { lensShape.set(s == null ? LensShape.CIRCLE : s); }
+
+    public double getLensCornerRadius() { return lensCornerRadius.get(); }
+    public DoubleProperty lensCornerRadiusProperty() { return lensCornerRadius; }
+    public void setLensCornerRadius(double v) { lensCornerRadius.set(Math.max(0, Math.min(80, v))); }
+
+    public String getBorderColor() { return borderColor.get(); }
+    public StringProperty borderColorProperty() { return borderColor; }
+    public void setBorderColor(String hex) {
+        borderColor.set(normalizeHex(hex, "#00FF41"));
+    }
+
+    public double getBorderOpacity() { return borderOpacity.get(); }
+    public DoubleProperty borderOpacityProperty() { return borderOpacity; }
+    public void setBorderOpacity(double v) { borderOpacity.set(Math.max(0, Math.min(100, v))); }
+
+    public boolean isShowCrosshair() { return showCrosshair.get(); }
+    public BooleanProperty showCrosshairProperty() { return showCrosshair; }
+    public void setShowCrosshair(boolean v) { showCrosshair.set(v); }
+
+    public String getCrosshairColor() { return crosshairColor.get(); }
+    public StringProperty crosshairColorProperty() { return crosshairColor; }
+    public void setCrosshairColor(String hex) {
+        crosshairColor.set(normalizeHex(hex, "#FF003C"));
+    }
+
+    public boolean isSmoothScaling() { return smoothScaling.get(); }
+    public BooleanProperty smoothScalingProperty() { return smoothScaling; }
+    public void setSmoothScaling(boolean v) { smoothScaling.set(v); }
+
+    public DockPosition getDockPosition() { return dockPosition.get(); }
+    public ObjectProperty<DockPosition> dockPositionProperty() { return dockPosition; }
+    public void setDockPosition(DockPosition p) {
+        dockPosition.set(p == null ? DockPosition.TOP_RIGHT : p);
+    }
 
     public boolean isStartWithOs() { return startWithOs.get(); }
     public BooleanProperty startWithOsProperty() { return startWithOs; }
@@ -119,4 +184,49 @@ public class ZoomController {
     public int getTargetFps() { return targetFps.get(); }
     public IntegerProperty targetFpsProperty() { return targetFps; }
     public void setTargetFps(int v) { targetFps.set(Math.max(15, Math.min(120, v))); }
+
+    public String getUiTheme() { return uiTheme.get(); }
+    public StringProperty uiThemeProperty() { return uiTheme; }
+    public void setUiTheme(String id) {
+        uiTheme.set(id == null || id.isBlank() ? "forzen_dark" : id);
+    }
+
+    public int effectiveFps() {
+        return getTargetFps();
+    }
+
+    public void resetDefaults() {
+        setZoomLevel(2.0);
+        setMode(ZoomMode.LENS);
+        setLensWidth(300);
+        setLensHeight(300);
+        setShowFps(false);
+        setFilterMode(FilterMode.NONE);
+        setBrightness(100);
+        setContrast(100);
+        setSaturation(100);
+        setBorderWidth(2.5);
+        setLensShape(LensShape.CIRCLE);
+        setLensCornerRadius(18);
+        setBorderColor("#00FF41");
+        setBorderOpacity(85);
+        setShowCrosshair(true);
+        setCrosshairColor("#FF003C");
+        setSmoothScaling(true);
+        setDockPosition(DockPosition.TOP_RIGHT);
+        setStartWithOs(false);
+        setAutoOcr(false);
+        setAutoTts(false);
+        setTargetFps(60);
+        setUiTheme("forzen_dark");
+    }
+
+    private static String normalizeHex(String hex, String fallback) {
+        if (hex == null || hex.isBlank()) return fallback;
+        String h = hex.trim();
+        if (!h.startsWith("#")) h = "#" + h;
+        if (h.matches("#[0-9A-Fa-f]{6}")) return h.toUpperCase();
+        if (h.matches("#[0-9A-Fa-f]{8}")) return h.substring(0, 7).toUpperCase();
+        return fallback;
+    }
 }

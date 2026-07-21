@@ -2,6 +2,7 @@ package com.forzen.ui;
 
 import com.forzen.App;
 import com.forzen.core.ZoomController;
+import com.forzen.core.ZoomMode;
 
 import javafx.application.Platform;
 
@@ -15,6 +16,7 @@ public class ForzenTray {
     private TrayIcon trayIcon;
     private SystemTray systemTray;
     private MenuItem toggleItem;
+    private MenuItem modeItem;
 
     public ForzenTray(ZoomController zoomController, App app) {
         this.zoomController = zoomController;
@@ -35,20 +37,66 @@ public class ForzenTray {
 
         PopupMenu popup = new PopupMenu();
 
-        toggleItem = new MenuItem(zoomController.isRunning() ? "Pausar" : "Reanudar");
-        toggleItem.addActionListener(e -> {
+        toggleItem = new MenuItem(zoomController.isRunning() ? "Pausar lupa" : "Reanudar lupa");
+        toggleItem.addActionListener(e -> Platform.runLater(() -> {
             zoomController.toggleRunning();
-            updateToggleLabel();
-        });
+            if (zoomController.isRunning() && app.getOverlay() != null) {
+                app.getOverlay().restoreMagnifier();
+            }
+            updateLabels();
+        }));
         popup.add(toggleItem);
 
-        MenuItem settingsItem = new MenuItem("Ajustes");
+        MenuItem restoreItem = new MenuItem("Restaurar lupa (si desapareció)");
+        restoreItem.addActionListener(e -> Platform.runLater(() -> {
+            zoomController.setRunning(true);
+            if (app.getOverlay() != null) {
+                app.getOverlay().restoreMagnifier();
+            }
+            updateLabels();
+        }));
+        popup.add(restoreItem);
+
+        popup.addSeparator();
+
+        modeItem = new MenuItem(modeLabel());
+        modeItem.addActionListener(e -> Platform.runLater(() -> {
+            ZoomMode[] modes = ZoomMode.values();
+            int next = (zoomController.getMode().ordinal() + 1) % modes.length;
+            zoomController.setMode(modes[next]);
+            if (app.getOverlay() != null) {
+                app.getOverlay().restoreMagnifier();
+            }
+            updateLabels();
+            System.out.println("Tray: Mode → " + modes[next]);
+        }));
+        popup.add(modeItem);
+
+        MenuItem zoomInItem = new MenuItem("Zoom +");
+        zoomInItem.addActionListener(e -> Platform.runLater(zoomController::zoomIn));
+        popup.add(zoomInItem);
+
+        MenuItem zoomOutItem = new MenuItem("Zoom -");
+        zoomOutItem.addActionListener(e -> Platform.runLater(zoomController::zoomOut));
+        popup.add(zoomOutItem);
+
+        popup.addSeparator();
+
+        MenuItem settingsItem = new MenuItem("Ajustes (Ctrl+Alt+O)");
         settingsItem.addActionListener(e -> Platform.runLater(app::openSettings));
         popup.add(settingsItem);
 
         MenuItem ocrItem = new MenuItem("OCR ahora (Ctrl+Alt+T)");
         ocrItem.addActionListener(e -> Platform.runLater(app::runOcrOnce));
         popup.add(ocrItem);
+
+        MenuItem resetHotkeysItem = new MenuItem("Restaurar atajos (Ctrl+Alt+Shift+R)");
+        resetHotkeysItem.addActionListener(e -> Platform.runLater(() -> {
+            if (app.getHotkeyManager() != null) {
+                app.getHotkeyManager().resetAllToDefaults();
+            }
+        }));
+        popup.add(resetHotkeysItem);
 
         popup.addSeparator();
 
@@ -60,7 +108,9 @@ public class ForzenTray {
         trayIcon.addActionListener(e -> Platform.runLater(app::openSettings));
 
         zoomController.runningProperty().addListener((obs, o, v) ->
-                Platform.runLater(this::updateToggleLabel));
+                Platform.runLater(this::updateLabels));
+        zoomController.modeProperty().addListener((obs, o, v) ->
+                Platform.runLater(this::updateLabels));
 
         try {
             systemTray.add(trayIcon);
@@ -69,9 +119,18 @@ public class ForzenTray {
         }
     }
 
-    private void updateToggleLabel() {
+    private String modeLabel() {
+        ZoomMode m = zoomController.getMode();
+        String name = m == null ? "LENS" : m.name();
+        return "Cambiar modo (ahora: " + name + ")";
+    }
+
+    private void updateLabels() {
         if (toggleItem != null) {
-            toggleItem.setLabel(zoomController.isRunning() ? "Pausar" : "Reanudar");
+            toggleItem.setLabel(zoomController.isRunning() ? "Pausar lupa" : "Reanudar lupa");
+        }
+        if (modeItem != null) {
+            modeItem.setLabel(modeLabel());
         }
     }
 
