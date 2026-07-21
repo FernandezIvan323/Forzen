@@ -21,6 +21,7 @@ public class GdiCapture implements ScreenCapture {
     private WinDef.HDC hdcScreen;
     private WinDef.HDC hdcMem;
     private boolean available;
+    private int blackFrameStreak;
 
     public GdiCapture() {
         try {
@@ -49,6 +50,8 @@ public class GdiCapture implements ScreenCapture {
 
         try {
             GDI32.INSTANCE.SelectObject(hdcMem, hBitmap);
+            // SRCCOPY only — CAPTUREBLT would pull in our layered overlay (black / feedback).
+            // Overlay uses WDA_EXCLUDEFROMCAPTURE so the desktop under it is captured.
             boolean success = GDI32.INSTANCE.BitBlt(hdcMem, 0, 0, w, h, hdcScreen, region.x, region.y, SRCCOPY);
             if (!success) {
                 return null;
@@ -68,12 +71,29 @@ public class GdiCapture implements ScreenCapture {
 
             try (Memory buffer = new Memory((long) w * h * 4)) {
                 int lines = GDI32.INSTANCE.GetDIBits(hdcMem, hBitmap, 0, h, buffer, bmi, WinGDI.DIB_RGB_COLORS);
-                if (lines != 0) {
-                    int[] buf = buffer.getIntArray(0, w * h);
-                    // Strip alpha channel noise: force opaque RGB
-                    for (int i = 0; i < buf.length; i++) {
-                        pixels[i] = buf[i] & 0x00FFFFFF;
+                if (lines == 0) {
+                    return null;
+                }
+                int[] buf = buffer.getIntArray(0, w * h);
+                // Force opaque RGB (alpha=0 confuses SwingFXUtils → transparent/black ImageView)
+                int nonBlack = 0;
+                int sampleStep = Math.max(1, buf.length / 200);
+                for (int i = 0; i < buf.length; i++) {
+                    int rgb = buf[i] & 0x00FFFFFF;
+                    pixels[i] = 0xFF000000 | rgb;
+                    if (i % sampleStep == 0 && rgb != 0) {
+                        nonBlack++;
                     }
+                }
+                if (nonBlack == 0) {
+                    blackFrameStreak++;
+                    if (blackFrameStreak == 1 || blackFrameStreak % 60 == 0) {
+                        System.err.printf(
+                                "GdiCapture: mostly-black frame #%d region=%s (check overlay affinity / coords)%n",
+                                blackFrameStreak, region);
+                    }
+                } else {
+                    blackFrameStreak = 0;
                 }
             }
 

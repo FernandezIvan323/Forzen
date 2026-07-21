@@ -1,5 +1,7 @@
 package com.forzen.config;
 
+import com.forzen.core.DockPosition;
+import com.forzen.core.LensShape;
 import com.forzen.core.ZoomController;
 import com.forzen.core.ZoomMode;
 import com.forzen.filter.FilterMode;
@@ -17,6 +19,13 @@ public class ConfigStore {
     private static final String KEY_SHOW_FPS = "showFps";
     private static final String KEY_BORDER_WIDTH = "borderWidth";
     private static final String KEY_LENS_SHAPE = "lensShape";
+    private static final String KEY_LENS_CORNER_RADIUS = "lensCornerRadius";
+    private static final String KEY_BORDER_COLOR = "borderColor";
+    private static final String KEY_BORDER_OPACITY = "borderOpacity";
+    private static final String KEY_SHOW_CROSSHAIR = "showCrosshair";
+    private static final String KEY_CROSSHAIR_COLOR = "crosshairColor";
+    private static final String KEY_SMOOTH_SCALING = "smoothScaling";
+    private static final String KEY_DOCK_POSITION = "dockPosition";
     private static final String KEY_BRIGHTNESS = "brightness";
     private static final String KEY_CONTRAST = "contrast";
     private static final String KEY_SATURATION = "saturation";
@@ -25,6 +34,7 @@ public class ConfigStore {
     private static final String KEY_AUTO_TTS = "autoTts";
     private static final String KEY_FILTER_MODE = "filterMode";
     private static final String KEY_TARGET_FPS = "targetFps";
+    private static final String KEY_UI_THEME = "uiTheme";
     private static final String KEY_HOTKEY_PREFIX = "hotkey.";
 
     private final Preferences prefs;
@@ -37,10 +47,12 @@ public class ConfigStore {
     public void setZoomLevel(double v) { prefs.putDouble(KEY_ZOOM_LEVEL, v); }
 
     public ZoomMode getZoomMode() {
-        try { return ZoomMode.valueOf(prefs.get(KEY_ZOOM_MODE, ZoomMode.LENS.name())); }
-        catch (Exception e) { return ZoomMode.LENS; }
+        // FULL (retired) and unknown values → LENS
+        return ZoomMode.fromStored(prefs.get(KEY_ZOOM_MODE, ZoomMode.LENS.name()));
     }
-    public void setZoomMode(ZoomMode v) { prefs.put(KEY_ZOOM_MODE, v.name()); }
+    public void setZoomMode(ZoomMode v) {
+        prefs.put(KEY_ZOOM_MODE, (v == null ? ZoomMode.LENS : v).name());
+    }
 
     public double getLensWidth() { return prefs.getDouble(KEY_LENS_WIDTH, 300); }
     public void setLensWidth(double v) { prefs.putDouble(KEY_LENS_WIDTH, v); }
@@ -54,8 +66,45 @@ public class ConfigStore {
     public double getBorderWidth() { return prefs.getDouble(KEY_BORDER_WIDTH, 2.5); }
     public void setBorderWidth(double v) { prefs.putDouble(KEY_BORDER_WIDTH, v); }
 
-    public boolean isLensCircular() { return prefs.getBoolean(KEY_LENS_SHAPE, true); }
-    public void setLensCircular(boolean v) { prefs.putBoolean(KEY_LENS_SHAPE, v); }
+    public LensShape getLensShape() {
+        String raw = prefs.get(KEY_LENS_SHAPE, null);
+        if (raw == null) {
+            // Migrate legacy boolean key stored as true/false under same name
+            return prefs.getBoolean(KEY_LENS_SHAPE, true) ? LensShape.CIRCLE : LensShape.RECTANGLE;
+        }
+        try {
+            if ("true".equalsIgnoreCase(raw)) return LensShape.CIRCLE;
+            if ("false".equalsIgnoreCase(raw)) return LensShape.RECTANGLE;
+            return LensShape.valueOf(raw);
+        } catch (Exception e) {
+            return LensShape.CIRCLE;
+        }
+    }
+    public void setLensShape(LensShape v) { prefs.put(KEY_LENS_SHAPE, v.name()); }
+
+    public double getLensCornerRadius() { return prefs.getDouble(KEY_LENS_CORNER_RADIUS, 18); }
+    public void setLensCornerRadius(double v) { prefs.putDouble(KEY_LENS_CORNER_RADIUS, v); }
+
+    public String getBorderColor() { return prefs.get(KEY_BORDER_COLOR, "#00FF41"); }
+    public void setBorderColor(String v) { prefs.put(KEY_BORDER_COLOR, v); }
+
+    public double getBorderOpacity() { return prefs.getDouble(KEY_BORDER_OPACITY, 85); }
+    public void setBorderOpacity(double v) { prefs.putDouble(KEY_BORDER_OPACITY, v); }
+
+    public boolean isShowCrosshair() { return prefs.getBoolean(KEY_SHOW_CROSSHAIR, true); }
+    public void setShowCrosshair(boolean v) { prefs.putBoolean(KEY_SHOW_CROSSHAIR, v); }
+
+    public String getCrosshairColor() { return prefs.get(KEY_CROSSHAIR_COLOR, "#FF003C"); }
+    public void setCrosshairColor(String v) { prefs.put(KEY_CROSSHAIR_COLOR, v); }
+
+    public boolean isSmoothScaling() { return prefs.getBoolean(KEY_SMOOTH_SCALING, true); }
+    public void setSmoothScaling(boolean v) { prefs.putBoolean(KEY_SMOOTH_SCALING, v); }
+
+    public DockPosition getDockPosition() {
+        try { return DockPosition.valueOf(prefs.get(KEY_DOCK_POSITION, DockPosition.TOP_RIGHT.name())); }
+        catch (Exception e) { return DockPosition.TOP_RIGHT; }
+    }
+    public void setDockPosition(DockPosition v) { prefs.put(KEY_DOCK_POSITION, v.name()); }
 
     public double getBrightness() { return prefs.getDouble(KEY_BRIGHTNESS, 100); }
     public void setBrightness(double v) { prefs.putDouble(KEY_BRIGHTNESS, v); }
@@ -77,6 +126,14 @@ public class ConfigStore {
 
     public int getTargetFps() { return prefs.getInt(KEY_TARGET_FPS, 60); }
     public void setTargetFps(int v) { prefs.putInt(KEY_TARGET_FPS, Math.max(15, Math.min(120, v))); }
+
+    public String getUiTheme() {
+        String raw = prefs.get(KEY_UI_THEME, "forzen_dark");
+        return com.forzen.ui.theme.ThemeCatalog.resolveId(raw);
+    }
+    public void setUiTheme(String v) {
+        prefs.put(KEY_UI_THEME, com.forzen.ui.theme.ThemeCatalog.resolveId(v));
+    }
 
     public FilterMode getFilterMode() {
         try { return FilterMode.valueOf(prefs.get(KEY_FILTER_MODE, FilterMode.NONE.name())); }
@@ -104,11 +161,19 @@ public class ConfigStore {
         zoomController.setContrast(getContrast());
         zoomController.setSaturation(getSaturation());
         zoomController.setBorderWidth(getBorderWidth());
-        zoomController.setLensCircular(isLensCircular());
+        zoomController.setLensShape(getLensShape());
+        zoomController.setLensCornerRadius(getLensCornerRadius());
+        zoomController.setBorderColor(getBorderColor());
+        zoomController.setBorderOpacity(getBorderOpacity());
+        zoomController.setShowCrosshair(isShowCrosshair());
+        zoomController.setCrosshairColor(getCrosshairColor());
+        zoomController.setSmoothScaling(isSmoothScaling());
+        zoomController.setDockPosition(getDockPosition());
         zoomController.setStartWithOs(isStartWithOs());
         zoomController.setAutoOcr(isAutoOcr());
         zoomController.setAutoTts(isAutoTts());
         zoomController.setTargetFps(getTargetFps());
+        zoomController.setUiTheme(getUiTheme());
     }
 
     public void saveFrom(ZoomController zoomController) {
@@ -122,11 +187,29 @@ public class ConfigStore {
         setContrast(zoomController.getContrast());
         setSaturation(zoomController.getSaturation());
         setBorderWidth(zoomController.getBorderWidth());
-        setLensCircular(zoomController.isLensCircular());
+        setLensShape(zoomController.getLensShape());
+        setLensCornerRadius(zoomController.getLensCornerRadius());
+        setBorderColor(zoomController.getBorderColor());
+        setBorderOpacity(zoomController.getBorderOpacity());
+        setShowCrosshair(zoomController.isShowCrosshair());
+        setCrosshairColor(zoomController.getCrosshairColor());
+        setSmoothScaling(zoomController.isSmoothScaling());
+        setDockPosition(zoomController.getDockPosition());
         setStartWithOs(zoomController.isStartWithOs());
         setAutoOcr(zoomController.isAutoOcr());
         setAutoTts(zoomController.isAutoTts());
         setTargetFps(zoomController.getTargetFps());
+        setUiTheme(zoomController.getUiTheme());
+        flush();
+    }
+
+    /** Force Preferences to disk so reopen Settings sees the new values. */
+    public void flush() {
+        try {
+            prefs.flush();
+        } catch (Exception e) {
+            System.err.println("ConfigStore.flush failed: " + e.getMessage());
+        }
     }
 
     public void resetHotkeys() {

@@ -1,14 +1,21 @@
 package com.forzen.render;
 
 import com.forzen.capture.ScreenCapture;
+import com.forzen.core.DockPosition;
+import com.forzen.core.LensShape;
 import com.forzen.core.ZoomController;
 import com.forzen.core.ZoomMode;
 import com.forzen.util.ScreenGeometry;
 import com.forzen.util.ScreenGeometry.MonitorInfo;
+import com.forzen.win.NativeScreen;
+import com.forzen.win.NativeScreen.PhysPoint;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.geometry.Rectangle2D;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
@@ -16,25 +23,26 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
-import java.awt.MouseInfo;
-import java.awt.Point;
-import java.awt.PointerInfo;
+
 import java.awt.image.BufferedImage;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class LensRenderer {
 
     private final ScreenCapture capture;
     private final ImagePipeline pipeline;
     private final ZoomController zoomController;
-    private final ImageView imageView;
-    private final Circle clipCircle;
-    private final Rectangle clipRect;
+
+    private final Pane lensHost;
+    private final Canvas lensCanvas;
     private final Circle borderCircle;
     private final Rectangle borderRect;
     private final Rectangle crosshairV;
     private final Rectangle crosshairH;
+
+    private final ImageView fullImageView;
     private final Rectangle dockPanel;
     private final Label fpsLabel;
     private final Pane root;
@@ -44,14 +52,20 @@ public class LensRenderer {
     private long lastRenderNanos = 0;
     private int frameCount = 0;
     private double currentFps = 0;
+    private boolean loggedGeometry;
+    private long lastDockLogNanos = 0;
 
-    private WritableImage writableImage;
+    private WritableImage lensWritable;
+    private WritableImage fullWritable;
     private BufferedImage lastCaptured;
     private MonitorInfo currentMonitor;
 
     private Consumer<Boolean> clickThroughHandler;
+    private Runnable clickThroughReassertHandler;
     private BiConsumer<MonitorInfo, Boolean> overlayVisibilityHandler;
     private Consumer<MonitorInfo> monitorChangeHandler;
+    private Supplier<double[]> stageSizeSupplier;
+    private Consumer<Rectangle2D> stageBoundsHandler;
 
     public LensRenderer(ScreenCapture capture, ImagePipeline pipeline, ZoomController zoomController, Pane root) {
         this.capture = capture;
@@ -59,13 +73,12 @@ public class LensRenderer {
         this.zoomController = zoomController;
         this.root = root;
 
-        imageView = new ImageView();
-        imageView.setPreserveRatio(false);
-        imageView.setSmooth(true);
+        lensHost = new Pane();
+        lensHost.setMouseTransparent(true);
+        lensHost.setVisible(false);
 
-        clipCircle = new Circle();
-        clipRect = new Rectangle();
-        imageView.setClip(clipCircle);
+        lensCanvas = new Canvas(300, 300);
+        lensCanvas.setMouseTransparent(true);
 
         borderCircle = new Circle();
         borderCircle.setFill(Color.TRANSPARENT);
@@ -85,8 +98,16 @@ public class LensRenderer {
         crosshairV.setMouseTransparent(true);
         crosshairH.setMouseTransparent(true);
 
+        lensHost.getChildren().addAll(lensCanvas, borderCircle, borderRect, crosshairV, crosshairH);
+
+        fullImageView = new ImageView();
+        fullImageView.setPreserveRatio(false);
+        fullImageView.setSmooth(true);
+        fullImageView.setMouseTransparent(true);
+        fullImageView.setVisible(false);
+
         dockPanel = new Rectangle();
-        dockPanel.setFill(Color.rgb(13, 13, 13, 0.9));
+        dockPanel.setFill(Color.rgb(13, 13, 13, 0.55));
         dockPanel.setStroke(Color.rgb(0, 255, 65, 0.6));
         dockPanel.setStrokeWidth(1.5);
         dockPanel.setVisible(false);
@@ -99,7 +120,7 @@ public class LensRenderer {
         fpsLabel.setVisible(false);
         fpsLabel.setMouseTransparent(true);
 
-        root.getChildren().addAll(dockPanel, imageView, borderCircle, borderRect, crosshairV, crosshairH, fpsLabel);
+        root.getChildren().addAll(dockPanel, fullImageView, lensHost, fpsLabel);
         root.setMouseTransparent(true);
 
         zoomController.runningProperty().addListener((obs, o, running) -> {
@@ -111,12 +132,20 @@ public class LensRenderer {
             }
         });
 
-        zoomController.modeProperty().addListener((obs, o, mode) -> applyClickThrough(mode));
+        zoomController.modeProperty().addListener((obs, o, mode) -> {
+            // Always wipe every mode's visuals so LENS + DOCKED never stack
+            hideAllModeVisuals();
+            applyClickThrough(mode);
+        });
     }
 
     public void setClickThroughHandler(Consumer<Boolean> handler) {
         this.clickThroughHandler = handler;
         applyClickThrough(zoomController.getMode());
+    }
+
+    public void setClickThroughReassertHandler(Runnable handler) {
+        this.clickThroughReassertHandler = handler;
     }
 
     public void setOverlayVisibilityHandler(BiConsumer<MonitorInfo, Boolean> handler) {
@@ -127,11 +156,25 @@ public class LensRenderer {
         this.monitorChangeHandler = handler;
     }
 
+    public void setStageSizeSupplier(Supplier<double[]> supplier) {
+        this.stageSizeSupplier = supplier;
+    }
+
+    /** Screen-space FX bounds the overlay stage should occupy this frame. */
+    public void setStageBoundsHandler(Consumer<Rectangle2D> handler) {
+        this.stageBoundsHandler = handler;
+    }
+
+    private void publishStageBounds(double screenX, double screenY, double w, double h) {
+        if (stageBoundsHandler == null) return;
+        if (w < 2 || h < 2) return;
+        stageBoundsHandler.accept(new Rectangle2D(screenX, screenY, w, h));
+    }
+
     private void applyClickThrough(ZoomMode mode) {
-        // FULL blocks clicks; LENS and DOCKED pass through
-        boolean clickThrough = mode != ZoomMode.FULL;
+        // LENS + DOCKED always pass clicks through to the desktop
         if (clickThroughHandler != null) {
-            Platform.runLater(() -> clickThroughHandler.accept(clickThrough));
+            Platform.runLater(() -> clickThroughHandler.accept(true));
         }
     }
 
@@ -144,11 +187,15 @@ public class LensRenderer {
                     return;
                 }
 
-                long minInterval = 1_000_000_000L / Math.max(15, zoomController.getTargetFps());
+                long minInterval = 1_000_000_000L / Math.max(15, zoomController.effectiveFps());
                 if (lastRenderNanos > 0 && now - lastRenderNanos < minInterval) {
                     return;
                 }
                 lastRenderNanos = now;
+
+                if (clickThroughReassertHandler != null) {
+                    clickThroughReassertHandler.run();
+                }
 
                 render();
 
@@ -182,14 +229,27 @@ public class LensRenderer {
     }
 
     private void hideVisuals() {
-        imageView.setImage(null);
-        imageView.setVisible(false);
+        hideAllModeVisuals();
+        fpsLabel.setVisible(false);
+    }
+
+    /** Hard reset so only one mode paints on the next frame. */
+    private void hideAllModeVisuals() {
+        lensHost.setVisible(false);
+        clearLensCanvas();
         borderCircle.setVisible(false);
         borderRect.setVisible(false);
         crosshairV.setVisible(false);
         crosshairH.setVisible(false);
+        fullImageView.setImage(null);
+        fullImageView.setVisible(false);
+        fullImageView.setClip(null);
         dockPanel.setVisible(false);
-        fpsLabel.setVisible(false);
+    }
+
+    private void clearLensCanvas() {
+        GraphicsContext gc = lensCanvas.getGraphicsContext2D();
+        gc.clearRect(0, 0, lensCanvas.getWidth(), lensCanvas.getHeight());
     }
 
     private void render() {
@@ -199,11 +259,12 @@ public class LensRenderer {
                 zoomController.getContrast(),
                 zoomController.getSaturation()
         );
+        pipeline.setSmoothScaling(zoomController.isSmoothScaling());
+        fullImageView.setSmooth(zoomController.isSmoothScaling());
 
         switch (zoomController.getMode()) {
-            case LENS -> renderLens();
-            case FULL -> renderFull();
             case DOCKED -> renderDocked();
+            default -> renderLens();
         }
     }
 
@@ -218,218 +279,376 @@ public class LensRenderer {
         if (changed && monitorChangeHandler != null) {
             monitorChangeHandler.accept(m);
         }
+        if (!loggedGeometry) {
+            loggedGeometry = true;
+            System.out.printf(
+                    "Geometry: phys=%dx%d@%d,%d  fx=%.0fx%.0f  visual=%.0fx%.0f  scale=%.3f  cursor=%d,%d%n",
+                    m.physW(), m.physH(), m.physX(), m.physY(),
+                    m.fxBounds().getWidth(), m.fxBounds().getHeight(),
+                    m.fxVisualBounds().getWidth(), m.fxVisualBounds().getHeight(),
+                    m.scaleX(), mouseX, mouseY
+            );
+        }
+    }
+
+    private Color parseHex(String hex, double opacity01, Color fallback) {
+        try {
+            String h = hex == null ? "" : hex.trim();
+            if (!h.startsWith("#")) h = "#" + h;
+            Color base = Color.web(h);
+            return new Color(base.getRed(), base.getGreen(), base.getBlue(),
+                    Math.max(0, Math.min(1, opacity01)));
+        } catch (Exception e) {
+            return fallback;
+        }
+    }
+
+    private void applyBorderStyle(double bw) {
+        double opacity = zoomController.getBorderOpacity() / 100.0;
+        Color stroke = parseHex(zoomController.getBorderColor(), opacity, Color.rgb(0, 255, 65, 0.85));
+        borderCircle.setStroke(stroke);
+        borderCircle.setStrokeWidth(bw);
+        borderRect.setStroke(stroke);
+        borderRect.setStrokeWidth(bw);
+    }
+
+    private void applyCrosshairStyle() {
+        boolean show = zoomController.isShowCrosshair();
+        if (!show) {
+            crosshairV.setVisible(false);
+            crosshairH.setVisible(false);
+            return;
+        }
+        Color c = parseHex(zoomController.getCrosshairColor(), 0.85, Color.rgb(255, 0, 60, 0.7));
+        crosshairV.setFill(c);
+        crosshairH.setFill(c);
+        crosshairV.setVisible(true);
+        crosshairH.setVisible(true);
     }
 
     private void renderLens() {
+        fullImageView.setVisible(false);
+        fullImageView.setClip(null);
+        dockPanel.setVisible(false);
+
         double zoom = zoomController.getZoomLevel();
         double lensW = zoomController.getLensWidth();
         double lensH = zoomController.getLensHeight();
 
-        PointerInfo pi = MouseInfo.getPointerInfo();
-        if (pi == null) return;
-        Point mouse = pi.getLocation();
-        int mx = mouse.x;
-        int my = mouse.y;
+        PhysPoint cursor = NativeScreen.cursorPos();
+        int mx = cursor.x();
+        int my = cursor.y();
 
         updateMonitor(mx, my);
         MonitorInfo mon = currentMonitor;
         if (mon == null) return;
 
-        // Source size in physical pixels
-        double srcW = (lensW * mon.scaleX()) / zoom;
-        double srcH = (lensH * mon.scaleY()) / zoom;
-        java.awt.Rectangle region = ScreenGeometry.captureAround(mx, my, srcW, srcH, mon);
+        // Full-monitor stage; move lensHost with layoutX/Y (reliable). Do NOT move
+        // the Windows window every frame — that left the glass stuck while capture followed the mouse.
+        double monW = mon.fxBounds().getWidth();
+        double monH = mon.fxBounds().getHeight();
+        if (monW < 2) monW = 800;
+        if (monH < 2) monH = 600;
+        publishStageBounds(mon.fxBounds().getMinX(), mon.fxBounds().getMinY(), monW, monH);
+
+        // Capture FOV from DPI-aware scale (not a wrong phys/fx ratio)
+        double[] srcSize = ScreenGeometry.captureSizePhys(lensW, lensH, zoom, mon);
+        java.awt.Rectangle region = ScreenGeometry.captureViewport(mx, my, srcSize[0], srcSize[1], mon);
         if (region == null) return;
 
         BufferedImage captured = capture.capture(region);
         if (captured == null) return;
         lastCaptured = captured;
 
-        int outW = (int) Math.round(lensW);
-        int outH = (int) Math.round(lensH);
-        BufferedImage processed = pipeline.scale(captured, outW, outH);
-        if (processed == null) return;
+        // Where the real cursor sits inside the buffer (≠ center after edge clamp)
+        int[] hot = ScreenGeometry.cursorInViewport(mx, my, region);
+        int hotX = hot[0];
+        int hotY = hot[1];
 
-        showImage(processed, outW, outH);
+        // Apply filters at capture resolution; hot-point draw scales into the lens
+        BufferedImage processed = pipeline.scale(captured, captured.getWidth(), captured.getHeight());
+        if (processed == null) processed = captured;
 
-        double fxMx = mon.toFxX(mx);
-        double fxMy = mon.toFxY(my);
-        // Convert to scene-local: root is positioned at monitor origin in stage coords
-        double localMx = fxMx - mon.fxBounds().getMinX();
-        double localMy = fyLocal(fxMy, mon);
+        double localMx = mon.toLocalX(mx);
+        double localMy = mon.toLocalY(my);
+        double lensX = localMx - lensW / 2.0;
+        double lensY = localMy - lensH / 2.0;
+        lensX = clamp(lensX, 0, Math.max(0, monW - lensW));
+        lensY = clamp(lensY, 0, Math.max(0, monH - lensH));
 
-        double lensX = localMx - lensW / 2;
-        double lensY = localMy - lensH / 2;
-        imageView.setVisible(true);
-        imageView.setX(lensX);
-        imageView.setY(lensY);
-        imageView.setFitWidth(lensW);
-        imageView.setFitHeight(lensH);
+        if (Math.abs(lensCanvas.getWidth() - lensW) > 0.5 || Math.abs(lensCanvas.getHeight() - lensH) > 0.5) {
+            lensCanvas.setWidth(lensW);
+            lensCanvas.setHeight(lensH);
+        }
+        lensHost.setPrefSize(lensW, lensH);
+        lensHost.setMinSize(lensW, lensH);
+        lensHost.setMaxSize(lensW, lensH);
+        lensHost.resize(lensW, lensH);
+        lensHost.setLayoutX(lensX);
+        lensHost.setLayoutY(lensY);
+        lensHost.setVisible(true);
 
-        boolean circular = zoomController.isLensCircular();
-        applyClip(circular, lensW, lensH);
+        LensShape shape = zoomController.getLensShape();
+        drawLensCanvasHot(processed, lensW, lensH, hotX, hotY, shape);
 
         double bw = zoomController.getBorderWidth();
-        if (circular) {
-            double radius = Math.min(lensW, lensH) / 2;
-            borderCircle.setCenterX(localMx);
-            borderCircle.setCenterY(localMy);
-            borderCircle.setRadius(radius + 1);
-            borderCircle.setStrokeWidth(bw);
+        applyBorderStyle(bw);
+        double cx = lensW / 2.0;
+        double cy = lensH / 2.0;
+        if (shape == LensShape.CIRCLE) {
+            double radius = Math.min(lensW, lensH) / 2.0;
+            borderCircle.setCenterX(cx);
+            borderCircle.setCenterY(cy);
+            borderCircle.setRadius(radius);
             borderCircle.setVisible(true);
             borderRect.setVisible(false);
         } else {
-            borderRect.setX(lensX - 1);
-            borderRect.setY(lensY - 1);
-            borderRect.setWidth(lensW + 2);
-            borderRect.setHeight(lensH + 2);
-            borderRect.setStrokeWidth(bw);
+            borderRect.setX(0);
+            borderRect.setY(0);
+            borderRect.setWidth(lensW);
+            borderRect.setHeight(lensH);
+            double r = shape == LensShape.ROUNDED ? zoomController.getLensCornerRadius() : 0;
+            borderRect.setArcWidth(r * 2);
+            borderRect.setArcHeight(r * 2);
             borderRect.setVisible(true);
             borderCircle.setVisible(false);
         }
 
-        crosshairV.setX(localMx - 0.5);
-        crosshairV.setY(localMy - 10);
-        crosshairH.setX(localMx - 10);
-        crosshairH.setY(localMy - 0.5);
-        crosshairV.setVisible(true);
-        crosshairH.setVisible(true);
-        dockPanel.setVisible(false);
+        crosshairV.setX(cx - 0.5);
+        crosshairV.setY(cy - 10);
+        crosshairH.setX(cx - 10);
+        crosshairH.setY(cy - 0.5);
+        applyCrosshairStyle();
 
         placeFps(8, 8);
     }
 
-    private double fyLocal(double fxMy, MonitorInfo mon) {
-        return fxMy - mon.fxBounds().getMinY();
-    }
+    private void renderDocked() {
+        lensHost.setVisible(false);
 
-    private void renderFull() {
-        double zoom = zoomController.getZoomLevel();
+        double zoom = Math.max(1.0, zoomController.getZoomLevel());
 
-        PointerInfo pi = MouseInfo.getPointerInfo();
-        if (pi == null) return;
-        Point mouse = pi.getLocation();
-        int mx = mouse.x;
-        int my = mouse.y;
+        PhysPoint cursor = NativeScreen.cursorPos();
+        int mx = cursor.x();
+        int my = cursor.y();
 
         updateMonitor(mx, my);
         MonitorInfo mon = currentMonitor;
         if (mon == null) return;
 
-        double screenW = mon.fxBounds().getWidth();
-        double screenH = mon.fxBounds().getHeight();
+        // Work area (above taskbar) for dock placement
+        Rectangle2D full = mon.fxBounds();
+        Rectangle2D work = mon.fxVisualBounds();
+        if (work == null || work.getWidth() < 2 || work.getHeight() < 2) {
+            work = full;
+        }
+        double workW = work.getWidth() >= 2 ? work.getWidth() : 800;
+        double workH = work.getHeight() >= 2 ? work.getHeight() : 600;
 
-        double srcW = mon.physW() / zoom;
-        double srcH = mon.physH() / zoom;
-        java.awt.Rectangle region = ScreenGeometry.captureAround(mx, my, srcW, srcH, mon);
-        if (region == null) return;
+        double dockW = Math.max(180, workW * 0.38);
+        double dockH = Math.max(140, workH * 0.28);
+        double margin = 16;
+        double[] pos = dockOrigin(zoomController.getDockPosition(), workW, workH, dockW, dockH, margin);
+        // Screen coords of dock (work area origin + local offset)
+        double stageX = work.getMinX() + pos[0];
+        double stageY = work.getMinY() + pos[1];
 
-        BufferedImage captured = capture.capture(region);
-        if (captured == null) return;
-        lastCaptured = captured;
-
-        int outW = (int) Math.round(screenW);
-        int outH = (int) Math.round(screenH);
-        BufferedImage processed = pipeline.scale(captured, outW, outH);
-        if (processed == null) return;
-
-        showImage(processed, outW, outH);
-        imageView.setVisible(true);
-        imageView.setX(0);
-        imageView.setY(0);
-        imageView.setFitWidth(screenW);
-        imageView.setFitHeight(screenH);
-        imageView.setClip(null);
-
-        borderCircle.setVisible(false);
-        borderRect.setVisible(false);
-        crosshairV.setVisible(false);
-        crosshairH.setVisible(false);
+        // CAPTURE FIRST while dock chrome is hidden — avoids black frames from self-cover
+        // (full-screen glass + BitBlt was returning black for DOCKED).
+        fullImageView.setVisible(false);
         dockPanel.setVisible(false);
 
-        placeFps(12, 12);
-    }
+        double[] srcSize = ScreenGeometry.captureSizePhys(dockW, dockH, zoom, mon);
+        double srcW = Math.max(32, Math.min(srcSize[0], mon.physW()));
+        double srcH = Math.max(32, Math.min(srcSize[1], mon.physH()));
 
-    private void renderDocked() {
-        double zoom = zoomController.getZoomLevel();
-
-        PointerInfo pi = MouseInfo.getPointerInfo();
-        if (pi == null) return;
-        Point mouse = pi.getLocation();
-        int mx = mouse.x;
-        int my = mouse.y;
-
-        updateMonitor(mx, my);
-        MonitorInfo mon = currentMonitor;
-        if (mon == null) return;
-
-        double screenW = mon.fxBounds().getWidth();
-        double screenH = mon.fxBounds().getHeight();
-        double dockW = screenW * 0.4;
-        double dockH = screenH * 0.3;
-        double dockX = screenW - dockW - 10;
-        double dockY = screenH - dockH - 10;
-
-        double srcW = (dockW * mon.scaleX()) / zoom;
-        double srcH = (dockH * mon.scaleY()) / zoom;
-        java.awt.Rectangle region = ScreenGeometry.captureAround(mx, my, srcW, srcH, mon);
-        if (region == null) return;
+        java.awt.Rectangle region = ScreenGeometry.captureViewport(mx, my, srcW, srcH, mon);
+        if (region == null || region.width < 1 || region.height < 1) {
+            logDockOnce("null/empty region");
+            return;
+        }
 
         BufferedImage captured = capture.capture(region);
-        if (captured == null) return;
+        if (captured == null) {
+            logDockOnce("capture null for " + region);
+            return;
+        }
         lastCaptured = captured;
 
-        int outW = (int) Math.round(dockW);
-        int outH = (int) Math.round(dockH);
-        BufferedImage processed = pipeline.scale(captured, outW, outH);
-        if (processed == null) return;
+        int[] hot = ScreenGeometry.cursorInViewport(mx, my, region);
+        // Scale capture so the hot pixel lands at the center of the dock panel
+        int outW = Math.max(1, (int) Math.round(dockW));
+        int outH = Math.max(1, (int) Math.round(dockH));
+        BufferedImage processed = scaleHotToCenter(captured, hot[0], hot[1], outW, outH);
+        if (processed == null) {
+            logDockOnce("pipeline null");
+            return;
+        }
 
-        showImage(processed, outW, outH);
-        imageView.setVisible(true);
-        imageView.setX(dockX);
-        imageView.setY(dockY);
-        imageView.setFitWidth(dockW);
-        imageView.setFitHeight(dockH);
-        imageView.setClip(null);
+        // Small stage = only the dock panel (does not cover the whole screen → clean capture)
+        publishStageBounds(stageX, stageY, dockW, dockH);
 
-        dockPanel.setX(dockX - 1);
-        dockPanel.setY(dockY - 1);
-        dockPanel.setWidth(dockW + 2);
-        dockPanel.setHeight(dockH + 2);
+        showFullImage(processed, outW, outH);
+        // Content fills the small stage at (0,0)
+        placeImageView(0, 0, dockW, dockH);
+        fullImageView.setClip(null);
+        fullImageView.setVisible(true);
+        fullImageView.toFront();
+
+        Color border = parseHex(zoomController.getBorderColor(), 0.85, Color.rgb(52, 211, 153, 0.9));
+        dockPanel.setStroke(border);
+        dockPanel.setFill(Color.rgb(5, 5, 6, 0.4));
+        dockPanel.setX(0);
+        dockPanel.setY(0);
+        dockPanel.setWidth(dockW);
+        dockPanel.setHeight(dockH);
         dockPanel.setVisible(true);
+        // Image above panel background
+        fullImageView.toFront();
+        fpsLabel.toFront();
 
-        borderCircle.setVisible(false);
-        borderRect.setVisible(false);
-        crosshairV.setVisible(false);
-        crosshairH.setVisible(false);
-
-        placeFps(dockX + 8, dockY + 8);
+        placeFps(8, 8);
     }
 
-    private void applyClip(boolean circular, double lensW, double lensH) {
-        if (circular) {
-            double radius = Math.min(lensW, lensH) / 2;
-            clipCircle.setCenterX(lensW / 2);
-            clipCircle.setCenterY(lensH / 2);
-            clipCircle.setRadius(radius);
-            imageView.setClip(clipCircle);
+    private void logDockOnce(String msg) {
+        long now = System.nanoTime();
+        if (now - lastDockLogNanos > 2_000_000_000L) {
+            lastDockLogNanos = now;
+            System.err.println("Docked: " + msg);
+        }
+    }
+
+    private void placeImageView(double x, double y, double w, double h) {
+        fullImageView.setVisible(true);
+        // Use both ImageView x/y and layout for Pane reliability
+        fullImageView.setX(0);
+        fullImageView.setY(0);
+        fullImageView.setLayoutX(x);
+        fullImageView.setLayoutY(y);
+        fullImageView.setFitWidth(w);
+        fullImageView.setFitHeight(h);
+        fullImageView.setPreserveRatio(false);
+        fullImageView.setSmooth(zoomController.isSmoothScaling());
+    }
+
+    private static double[] dockOrigin(DockPosition pos, double screenW, double screenH,
+                                       double dockW, double dockH, double margin) {
+        // Default away from system tray (bottom-right on most setups)
+        if (pos == null) pos = DockPosition.TOP_RIGHT;
+        return switch (pos) {
+            case TOP_LEFT -> new double[]{margin, margin};
+            case TOP_RIGHT -> new double[]{screenW - dockW - margin, margin};
+            case BOTTOM_LEFT -> new double[]{margin, screenH - dockH - margin};
+            case CENTER -> new double[]{(screenW - dockW) / 2.0, (screenH - dockH) / 2.0};
+            case BOTTOM_RIGHT -> new double[]{screenW - dockW - margin, screenH - dockH - margin};
+        };
+    }
+
+    /**
+     * Draw capture into the lens so that pixel (hotX, hotY) of the source lands at the
+     * geometric center of the lens (under the crosshair). Fixes edge clamp + DPI
+     * mismatch that looked like "wrong place" especially over browsers.
+     */
+    private void drawLensCanvasHot(BufferedImage processed, double lensW, double lensH,
+                                   int hotX, int hotY, LensShape shape) {
+        int srcW = processed.getWidth();
+        int srcH = processed.getHeight();
+        if (lensWritable == null
+                || (int) lensWritable.getWidth() != srcW
+                || (int) lensWritable.getHeight() != srcH) {
+            lensWritable = new WritableImage(srcW, srcH);
+        }
+        SwingFXUtils.toFXImage(processed, lensWritable);
+
+        // Uniform scale: full FOV width → lens width (hot point stays consistent)
+        double scale = lensW / (double) Math.max(1, srcW);
+        double destW = srcW * scale;
+        double destH = srcH * scale;
+        double destX = lensW / 2.0 - hotX * scale;
+        double destY = lensH / 2.0 - hotY * scale;
+
+        GraphicsContext gc = lensCanvas.getGraphicsContext2D();
+        gc.clearRect(0, 0, lensW, lensH);
+        gc.save();
+        if (shape == LensShape.CIRCLE) {
+            double radius = Math.min(lensW, lensH) / 2.0;
+            gc.beginPath();
+            gc.arc(lensW / 2.0, lensH / 2.0, radius, radius, 0, 360);
+            gc.closePath();
+            gc.clip();
+        } else if (shape == LensShape.ROUNDED) {
+            double r = Math.min(zoomController.getLensCornerRadius(), Math.min(lensW, lensH) / 2.0);
+            gc.beginPath();
+            roundRectPath(gc, 0, 0, lensW, lensH, r);
+            gc.closePath();
+            gc.clip();
+        }
+        gc.setImageSmoothing(zoomController.isSmoothScaling());
+        gc.drawImage(lensWritable, destX, destY, destW, destH);
+        gc.restore();
+    }
+
+    /**
+     * Produce a dock-sized image where (hotX,hotY) of the capture is at the center.
+     */
+    private BufferedImage scaleHotToCenter(BufferedImage captured, int hotX, int hotY,
+                                           int outW, int outH) {
+        if (captured == null) return null;
+        int srcW = captured.getWidth();
+        int srcH = captured.getHeight();
+        if (srcW < 1 || srcH < 1) return null;
+
+        // First apply color filters at source size
+        BufferedImage filtered = pipeline.scale(captured, srcW, srcH);
+        if (filtered == null) filtered = captured;
+
+        BufferedImage out = new BufferedImage(outW, outH, BufferedImage.TYPE_INT_RGB);
+        java.awt.Graphics2D g = out.createGraphics();
+        if (zoomController.isSmoothScaling()) {
+            g.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION,
+                    java.awt.RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         } else {
-            clipRect.setX(0);
-            clipRect.setY(0);
-            clipRect.setWidth(lensW);
-            clipRect.setHeight(lensH);
-            imageView.setClip(clipRect);
+            g.setRenderingHint(java.awt.RenderingHints.KEY_INTERPOLATION,
+                    java.awt.RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
         }
+        g.setColor(java.awt.Color.BLACK);
+        g.fillRect(0, 0, outW, outH);
+
+        double scale = outW / (double) Math.max(1, srcW);
+        double destW = srcW * scale;
+        double destH = srcH * scale;
+        double destX = outW / 2.0 - hotX * scale;
+        double destY = outH / 2.0 - hotY * scale;
+        g.drawImage(filtered, (int) Math.round(destX), (int) Math.round(destY),
+                (int) Math.round(destW), (int) Math.round(destH), null);
+        g.dispose();
+        return out;
     }
 
-    private void showImage(BufferedImage processed, int outW, int outH) {
-        if (writableImage == null
-                || (int) writableImage.getWidth() != outW
-                || (int) writableImage.getHeight() != outH) {
-            writableImage = new WritableImage(outW, outH);
+    private static void roundRectPath(GraphicsContext gc, double x, double y, double w, double h, double r) {
+        if (r <= 0) {
+            gc.rect(x, y, w, h);
+            return;
         }
-        SwingFXUtils.toFXImage(processed, writableImage);
-        imageView.setImage(writableImage);
+        gc.moveTo(x + r, y);
+        gc.lineTo(x + w - r, y);
+        gc.arcTo(x + w, y, x + w, y + r, r);
+        gc.lineTo(x + w, y + h - r);
+        gc.arcTo(x + w, y + h, x + w - r, y + h, r);
+        gc.lineTo(x + r, y + h);
+        gc.arcTo(x, y + h, x, y + h - r, r);
+        gc.lineTo(x, y + r);
+        gc.arcTo(x, y, x + r, y, r);
+    }
+
+    private void showFullImage(BufferedImage processed, int outW, int outH) {
+        if (fullWritable == null
+                || (int) fullWritable.getWidth() != outW
+                || (int) fullWritable.getHeight() != outH) {
+            fullWritable = new WritableImage(outW, outH);
+        }
+        SwingFXUtils.toFXImage(processed, fullWritable);
+        fullImageView.setImage(fullWritable);
     }
 
     private void placeFps(double x, double y) {
@@ -442,5 +661,10 @@ public class LensRenderer {
                 fpsLabel.setText("-- FPS");
             }
         }
+    }
+
+    private static double clamp(double v, double min, double max) {
+        if (max < min) return min;
+        return Math.max(min, Math.min(v, max));
     }
 }

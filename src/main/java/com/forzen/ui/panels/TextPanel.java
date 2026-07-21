@@ -3,66 +3,57 @@ package com.forzen.ui.panels;
 import com.forzen.core.ZoomController;
 import com.forzen.ocr.OcrEngine;
 import com.forzen.tts.TtsEngine;
+import com.forzen.ui.theme.AppTheme;
+import com.forzen.ui.theme.ThemeManager;
 
-import javafx.scene.control.*;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 
 public class TextPanel extends VBox {
 
-    private static final String GREEN_NEON = "#00FF41";
-    private static final String TEXT_LIGHT = "#EAEAEA";
-    private static final String TEXT_MUTED = "#AAAAAA";
-
     public TextPanel(ZoomController zoomController, OcrEngine ocrEngine, TtsEngine ttsEngine) {
-        setSpacing(20);
-        setStyle("-fx-padding: 30;");
+        AppTheme theme = ThemeManager.get().current();
+        setStyle("-fx-background-color: transparent;");
 
-        Label title = new Label("📝 TEXTO");
-        title.setStyle("-fx-text-fill: " + GREEN_NEON + "; -fx-font-size: 20px; -fx-font-weight: bold;");
-
-        VBox ocrSection = section("Reconocimiento de texto (OCR)");
         boolean ocrOk = ocrEngine != null && ocrEngine.isAvailable();
         Label ocrStatus = new Label(ocrOk
-                ? "Estado: disponible (Tess4J)"
-                : "Estado: no disponible — instala Tesseract + tessdata (spa/eng).");
-        ocrStatus.setStyle("-fx-text-fill: " + (ocrOk ? GREEN_NEON : "#FF003C") + "; -fx-font-size: 12px;");
+                ? "OCR disponible (Tess4J)"
+                : "OCR no disponible — instala Tesseract + tessdata.");
+        ocrStatus.setStyle("-fx-text-fill: " + (ocrOk ? theme.accent() : theme.danger()) + "; -fx-font-size: 13px;");
         ocrStatus.setWrapText(true);
 
-        CheckBox autoOcr = new CheckBox("Recordar preferencia OCR automático (experimental)");
-        autoOcr.setStyle("-fx-text-fill: " + TEXT_LIGHT + ";");
+        CheckBox autoOcr = new CheckBox("Preferencia OCR automático (experimental)");
+        autoOcr.setStyle(theme.bodyStyle());
         autoOcr.selectedProperty().bindBidirectional(zoomController.autoOcrProperty());
         autoOcr.setDisable(!ocrOk);
 
-        Label ocrInfo = new Label("Atajo por defecto: Ctrl+Alt+T — reconoce el área actual de la lupa y muestra el texto.");
-        ocrInfo.setStyle("-fx-text-fill: " + TEXT_MUTED + "; -fx-font-size: 12px;");
-        ocrInfo.setWrapText(true);
-        ocrSection.getChildren().addAll(ocrStatus, autoOcr, ocrInfo);
+        VBox ocrCard = PanelSupport.card(theme, "Reconocimiento de texto",
+                ocrStatus, autoOcr,
+                PanelSupport.hint(theme, "Atajo: Ctrl+Alt+T — reconoce el área de la lupa."));
 
-        VBox ttsSection = section("Texto a voz (TTS)");
+        if (ocrEngine != null && !ocrOk && ocrEngine.getLastError() != null && !ocrEngine.getLastError().isBlank()) {
+            ocrCard.getChildren().add(PanelSupport.hint(theme, "Detalle: " + ocrEngine.getLastError()));
+        }
+
         boolean ttsOk = ttsEngine != null && ttsEngine.isAvailable();
         Label ttsStatus = new Label(ttsOk
-                ? "Estado: Windows Speech API disponible"
-                : "Estado: TTS no disponible en este sistema");
-        ttsStatus.setStyle("-fx-text-fill: " + (ttsOk ? GREEN_NEON : "#FF003C") + "; -fx-font-size: 12px;");
+                ? "TTS disponible (Windows Speech)"
+                : "TTS no disponible en este sistema");
+        ttsStatus.setStyle("-fx-text-fill: " + (ttsOk ? theme.accent() : theme.danger()) + "; -fx-font-size: 13px;");
 
         CheckBox autoTts = new CheckBox("Leer en voz alta tras OCR");
-        autoTts.setStyle("-fx-text-fill: " + TEXT_LIGHT + ";");
+        autoTts.setStyle(theme.bodyStyle());
         autoTts.selectedProperty().bindBidirectional(zoomController.autoTtsProperty());
         autoTts.setDisable(!ttsOk);
 
-        Label ttsInfo = new Label("Síntesis offline con System.Speech (PowerShell). Se activa al usar OCR si esta opción está marcada.");
-        ttsInfo.setStyle("-fx-text-fill: " + TEXT_MUTED + "; -fx-font-size: 12px;");
-        ttsInfo.setWrapText(true);
-        ttsSection.getChildren().addAll(ttsStatus, autoTts, ttsInfo);
+        VBox ttsCard = PanelSupport.card(theme, "Texto a voz",
+                ttsStatus, autoTts,
+                PanelSupport.hint(theme, "Síntesis offline con System.Speech."));
 
-        getChildren().addAll(title, ocrSection, ttsSection);
-    }
-
-    private VBox section(String label) {
-        VBox box = new VBox(8);
-        Label lbl = new Label(label);
-        lbl.setStyle("-fx-text-fill: " + TEXT_MUTED + "; -fx-font-size: 13px; -fx-font-weight: bold;");
-        box.getChildren().add(lbl);
-        return box;
+        getChildren().setAll(PanelSupport.page(theme,
+                "Texto",
+                "OCR y lectura en voz alta.",
+                ocrCard, ttsCard));
     }
 }

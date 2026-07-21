@@ -78,15 +78,123 @@ public class App extends Application {
     }
 
     public void openSettings() {
-        if (settingsWindow != null && settingsWindow.isShowing()) {
-            settingsWindow.toFront();
-            settingsWindow.requestFocus();
+        // Must run on FX thread (hotkeys already dispatch here; tray uses runLater)
+        if (!Platform.isFxApplicationThread()) {
+            Platform.runLater(this::openSettings);
             return;
         }
-        settingsWindow = new SettingsWindow(zoomController, configStore, hotkeyManager, ocrEngine, ttsEngine);
-        settingsWindow.setOnHidden(e -> {
-            configStore.saveFrom(zoomController);
-            if (hotkeyManager != null) hotkeyManager.reloadBindings();
+
+        // Never leave rebind mode stuck (blocks all hotkeys)
+        if (hotkeyManager != null) {
+            hotkeyManager.cancelCapture();
+        }
+
+        try {
+            // Restore if minimized to taskbar
+            if (settingsWindow != null && settingsWindow.isShowing()) {
+                bringSettingsToFront();
+                if (overlay != null) {
+                    overlay.setSettingsOpen(true);
+                }
+                return;
+            }
+            if (settingsWindow != null && settingsWindow.isIconified()) {
+                bringSettingsToFront();
+                if (overlay != null) {
+                    overlay.setSettingsOpen(true);
+                }
+                return;
+            }
+
+            // Build UI first; only hide the lens after Settings is actually shown.
+            if (settingsWindow != null) {
+                try {
+                    settingsWindow.close();
+                } catch (Exception ignored) {
+                }
+                settingsWindow = null;
+            }
+
+            settingsWindow = new SettingsWindow(zoomController, configStore, hotkeyManager, ocrEngine, ttsEngine);
+            // Normal window (taskbar + minimize). Not always-on-top so Alt+Tab works.
+            settingsWindow.setAlwaysOnTop(false);
+            settingsWindow.setOnHidden(e -> {
+                if (hotkeyManager != null) {
+                    hotkeyManager.cancelCapture();
+                    hotkeyManager.reloadBindings();
+                    hotkeyManager.register();
+                }
+                if (overlay != null) {
+                    overlay.setSettingsOpen(false);
+                    overlay.restoreMagnifier();
+                }
+                if (configStore != null && zoomController != null) {
+                    configStore.saveFrom(zoomController);
+                }
+            });
+
+            settingsWindow.centerOnScreen();
+            settingsWindow.show();
+            bringSettingsToFront();
+
+            if (settingsWindow.isShowing() || settingsWindow.isIconified()) {
+                if (overlay != null) {
+                    overlay.setSettingsOpen(true);
+                }
+                System.out.println("Settings opened (taskbar + minimize enabled)");
+            } else {
+                throw new IllegalStateException("La ventana de ajustes no llegó a mostrarse");
+            }
+        } catch (Throwable t) {
+            System.err.println("Failed to open Settings: " + t.getMessage());
+            t.printStackTrace();
+            if (overlay != null) {
+                overlay.setSettingsOpen(false);
+            }
+            showSettingsError(t);
+        }
+    }
+
+    private void showSettingsError(Throwable t) {
+        try {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Forzen");
+            alert.setHeaderText("No se pudieron abrir los ajustes");
+            String detail = t.getMessage() != null ? t.getMessage() : t.getClass().getSimpleName();
+            alert.setContentText(
+                    detail + "\n\nPrueba: icono de la bandeja → clic derecho → Ajustes.\n"
+                            + "Atajo por defecto: Ctrl+Alt+O\n"
+                            + "Si los atajos fallan: Ctrl+Alt+Shift+R");
+            alert.setResizable(true);
+            alert.show();
+            // Keep error above the magnifier
+            if (alert.getDialogPane().getScene() != null
+                    && alert.getDialogPane().getScene().getWindow() != null) {
+                alert.getDialogPane().getScene().getWindow().requestFocus();
+            }
+        } catch (Throwable ignored) {
+            System.err.println("Also failed to show error dialog");
+        }
+    }
+
+    private void bringSettingsToFront() {
+        if (settingsWindow == null) return;
+        try {
+            settingsWindow.setIconified(false);
+            // Keep normal Z-order (taskbar friendly); only raise once
+            settingsWindow.setAlwaysOnTop(false);
+            settingsWindow.show();
+            settingsWindow.toFront();
+            settingsWindow.requestFocus();
+        } catch (Exception e) {
+            System.err.println("bringSettingsToFront: " + e.getMessage());
+        }
+        Platform.runLater(() -> {
+            if (settingsWindow != null) {
+                settingsWindow.setIconified(false);
+                settingsWindow.toFront();
+                settingsWindow.requestFocus();
+            }
         });
     }
 
@@ -164,6 +272,10 @@ public class App extends Application {
         return zoomController;
     }
 
+    public ForzenOverlay getOverlay() {
+        return overlay;
+    }
+
     @Override
     public void stop() {
         if (configStore != null && zoomController != null) {
@@ -186,6 +298,13 @@ public class App extends Application {
     }
 
     public static void main(String[] args) {
+        // Must run before JavaFX toolkit init so cursor/BitBlt/FX share one DPI space
+        // (critical for precision over Chrome/Edge HiDPI content).
+        try {
+            com.forzen.win.DpiBootstrap.enable();
+        } catch (Throwable t) {
+            System.err.println("DPI bootstrap failed: " + t.getMessage());
+        }
         launch(args);
     }
 }
