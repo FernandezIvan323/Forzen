@@ -54,7 +54,7 @@ body {
   cursor: url("cursor-lens.png") 14 14, url("cursor-lens.svg") 14 14, auto;
 }
 
-/* Clickable UI: system pointer is clearer than the lens */
+/* Clickable UI: green hand (same brand color as the lens) */
 a,
 button,
 .a11y-btn,
@@ -68,7 +68,7 @@ label,
 summary,
 [role="button"],
 [data-live-mode] {
-  cursor: pointer;
+  cursor: url("cursor-pointer.png") 10 3, url("cursor-pointer.svg") 10 3, pointer;
 }
 
 /* High-contrast reading mode: restore system cursors */
