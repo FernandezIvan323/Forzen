@@ -1,28 +1,60 @@
 (function () {
   'use strict';
 
-  function initLiveLens() {
+  function initLiveStage() {
     var host = document.getElementById('live-lens');
     if (!host) return;
+
     var scene = host.querySelector('[data-live-scene]');
     var glass = host.querySelector('[data-live-glass]');
-    var zoom = host.querySelector('[data-live-zoom]');
-    if (!scene || !glass || !zoom) return;
+    var zoomLens = host.querySelector('[data-live-zoom-lens]');
+    var zoomDock = host.querySelector('[data-live-zoom-dock]');
+    var dock = host.querySelector('[data-live-dock]');
+    var cursor = host.querySelector('[data-live-cursor]');
+    var modeBtns = document.querySelectorAll('[data-live-mode]');
+    if (!scene || !glass || !zoomLens) return;
 
-    var scale = 2.15;
+    var mode = host.getAttribute('data-live-mode') || 'lens';
+    var scaleLens = 2.2;
+    var scaleDock = 2.4;
 
-    function syncClone() {
-      var r = host.getBoundingClientRect();
-      if (r.width < 8 || r.height < 8) return;
-      zoom.innerHTML = '';
+    function fillZoom(node) {
+      if (!node) return;
+      node.innerHTML = '';
       var clone = scene.cloneNode(true);
       clone.removeAttribute('data-live-scene');
       clone.classList.add('live-lens-clone-inner');
-      // Match scene size exactly for correct hot-point math
-      zoom.style.width = r.width + 'px';
-      zoom.style.height = r.height + 'px';
-      zoom.appendChild(clone);
+      node.appendChild(clone);
     }
+
+    function syncClones() {
+      var r = host.getBoundingClientRect();
+      if (r.width < 8 || r.height < 8) return;
+      fillZoom(zoomLens);
+      fillZoom(zoomDock);
+      [zoomLens, zoomDock].forEach(function (node) {
+        if (!node) return;
+        node.style.width = r.width + 'px';
+        node.style.height = r.height + 'px';
+      });
+    }
+
+    function setMode(next) {
+      mode = next === 'dock' ? 'dock' : 'lens';
+      host.setAttribute('data-live-mode', mode);
+      modeBtns.forEach(function (btn) {
+        var on = btn.getAttribute('data-live-mode') === mode;
+        btn.classList.toggle('is-on', on);
+        btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+      syncClones();
+    }
+
+    modeBtns.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        setMode(btn.getAttribute('data-live-mode'));
+      });
+    });
 
     function paint(clientX, clientY) {
       var r = host.getBoundingClientRect();
@@ -32,39 +64,51 @@
       x = Math.max(0, Math.min(r.width, x));
       y = Math.max(0, Math.min(r.height, y));
 
-      glass.style.left = x + 'px';
-      glass.style.top = y + 'px';
-
-      // Glass is centered via negative margin; size is fixed in CSS
-      var gw = glass.offsetWidth || 140;
-      var gh = glass.offsetHeight || 140;
-      var tx = gw / 2 - x * scale;
-      var ty = gh / 2 - y * scale;
-      zoom.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + scale + ')';
+      if (mode === 'lens') {
+        glass.style.left = x + 'px';
+        glass.style.top = y + 'px';
+        var gw = glass.offsetWidth || 150;
+        var gh = glass.offsetHeight || 150;
+        var tx = gw / 2 - x * scaleLens;
+        var ty = gh / 2 - y * scaleLens;
+        zoomLens.style.transform =
+          'translate(' + tx + 'px,' + ty + 'px) scale(' + scaleLens + ')';
+      } else {
+        if (cursor) {
+          cursor.style.left = x + 'px';
+          cursor.style.top = y + 'px';
+        }
+        var view = dock ? dock.querySelector('.live-dock-view') : null;
+        if (view && zoomDock) {
+          var vr = view.getBoundingClientRect();
+          var dtx = vr.width / 2 - x * scaleDock;
+          var dty = vr.height / 2 - y * scaleDock;
+          zoomDock.style.transform =
+            'translate(' + dtx + 'px,' + dty + 'px) scale(' + scaleDock + ')';
+        }
+      }
     }
 
-    syncClone();
+    syncClones();
 
-    // Always follow pointer (mouse + touch)
     host.addEventListener('pointermove', function (e) {
       paint(e.clientX, e.clientY);
     });
     host.addEventListener('pointerdown', function (e) {
-      host.setPointerCapture(e.pointerId);
+      try { host.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ }
       paint(e.clientX, e.clientY);
     });
 
     window.addEventListener('resize', function () {
-      syncClone();
+      syncClones();
       var r = host.getBoundingClientRect();
-      paint(r.left + r.width * 0.42, r.top + r.height * 0.48);
+      paint(r.left + r.width * 0.4, r.top + r.height * 0.45);
     });
 
-    // Center start
     requestAnimationFrame(function () {
-      syncClone();
+      syncClones();
       var r = host.getBoundingClientRect();
-      paint(r.left + r.width * 0.42, r.top + r.height * 0.48);
+      paint(r.left + r.width * 0.4, r.top + r.height * 0.45);
     });
   }
 
@@ -96,7 +140,7 @@
     }
     root.addEventListener('pointerdown', function (e) {
       dragging = true;
-      root.setPointerCapture(e.pointerId);
+      try { root.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ }
       fromEvent(e);
     });
     root.addEventListener('pointermove', function (e) {
@@ -132,7 +176,7 @@
   }
 
   function boot() {
-    initLiveLens();
+    initLiveStage();
     initCompare();
     initHotkeyPlay();
   }
