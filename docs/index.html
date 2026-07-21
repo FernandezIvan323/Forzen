@@ -24,7 +24,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=4" />
+  <link rel="stylesheet" href="style.css?v=6" />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -174,48 +174,97 @@
       </div>
     </section>
 
-    <!-- Features -->
+    <!-- Features — horizontal slabs + mini visuals -->
     <section class="section" id="features">
       <div class="container">
         <div class="section-head reveal">
           <p class="section-kicker">// funciones</p>
-          <h2>Todo lo que necesitas para leer mejor</h2>
-          <p>Simple, estable y listo para el día a día.</p>
+          <h2>Hecho para ver y trabajar mejor</h2>
+          <p>Seis capacidades. Sin ruido.</p>
         </div>
 
-        <div class="bento bento-compact">
-          <article class="bento-card reveal">
-            <div class="bento-icon" aria-hidden="true">🔍</div>
-            <h3>Zoom 1×–8×</h3>
-            <p>Sigue el cursor con precisión, multi-monitor y DPI.</p>
+        <div class="feat-list">
+          <article class="feat-slab reveal">
+            <span class="feat-idx">01</span>
+            <div class="feat-copy">
+              <h3>Zoom 1×–8×</h3>
+              <p>Sigue el cursor con precisión en multi-monitor y pantallas HiDPI.</p>
+            </div>
+            <div class="feat-visual feat-visual--lens" aria-hidden="true">
+              <span class="fv-ring"></span>
+              <span class="fv-cross"></span>
+              <span class="fv-badge">3×</span>
+            </div>
           </article>
-          <article class="bento-card reveal">
-            <div class="bento-icon" aria-hidden="true">🖱️</div>
-            <h3>Click-through</h3>
-            <p>Usas otras apps con la lupa activa; los clics pasan al escritorio.</p>
+
+          <article class="feat-slab reveal">
+            <span class="feat-idx">02</span>
+            <div class="feat-copy">
+              <h3>Click-through</h3>
+              <p>Usas otras apps con la lupa activa: los clics llegan al escritorio.</p>
+            </div>
+            <div class="feat-visual feat-visual--click" aria-hidden="true">
+              <span class="fv-win"></span>
+              <span class="fv-arrow"></span>
+              <span class="fv-pointer"></span>
+            </div>
           </article>
-          <article class="bento-card reveal">
-            <div class="bento-icon" aria-hidden="true">🪟</div>
-            <h3>Lupa o acoplado</h3>
-            <p>Círculo al cursor o panel en esquina. Cambio con un atajo.</p>
+
+          <article class="feat-slab reveal">
+            <span class="feat-idx">03</span>
+            <div class="feat-copy">
+              <h3>Lupa o acoplado</h3>
+              <p>Círculo al cursor o panel fijo en esquina. Cambio al instante.</p>
+            </div>
+            <div class="feat-visual feat-visual--modes" aria-hidden="true">
+              <span class="fv-circle"></span>
+              <span class="fv-dock"></span>
+            </div>
           </article>
-          <article class="bento-card reveal">
-            <div class="bento-icon" aria-hidden="true">🎨</div>
-            <h3>Filtros de color</h3>
-            <p>Inversión, contraste, grises y daltonismo.</p>
+
+          <article class="feat-slab reveal">
+            <span class="feat-idx">04</span>
+            <div class="feat-copy">
+              <h3>Filtros de color</h3>
+              <p>Inversión, contraste, grises y opciones para daltonismo.</p>
+            </div>
+            <div class="feat-visual feat-visual--filters" aria-hidden="true">
+              <span class="fv-swatch s1"></span>
+              <span class="fv-swatch s2"></span>
+              <span class="fv-swatch s3"></span>
+              <span class="fv-swatch s4"></span>
+            </div>
           </article>
-          <article class="bento-card reveal">
-            <div class="bento-icon" aria-hidden="true">⌨️</div>
-            <h3>Atajos tuyos</h3>
-            <p>Control desde el teclado; todo reasignable en Ajustes.</p>
+
+          <article class="feat-slab reveal">
+            <span class="feat-idx">05</span>
+            <div class="feat-copy">
+              <h3>Atajos tuyos</h3>
+              <p>Zoom, modo y ajustes desde el teclado. Todo reasignable.</p>
+            </div>
+            <div class="feat-visual feat-visual--keys" aria-hidden="true">
+              <span class="fv-key">Ctrl</span>
+              <span class="fv-key">Alt</span>
+              <span class="fv-key">↑</span>
+            </div>
           </article>
-          <article class="bento-card reveal">
-            <div class="bento-icon" aria-hidden="true">🔊</div>
-            <h3>OCR + voz</h3>
-            <p>Lee el texto bajo la lupa. Offline y opcional.</p>
-            <span class="bento-tag optional">Opcional</span>
+
+          <article class="feat-slab reveal">
+            <span class="feat-idx">06</span>
+            <div class="feat-copy">
+              <div class="feat-title-row">
+                <h3>OCR + voz</h3>
+                <span class="feat-pill">Opcional</span>
+              </div>
+              <p>Lee en voz alta el texto bajo la lupa. Offline, sin cuenta.</p>
+            </div>
+            <div class="feat-visual feat-visual--ocr" aria-hidden="true">
+              <span class="fv-lines"></span>
+              <span class="fv-wave"></span>
+            </div>
           </article>
         </div>
+
         <p class="features-extra reveal">También: bandeja del sistema · inicio con Windows · sin telemetría · 60&nbsp;FPS</p>
       </div>
     </section>
@@ -433,6 +482,6 @@
     </div>
   </footer>
 
-  <script src="app.js?v=4"></script>
+  <script src="app.js?v=6"></script>
 </body>
 </html>
