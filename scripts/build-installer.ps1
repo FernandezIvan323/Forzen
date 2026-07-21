@@ -73,6 +73,11 @@ if (-not $jpackage) {
     throw "jpackage not found. Install a full JDK 21+ (Liberica Full / jdk+fx recommended)."
 }
 
+# Stable product-family UUID for Windows upgrades (keep forever across versions).
+# Without this, each build can look like a different product and the wizard may
+# re-enter install UI / leave Start Menu under "Unknown".
+$WinUpgradeUuid = "B8E4F2C1-9A3D-4E7B-8F1C-6D2A5E9B0C47"
+
 function Invoke-ForzenJpackage([string]$pkgType) {
     $args = @(
         "--type", $pkgType,
@@ -84,15 +89,19 @@ function Invoke-ForzenJpackage([string]$pkgType) {
         "--vendor", "Forzen Project",
         "--description", "Lupa de pantalla para baja vision",
         "--copyright", "MIT Forzen Project",
+        "--about-url", "https://FernandezIvan323.github.io/Forzen/",
         "--dest", $out,
         "--win-dir-chooser",
         "--win-menu",
+        "--win-menu-group", "Forzen",
         "--win-shortcut",
         "--win-per-user-install",
+        "--win-upgrade-uuid", $WinUpgradeUuid,
+        "--win-help-url", "https://FernandezIvan323.github.io/Forzen/download.html",
         "--java-options", "--add-modules=javafx.controls,javafx.swing"
     ) + $iconArgs
 
-    Write-Host "==> jpackage --type $pkgType"
+    Write-Host "==> jpackage --type $pkgType (upgrade-uuid=$WinUpgradeUuid)"
     & jpackage @args
     if ($LASTEXITCODE -ne 0) { throw "jpackage $pkgType failed" }
 }
