@@ -101,7 +101,7 @@
           </div>
         </div>
 
-        <!-- Demo animada: modo Lupa -->
+        <!-- Demo animada: modo Lupa (CSS, sin JS frágil) -->
         <div class="product-stage reveal" aria-label="Animación del modo Lupa de Forzen">
           <div class="product-glow" aria-hidden="true"></div>
           <div class="desktop-frame">
@@ -110,40 +110,37 @@
               <span class="title">Forzen · modo Lupa</span>
               <span class="demo-badge">LIVE DEMO</span>
             </div>
-            <div class="desktop-body demo-scene demo-scene--lens" data-demo="lens" aria-hidden="true">
-              <div class="scene-world" data-scene>
-                <div class="scene-app scene-mail">
-                  <div class="scene-app-bar">
-                    <span class="scene-dots"></span>
-                    <span class="scene-app-title">Correo — Bandeja de entrada</span>
-                  </div>
-                  <div class="scene-app-body">
-                    <p class="scene-h">Reunión de accesibilidad</p>
-                    <p class="scene-p">Mañana 10:00 · sala B · agenda adjunta</p>
-                    <p class="scene-p">Confirmar asistencia y compartir notas.</p>
-                    <p class="scene-p muted">De: Ana Ruiz · hace 12 min</p>
-                  </div>
-                </div>
-                <div class="scene-app scene-doc">
-                  <div class="scene-app-bar">
-                    <span class="scene-dots"></span>
-                    <span class="scene-app-title">Notas.md</span>
-                  </div>
-                  <div class="scene-app-body">
-                    <p class="scene-h">Checklist</p>
-                    <p class="scene-p">• Zoom 1x–8x estable</p>
-                    <p class="scene-p">• Multi-monitor + DPI</p>
-                    <p class="scene-p">• Click-through nativo</p>
-                  </div>
+            <div class="desktop-body fx-demo fx-demo--lens" aria-hidden="true">
+              <div class="fx-win fx-win--mail">
+                <div class="fx-win-bar"><span class="fx-dots"></span><span>Correo — Bandeja</span></div>
+                <div class="fx-win-body">
+                  <div class="fx-title">Reunión de accesibilidad</div>
+                  <div class="fx-line">Mañana 10:00 · sala B · agenda adjunta</div>
+                  <div class="fx-line">Confirmar asistencia y compartir notas.</div>
+                  <div class="fx-line fx-muted">De: Ana Ruiz · hace 12 min</div>
                 </div>
               </div>
-              <div class="demo-cursor" data-cursor></div>
-              <div class="demo-lens" data-lens>
-                <div class="demo-lens-view">
-                  <div class="scene-world scene-world--zoom" data-zoom-scene></div>
+              <div class="fx-win fx-win--notes">
+                <div class="fx-win-bar"><span class="fx-dots"></span><span>Notas.md</span></div>
+                <div class="fx-win-body">
+                  <div class="fx-title">Checklist</div>
+                  <div class="fx-line">• Zoom 1x–8x estable</div>
+                  <div class="fx-line">• Multi-monitor + DPI</div>
+                  <div class="fx-line">• Click-through nativo</div>
                 </div>
-                <div class="demo-crosshair"></div>
               </div>
+              <div class="fx-lens">
+                <div class="fx-lens-zoom">
+                  <div class="fx-zoom-card">
+                    <div class="fx-zoom-kicker">Correo</div>
+                    <div class="fx-zoom-title">Reunión de accesibilidad</div>
+                    <div class="fx-zoom-line">Mañana 10:00 · sala B</div>
+                    <div class="fx-zoom-line">Confirmar asistencia…</div>
+                  </div>
+                </div>
+                <div class="fx-cross"></div>
+              </div>
+              <div class="fx-cursor"></div>
             </div>
           </div>
           <p class="product-caption">Animación · Modo Lupa · sigue el cursor · zoom en vivo</p>
@@ -247,28 +244,27 @@
         </div>
         <div class="modes-grid modes-grid-2">
           <article class="mode-card reveal">
-            <div class="mode-preview demo-scene demo-scene--lens" data-demo="lens" aria-hidden="true">
-              <div class="scene-world" data-scene>
-                <div class="scene-app scene-mail compact">
-                  <div class="scene-app-bar">
-                    <span class="scene-dots"></span>
-                    <span class="scene-app-title">Navegador</span>
-                  </div>
-                  <div class="scene-app-body">
-                    <p class="scene-h">Artículo de prensa</p>
-                    <p class="scene-p">La lupa sigue el puntero con precisión.</p>
-                    <p class="scene-p">Texto pequeño se vuelve legible al instante.</p>
-                    <p class="scene-p muted">forzen.app · lectura cómoda</p>
-                  </div>
+            <div class="mode-preview fx-demo fx-demo--lens fx-demo--sm" aria-hidden="true">
+              <div class="fx-win fx-win--full">
+                <div class="fx-win-bar"><span class="fx-dots"></span><span>Navegador</span></div>
+                <div class="fx-win-body">
+                  <div class="fx-title">Artículo de prensa</div>
+                  <div class="fx-line">La lupa sigue el puntero con precisión.</div>
+                  <div class="fx-line">Texto pequeño se vuelve legible al instante.</div>
+                  <div class="fx-line fx-muted">forzen.app · lectura cómoda</div>
                 </div>
               </div>
-              <div class="demo-cursor" data-cursor></div>
-              <div class="demo-lens demo-lens--sm" data-lens>
-                <div class="demo-lens-view">
-                  <div class="scene-world scene-world--zoom" data-zoom-scene></div>
+              <div class="fx-lens fx-lens--sm">
+                <div class="fx-lens-zoom">
+                  <div class="fx-zoom-card">
+                    <div class="fx-zoom-kicker">Navegador</div>
+                    <div class="fx-zoom-title">Artículo de prensa</div>
+                    <div class="fx-zoom-line">La lupa sigue el puntero…</div>
+                  </div>
                 </div>
-                <div class="demo-crosshair"></div>
+                <div class="fx-cross"></div>
               </div>
+              <div class="fx-cursor"></div>
               <span class="mode-live">Animado</span>
             </div>
             <div class="mode-body">
@@ -277,28 +273,26 @@
             </div>
           </article>
           <article class="mode-card reveal">
-            <div class="mode-preview demo-scene demo-scene--dock" data-demo="dock" aria-hidden="true">
-              <div class="scene-world" data-scene>
-                <div class="scene-app scene-mail compact">
-                  <div class="scene-app-bar">
-                    <span class="scene-dots"></span>
-                    <span class="scene-app-title">Hoja de cálculo</span>
-                  </div>
-                  <div class="scene-app-body">
-                    <p class="scene-h">Presupuesto Q3</p>
-                    <p class="scene-p">Fila 12 · Total: $4.280</p>
-                    <p class="scene-p">Celda C7 resaltada al pasar</p>
-                    <p class="scene-p muted">El panel no tapa todo el escritorio</p>
-                  </div>
+            <div class="mode-preview fx-demo fx-demo--dock" aria-hidden="true">
+              <div class="fx-win fx-win--full">
+                <div class="fx-win-bar"><span class="fx-dots"></span><span>Hoja de cálculo</span></div>
+                <div class="fx-win-body">
+                  <div class="fx-title">Presupuesto Q3</div>
+                  <div class="fx-line">Fila 12 · Total: $4.280</div>
+                  <div class="fx-line">Celda C7 resaltada al pasar</div>
+                  <div class="fx-line fx-muted">El panel no tapa todo el escritorio</div>
                 </div>
               </div>
-              <div class="demo-cursor" data-cursor></div>
-              <div class="demo-dock" data-dock>
-                <div class="demo-dock-chrome">
-                  <span>Acoplado · 3×</span>
-                </div>
-                <div class="demo-dock-view">
-                  <div class="scene-world scene-world--zoom" data-zoom-scene></div>
+              <div class="fx-cursor fx-cursor--dock"></div>
+              <div class="fx-dock">
+                <div class="fx-dock-bar">Acoplado · 3×</div>
+                <div class="fx-dock-zoom">
+                  <div class="fx-zoom-card">
+                    <div class="fx-zoom-kicker">Celda C7</div>
+                    <div class="fx-zoom-title">$4.280</div>
+                    <div class="fx-zoom-line">Fila 12 · Total Q3</div>
+                    <div class="fx-zoom-line">Presupuesto ampliado</div>
+                  </div>
                 </div>
               </div>
               <span class="mode-live">Animado</span>
