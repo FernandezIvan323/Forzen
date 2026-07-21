@@ -1,14 +1,18 @@
 # Forzen — pendientes (retomar)
 
 **Estado al guardar:** web + release v1.2.0 listos para usuarios.  
-**No bloqueante:** falta sobre todo confianza de instalación y compartir.
+**No bloqueante:** falta sobre todo confianza de instalación y compartir.  
+**Última sesión (2026-07-21):** OG banner, SHA-256 en release, enlace VT por hash.
 
 ## Alta prioridad
-1. Firma de código del `.exe` (SmartScreen).
-2. VirusTotal: subir `Forzen-Setup-1.2.0.exe` y enlazar el **reporte concreto** en `download.html` (hoy solo “subir archivo”).
-3. Banner **OG 1200×630** (`docs/og-banner.png`) para WhatsApp/Discord/X.
-4. Publicar **SHA-256** también en el body del release de GitHub  
-   (hash web: `DC98E14C2C1D4FA9E1A55B77BED2882955C42549CB9617072EF695D3932BD2D2`).
+1. Firma de código del `.exe` (SmartScreen). — **pendiente** (certificado Authenticode / CI).
+2. VirusTotal: subir `Forzen-Setup-1.2.0.exe` **una vez** y confirmar que el reporte existe.  
+   - Enlace ya apunta al hash:  
+     https://www.virustotal.com/gui/file/dc98e14c2c1d4fa9e1a55b77bed2882955c42549cb9617072ef695d3932bd2d2  
+   - Si VT dice “not found”, subir el `.exe` desde la UI de VT (download.html tiene el botón).
+3. ~~Banner **OG 1200×630** (`docs/og-banner.png`)~~ — **hecho** (meta en index / download / panel).
+4. ~~Publicar **SHA-256** en el body del release de GitHub~~ — **hecho**  
+   (exe `DC98E14C…D2D2`, msi `4BC09B27…283A`).
 
 ## Media
 5. Capturas reales de la app en Panel de control (sustituir mocks CSS).
@@ -27,13 +31,15 @@
 14. Beta con usuarios de baja visión.
 15. Decidir **1.2.1** (hotfix) vs **1.3** (foco + firma).
 
-## Primeros 3 pasos al retomar
-1. Subir .exe a VirusTotal → pegar URL en `download.html`.
-2. Generar y colgar `og-banner.png`.
-3. Prueba en máquina limpia + issues.
+## Primeros pasos al retomar (ahora)
+1. **Vos:** abrir [VirusTotal upload](https://www.virustotal.com/gui/home/upload), subir `Forzen-Setup-1.2.0.exe`, esperar el reporte y (si queda limpio) opcionalmente badge en download.
+2. Push de esta rama / commit con `og-banner.png` + meta OG (si aún no está en `main`).
+3. Probar preview de enlace en WhatsApp/Discord (caché OG a veces tarda).
+4. Prueba en máquina limpia + issues.
 
 ## Enlaces útiles
 - Web: https://FernandezIvan323.github.io/Forzen/
 - Descarga: https://FernandezIvan323.github.io/Forzen/download.html
 - Panel: https://FernandezIvan323.github.io/Forzen/panel-de-control.html
 - Release: https://github.com/FernandezIvan323/Forzen/releases/tag/v1.2.0
+- OG image: https://FernandezIvan323.github.io/Forzen/og-banner.png
