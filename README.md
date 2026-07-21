@@ -38,7 +38,7 @@ Desinstalar: **Configuración de Windows → Aplicaciones → Forzen**.
 | 🖥️ | Multi-monitor + corrección DPI |
 | 🎨 | Filtros de color + brillo/contraste/saturación |
 | ⌨️ | Atajos globales personalizables · Soft Dark Ajustes |
-| 📝 | OCR opcional + TTS (Windows Speech) |
+| 📝 | OCR + TTS **experimentales** (Tesseract / Windows Speech; no del núcleo) |
 | 🚀 | Iniciar con Windows |
 | 📊 | FPS opcional |
 
@@ -53,7 +53,7 @@ Desinstalar: **Configuración de Windows → Aplicaciones → Forzen**.
 | Pausar / Reanudar | `Ctrl + Alt + Z` |
 | Cambiar modo | `Ctrl + Alt + M` |
 | Abrir ajustes | `Ctrl + Alt + ,` |
-| OCR | `Ctrl + Alt + T` |
+| OCR (experimental) | `Ctrl + Alt + T` |
 | Salir | `Ctrl + Alt + X` |
 | **Salir de Full-Screen** | `Esc` (vuelve a lupa; no hace falta apagar el PC) |
 

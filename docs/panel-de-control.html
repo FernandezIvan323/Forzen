@@ -433,16 +433,19 @@
           </div>
         </section>
 
-        <!-- Texto -->
+        <!-- Texto (experimental — alineado con la app; no en la landing de producto) -->
         <section class="pc-section reveal" id="texto">
           <header class="pc-section-head">
-            <p class="section-kicker">// texto</p>
-            <h2>Texto</h2>
-            <p>Sección opcional de la app para reconocimiento de texto y lectura en voz. Depende de componentes del sistema (no es el núcleo de la lupa).</p>
+            <p class="section-kicker">// texto · experimental</p>
+            <h2>Texto <span class="pc-badge-exp" style="font-size:0.55em;vertical-align:middle;margin-left:0.35rem;padding:0.2rem 0.5rem;border:1px solid var(--border-strong);border-radius:999px;color:var(--muted);font-weight:600;letter-spacing:0.04em;">EXPERIMENTAL</span></h2>
+            <p>
+              OCR y lectura en voz <strong>no forman parte del núcleo</strong> de Forzen (la lupa funciona sin ellos).
+              No se promocionan en la página de inicio. Requieren software del sistema (Tesseract / Windows Speech).
+            </p>
           </header>
 
           <div class="pc-mock" aria-hidden="true">
-            <div class="pc-mock-chrome"><i></i><i></i><i></i><span>Texto</span></div>
+            <div class="pc-mock-chrome"><i></i><i></i><i></i><span>Texto · experimental</span></div>
             <div class="pc-mock-body">
               <div class="pc-mock-side">
                 <span>Controles</span>
@@ -451,11 +454,11 @@
               </div>
               <div class="pc-mock-content">
                 <div class="pc-mock-card">
-                  <div class="pc-mock-card-h">Reconocimiento de texto</div>
-                  <div class="pc-mock-sub">Estado OCR según el sistema</div>
+                  <div class="pc-mock-card-h">OCR (experimental)</div>
+                  <div class="pc-mock-sub">Tess4J + Tesseract si están instalados</div>
                 </div>
                 <div class="pc-mock-card">
-                  <div class="pc-mock-card-h">Texto a voz</div>
+                  <div class="pc-mock-card-h">Texto a voz (experimental)</div>
                   <div class="pc-mock-sub">Windows Speech (si disponible)</div>
                 </div>
               </div>
@@ -465,18 +468,18 @@
           <div class="pc-controls">
             <article class="pc-control">
               <h3>OCR (reconocimiento)</h3>
-              <p>Si el motor está disponible en tu PC, puede reconocer texto bajo la lupa. Si no, la sección indica qué falta instalar.</p>
-              <span class="pc-meta">Opcional</span>
+              <p>Si Tesseract está en el PC, puede reconocer texto bajo la lupa (<kbd class="kbd">Ctrl+Alt+T</kbd>). Si no, la sección indica qué falta. No es necesario para usar el zoom.</p>
+              <span class="pc-meta">Experimental</span>
             </article>
             <article class="pc-control">
               <h3>Texto a voz</h3>
-              <p>Lee en voz alta el resultado del OCR usando la voz del sistema (offline cuando el SO lo permite).</p>
-              <span class="pc-meta">Opcional</span>
+              <p>Lee en voz alta el resultado del OCR con la voz del sistema (offline cuando el SO lo permite).</p>
+              <span class="pc-meta">Experimental</span>
             </article>
             <article class="pc-control">
-              <h3>Preferencias experimentales</h3>
-              <p>Casillas de OCR automático / leer tras OCR: funciones experimentales. La lupa funciona igual sin activarlas.</p>
-              <span class="pc-meta">Avanzado</span>
+              <h3>Preferencias automáticas</h3>
+              <p>OCR automático y “leer tras OCR” son casillas experimentales. La lupa no depende de ellas.</p>
+              <span class="pc-meta">Experimental</span>
             </article>
           </div>
         </section>

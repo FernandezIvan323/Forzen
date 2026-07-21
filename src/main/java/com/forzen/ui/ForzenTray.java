@@ -86,7 +86,7 @@ public class ForzenTray {
         settingsItem.addActionListener(e -> Platform.runLater(app::openSettings));
         popup.add(settingsItem);
 
-        MenuItem ocrItem = new MenuItem("OCR ahora (Ctrl+Alt+T)");
+        MenuItem ocrItem = new MenuItem("OCR ahora — experimental (Ctrl+Alt+T)");
         ocrItem.addActionListener(e -> Platform.runLater(app::runOcrOnce));
         popup.add(ocrItem);
 

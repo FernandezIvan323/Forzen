@@ -1,0 +1,88 @@
+name: Pages smoke (docs links)
+
+on:
+  push:
+    paths:
+      - 'docs/**'
+      - '.github/workflows/pages-smoke.yml'
+  pull_request:
+    paths:
+      - 'docs/**'
+      - '.github/workflows/pages-smoke.yml'
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check local docs assets and anchors
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd docs
+          fail=0
+
+          # Required static assets for Pages / OG / icons
+          for f in index.html download.html panel-de-control.html style.css app.js a11y.js \
+                   favicon.ico favicon-32.png favicon-256.png og-banner.png \
+                   robots.txt sitemap.xml; do
+            if [[ ! -f "$f" ]]; then
+              echo "MISSING asset: $f"
+              fail=1
+            else
+              echo "ok asset: $f"
+            fi
+          done
+
+          # Collect relative href/src that are not anchors, data:, mailto:, http(s)
+          mapfile -t refs < <(
+            grep -RhoE '(href|src)="[^"]+"' --include='*.html' . \
+              | sed -E 's/^(href|src)="//; s/"$//' \
+              | grep -vE '^(https?:|mailto:|data:|#|//)' \
+              | sed 's/[?#].*$//' \
+              | sort -u
+          )
+
+          for ref in "${refs[@]}"; do
+            # skip empty
+            [[ -z "$ref" ]] && continue
+            if [[ ! -e "$ref" ]]; then
+              echo "BROKEN local ref: $ref"
+              fail=1
+            else
+              echo "ok ref: $ref"
+            fi
+          done
+
+          # Anchors used from same-page links in download/index/panel
+          for page in index.html download.html panel-de-control.html; do
+            mapfile -t anchors < <(
+              grep -oE 'id="[^"]+"' "$page" | sed 's/id="//;s/"$//' | sort -u
+            )
+            mapfile -t wanted < <(
+              grep -oE 'href="#[^"]+"' "$page" | sed 's/href="#//;s/"$//' | sort -u
+            )
+            for a in "${wanted[@]}"; do
+              if ! printf '%s\n' "${anchors[@]}" | grep -qxF "$a"; then
+                echo "BROKEN anchor on $page: #$a"
+                fail=1
+              else
+                echo "ok anchor $page:#$a"
+              fi
+            done
+          done
+
+          # sitemap should list the three public pages
+          for path in '/Forzen/' '/Forzen/download.html' '/Forzen/panel-de-control.html'; do
+            if ! grep -qF "$path" sitemap.xml; then
+              echo "sitemap missing: $path"
+              fail=1
+            fi
+          done
+
+          if [[ "$fail" -ne 0 ]]; then
+            echo "::error::Pages smoke failed"
+            exit 1
+          fi
+          echo "Pages smoke OK"
