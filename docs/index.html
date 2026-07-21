@@ -24,7 +24,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=14" />
+  <link rel="stylesheet" href="style.css?v=15" />
   <meta property="og:image:alt" content="Forzen — Lupa rápida y sin anuncios para Windows" />
   <meta name="twitter:title" content="Forzen — Lupa Inteligente para Windows" />
   <meta name="twitter:description" content="Lupa rápida y sin anuncios para Windows. Gratuito, open source." />
@@ -363,27 +363,73 @@
       </div>
     </section>
 
-    <!-- Try interactive lens -->
+    <!-- Try interactive lens + dock -->
     <section class="section" id="try">
       <div class="container">
         <div class="section-head reveal">
           <p class="section-kicker">// prueba</p>
-          <h2>Prueba la lupa en el navegador</h2>
-          <p>Mueve el ratón sobre el texto. Es una simulación: en Windows la captura es del sistema real.</p>
+          <h2>Prueba Forzen en el navegador</h2>
+          <p>Elige modo, mueve el cursor sobre la escena. Simulación web: en Windows la captura es del sistema real.</p>
         </div>
-        <div class="reveal" style="max-width: 720px; margin-inline: auto;">
-          <div class="live-lens" id="live-lens" aria-label="Demo interactiva de lupa">
+        <div class="reveal live-wrap">
+          <div class="live-mode-toggle" role="group" aria-label="Modo de demo">
+            <button type="button" class="live-mode-btn is-on" data-live-mode="lens" aria-pressed="true">Lupa</button>
+            <button type="button" class="live-mode-btn" data-live-mode="dock" aria-pressed="false">Acoplado</button>
+          </div>
+          <div class="live-lens live-stage" id="live-lens" data-live-mode="lens" aria-label="Demo interactiva Lupa y Acoplado">
             <div class="live-lens-scene" data-live-scene>
-              <h3>Texto de prueba · baja visión</h3>
-              <p>Esta línea es deliberadamente pequeña en el diseño base. Con la lupa del cursor deberías leerla con más comodidad.</p>
-              <p>Forzen en el escritorio amplía cualquier app: navegador, PDF, hojas de cálculo o el propio sistema.</p>
-              <p style="color: var(--muted-2); font-size: 0.8rem;">Zoom simulado ~2.2× · solo en esta caja</p>
+              <div class="live-scene-grid">
+                <div class="live-win live-win-mail">
+                  <div class="live-win-bar"><span class="live-dots"></span><span>Correo</span></div>
+                  <div class="live-win-body">
+                    <p class="live-win-title">Reunión de accesibilidad</p>
+                    <p class="live-win-line">Mañana 10:00 · sala B</p>
+                    <p class="live-win-line muted">Adjunto: agenda.pdf</p>
+                  </div>
+                </div>
+                <div class="live-win live-win-media">
+                  <div class="live-win-bar"><span class="live-dots"></span><span>Forzen</span></div>
+                  <div class="live-win-body live-media-body">
+                    <img src="favicon-256.png" width="96" height="96" alt="" class="live-app-img" />
+                    <div>
+                      <p class="live-win-title">Icono de la app</p>
+                      <p class="live-win-line">Amplía imágenes, iconos y UI, no solo texto.</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="live-win live-win-sheet">
+                  <div class="live-win-bar"><span class="live-dots"></span><span>Hoja · Q3</span></div>
+                  <div class="live-win-body">
+                    <div class="live-table" aria-hidden="true">
+                      <span></span><span></span><span></span>
+                      <span></span><span class="hi"></span><span></span>
+                      <span></span><span></span><span></span>
+                    </div>
+                    <p class="live-win-line muted">Celda C7 · Total $4.280</p>
+                  </div>
+                </div>
+                <div class="live-win live-win-photo">
+                  <div class="live-win-bar"><span class="live-dots"></span><span>Foto</span></div>
+                  <div class="live-photo" aria-hidden="true">
+                    <img src="apple-touch-icon.png" width="120" height="120" alt="" />
+                    <span class="live-photo-cap">Detalle visual</span>
+                  </div>
+                </div>
+              </div>
+              <p class="live-scene-caption">Escritorio de práctica · mueve el cursor por ventanas e imágenes</p>
             </div>
             <div class="live-lens-glass" data-live-glass aria-hidden="true">
-              <div class="live-lens-zoom" data-live-zoom></div>
+              <div class="live-lens-zoom" data-live-zoom-lens></div>
             </div>
+            <div class="live-dock" data-live-dock aria-hidden="true">
+              <div class="live-dock-bar">Acoplado · 3×</div>
+              <div class="live-dock-view">
+                <div class="live-lens-zoom" data-live-zoom-dock></div>
+              </div>
+            </div>
+            <div class="live-cursor" data-live-cursor aria-hidden="true"></div>
           </div>
-          <p class="live-lens-hint">Pasa el cursor por la caja · en móvil usa el dedo si el navegador lo permite</p>
+          <p class="live-lens-hint">Lupa = círculo al cursor · Acoplado = panel fijo · área ampliada de práctica</p>
         </div>
       </div>
     </section>
@@ -596,8 +642,8 @@
     </div>
   </footer>
 
-  <script src="a11y.js?v=14"></script>
-  <script src="demo-interactive.js?v=14"></script>
-  <script src="app.js?v=14"></script>
+  <script src="a11y.js?v=15"></script>
+  <script src="demo-interactive.js?v=15"></script>
+  <script src="app.js?v=15"></script>
 </body>
 </html>
