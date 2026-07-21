@@ -1513,6 +1513,7 @@ section { position: relative; z-index: 1; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
+  .pc-float-lens { animation: none !important; }
   /* Demos still move via JS (product showcase); only soften page chrome */
   .reveal { opacity: 1; transform: none; transition: none; }
   .btn:hover,
@@ -1537,21 +1538,74 @@ section { position: relative; z-index: 1; }
 
 /* ─── Panel de control (guía de Ajustes) ─── */
 .pc-hero {
-  padding-bottom: 1.5rem;
+  padding-bottom: 1.25rem;
+}
+.pc-hero .hero-lead {
+  margin-bottom: 0.85rem;
 }
 .pc-open-hint {
-  margin-top: 1rem;
+  margin-top: 0;
   font-size: 0.88rem;
   color: var(--muted);
 }
+
+/* Floating magnifier icons — fill empty background (panel page only) */
+.pc-bg-lenses {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.pc-float-lens {
+  position: absolute;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 2.5px solid var(--accent);
+  opacity: 0.09;
+  box-shadow: 0 0 24px var(--accent-glow);
+  background: transparent;
+  animation: pcLensFloat 14s ease-in-out infinite;
+}
+.pc-float-lens::after {
+  /* handle */
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 4px;
+  background: var(--accent);
+  border-radius: 2px;
+  right: -12px;
+  bottom: 6px;
+  transform: rotate(42deg);
+  box-shadow: 0 0 10px var(--accent-glow);
+}
+.pc-float-lens.l1 { top: 18%; left: 6%; width: 48px; height: 48px; animation-duration: 16s; animation-delay: 0s; opacity: 0.07; }
+.pc-float-lens.l2 { top: 42%; right: 7%; width: 64px; height: 64px; animation-duration: 18s; animation-delay: -3s; opacity: 0.1; }
+.pc-float-lens.l3 { top: 68%; left: 12%; width: 40px; height: 40px; animation-duration: 13s; animation-delay: -6s; opacity: 0.08; }
+.pc-float-lens.l4 { top: 28%; right: 18%; width: 36px; height: 36px; animation-duration: 15s; animation-delay: -2s; opacity: 0.06; }
+.pc-float-lens.l5 { bottom: 12%; right: 28%; width: 52px; height: 52px; animation-duration: 17s; animation-delay: -8s; opacity: 0.09; }
+@keyframes pcLensFloat {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  33% { transform: translate(12px, -18px) rotate(6deg); }
+  66% { transform: translate(-10px, 10px) rotate(-4deg); }
+}
+
+/* TOC pegado a la izquierda + contenido */
 .pc-layout {
   display: grid;
-  grid-template-columns: 200px 1fr;
-  gap: 1.75rem;
+  grid-template-columns: 188px minmax(0, 720px);
+  gap: 1.5rem 2rem;
   align-items: start;
-  padding-bottom: 2.5rem;
+  justify-content: start;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0 1.25rem 2.5rem 1rem;
   position: relative;
   z-index: 1;
+  box-sizing: border-box;
 }
 .pc-toc {
   position: sticky;
@@ -1559,10 +1613,14 @@ section { position: relative; z-index: 1; }
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
-  padding: 0.85rem 0.75rem;
+  padding: 0.85rem 0.65rem;
   border-radius: var(--radius);
   border: 1px solid var(--border);
-  background: var(--surface);
+  background: rgba(10, 10, 12, 0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  justify-self: start;
+  width: 100%;
 }
 .pc-toc-label {
   font-family: var(--font-mono);
@@ -1925,6 +1983,7 @@ section { position: relative; z-index: 1; }
 @media (max-width: 900px) {
   .pc-layout {
     grid-template-columns: 1fr;
+    padding: 0 1.1rem 2rem;
   }
   .pc-toc {
     position: relative;
@@ -1935,6 +1994,8 @@ section { position: relative; z-index: 1; }
   }
   .pc-toc-label { width: 100%; }
   .pc-toc a { font-size: 0.82rem; }
+  .pc-float-lens.l4,
+  .pc-float-lens.l5 { display: none; }
 }
 @media (max-width: 560px) {
   .pc-mock-body { grid-template-columns: 1fr; }

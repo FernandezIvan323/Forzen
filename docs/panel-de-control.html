@@ -12,13 +12,20 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=8" />
+  <link rel="stylesheet" href="style.css?v=9" />
 </head>
-<body>
+<body class="page-panel">
   <div class="bg-fx" aria-hidden="true">
     <div class="orb orb-a"></div>
     <div class="orb orb-b"></div>
     <div class="noise"></div>
+  </div>
+  <div class="pc-bg-lenses" aria-hidden="true">
+    <span class="pc-float-lens l1"></span>
+    <span class="pc-float-lens l2"></span>
+    <span class="pc-float-lens l3"></span>
+    <span class="pc-float-lens l4"></span>
+    <span class="pc-float-lens l5"></span>
   </div>
 
   <header class="site-header">
@@ -51,17 +58,13 @@
           Recorre cada sección de Ajustes como en la app. Qué hace cada control,
           cómo se ve y tips para configurar Forzen antes de usarlo.
         </p>
-        <div class="hero-actions">
-          <a class="btn btn-primary" href="download.html">Descargar Forzen</a>
-          <a class="btn btn-ghost" href="#general">Empezar por General</a>
-        </div>
         <p class="pc-open-hint">
           En la app: <kbd class="kbd">Ctrl + Alt + O</kbd> o icono de bandeja → Ajustes.
         </p>
       </div>
     </section>
 
-    <div class="container pc-layout">
+    <div class="pc-layout">
       <aside class="pc-toc" aria-label="Secciones del panel">
         <p class="pc-toc-label">Secciones</p>
         <a href="#abrir">Abrir y guardar</a>
@@ -583,6 +586,6 @@
     </div>
   </footer>
 
-  <script src="app.js?v=8"></script>
+  <script src="app.js?v=9"></script>
 </body>
 </html>
