@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <!-- Hotspot near index tip: 10 3 -->
+  <path fill="#10ff8c" stroke="#003318" stroke-width="1" stroke-linejoin="round"
+    d="M9 2h3v10h2V6h2v6h2V7h2v6h2V9h2l1 1v6l-1 6-3 4h-8l-4-3-1-6-3-2v-3l4 1V12H9V2z"/>
+</svg>
