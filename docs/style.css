@@ -413,79 +413,80 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
   overflow: hidden;
 }
 
-/* ─── Product demos (lens + docked) ─── */
-.demo-scene {
+/* ─── Product demos (pure CSS — lens + docked) ─── */
+.fx-demo {
   position: relative;
   width: 100%;
   height: 100%;
+  min-height: 200px;
   overflow: hidden;
-  --zoom: 2.15;
-  --hot-x: 42%;
-  --hot-y: 48%;
+  isolation: isolate;
 }
-.scene-world {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
+.mode-preview.fx-demo {
+  height: 210px;
+  min-height: 210px;
+  background:
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(145deg, #101510, #0b0f0c 55%, #0a1210);
+  background-size: 20px 20px, 20px 20px, auto;
 }
-.scene-app {
+
+/* Fake app windows */
+.fx-win {
   position: absolute;
   border-radius: 10px;
-  border: 1px solid rgba(255,255,255,0.1);
-  background: rgba(16, 18, 20, 0.94);
-  box-shadow: 0 14px 36px rgba(0,0,0,0.4);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #12141a;
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.45);
   overflow: hidden;
+  z-index: 1;
 }
-.scene-mail {
+.fx-win--mail {
   top: 10%;
   left: 6%;
   width: 52%;
-  height: 62%;
+  height: 64%;
 }
-.scene-doc {
+.fx-win--notes {
   top: 22%;
   right: 7%;
   width: 36%;
-  height: 52%;
+  height: 54%;
 }
-.scene-app.compact {
+.fx-win--full {
   top: 12%;
   left: 8%;
   right: 8%;
   width: auto;
-  height: 70%;
+  height: 68%;
 }
-.scene-app-bar {
+.fx-win-bar {
   display: flex;
   align-items: center;
   gap: 0.45rem;
   height: 26px;
   padding: 0 10px;
-  background: rgba(255,255,255,0.04);
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  background: #1a1c22;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: var(--muted-2);
+  white-space: nowrap;
+  overflow: hidden;
 }
-.scene-dots {
+.fx-dots {
   width: 34px;
   height: 8px;
   border-radius: 999px;
+  flex-shrink: 0;
   background:
     radial-gradient(circle at 4px 50%, #ff5f57 3px, transparent 3.5px),
     radial-gradient(circle at 14px 50%, #febc2e 3px, transparent 3.5px),
     radial-gradient(circle at 24px 50%, #28c840 3px, transparent 3.5px);
-  flex-shrink: 0;
 }
-.scene-app-title {
-  font-size: 0.62rem;
-  color: var(--muted-2);
-  font-family: var(--font-mono);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.scene-app-body {
-  padding: 12px 12px 10px;
-}
-.scene-h {
+.fx-win-body { padding: 12px; }
+.fx-title {
   font-family: var(--font-display);
   font-size: 0.78rem;
   font-weight: 600;
@@ -493,98 +494,149 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
   margin-bottom: 0.45rem;
   line-height: 1.25;
 }
-.scene-p {
+.fx-line {
   font-size: 0.62rem;
   color: #d4d4d8;
-  line-height: 1.45;
+  line-height: 1.5;
   margin-bottom: 0.28rem;
 }
-.scene-p.muted {
-  color: var(--muted-2);
-  margin-top: 0.35rem;
+.fx-muted { color: var(--muted-2); margin-top: 0.35rem; }
+
+/* Shared motion path (lens + cursor) */
+@keyframes fxTrack {
+  0%, 100% { left: 32%; top: 42%; }
+  20%      { left: 52%; top: 30%; }
+  45%      { left: 68%; top: 48%; }
+  70%      { left: 48%; top: 64%; }
+  85%      { left: 28%; top: 56%; }
+}
+@keyframes fxTrackDock {
+  0%, 100% { left: 28%; top: 38%; }
+  25%      { left: 48%; top: 34%; }
+  50%      { left: 62%; top: 52%; }
+  75%      { left: 40%; top: 62%; }
+}
+/* Opposite pan so zoom content feels linked to focus */
+@keyframes fxZoomPan {
+  0%, 100% { transform: translate(-18%, -22%) scale(1); }
+  20%      { transform: translate(-38%, -10%) scale(1); }
+  45%      { transform: translate(-52%, -28%) scale(1); }
+  70%      { transform: translate(-34%, -42%) scale(1); }
+  85%      { transform: translate(-14%, -36%) scale(1); }
+}
+@keyframes fxDockPan {
+  0%, 100% { transform: translate(-10%, -8%); }
+  25%      { transform: translate(-28%, -4%); }
+  50%      { transform: translate(-40%, -20%); }
+  75%      { transform: translate(-22%, -30%); }
 }
 
-/* Cursor (classic pointer tip at hot-point) */
-.demo-cursor {
+/* Cursor */
+.fx-cursor {
   position: absolute;
   width: 16px;
   height: 20px;
-  z-index: 8;
-  left: var(--hot-x);
-  top: var(--hot-y);
-  transform: translate(0, 0);
+  z-index: 10;
+  left: 32%;
+  top: 42%;
+  margin: 0;
   pointer-events: none;
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.6));
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.65));
   background: #f4f4f5;
-  clip-path: polygon(
-    0 0,
-    0 82%,
-    22% 64%,
-    40% 100%,
-    54% 94%,
-    34% 56%,
-    68% 56%
-  );
-  transition: left 0.05s linear, top 0.05s linear;
+  clip-path: polygon(0 0, 0 82%, 22% 64%, 40% 100%, 54% 94%, 34% 56%, 68% 56%);
+  animation: fxTrack 8s ease-in-out infinite;
+}
+.fx-cursor--dock {
+  animation-name: fxTrackDock;
+  animation-duration: 9s;
 }
 
 /* Circular lens */
-.demo-lens {
+.fx-lens {
   position: absolute;
-  width: min(38%, 148px);
-  aspect-ratio: 1;
+  width: 132px;
+  height: 132px;
+  left: 32%;
+  top: 42%;
+  margin-left: -66px;
+  margin-top: -66px;
   border-radius: 50%;
   border: 2.5px solid var(--green);
   box-shadow:
-    0 0 0 1px rgba(0,0,0,0.45),
-    0 0 30px var(--green-glow),
-    inset 0 0 20px rgba(52, 211, 153, 0.1);
+    0 0 0 1px rgba(0, 0, 0, 0.5),
+    0 0 28px var(--green-glow),
+    inset 0 0 18px rgba(52, 211, 153, 0.12);
   z-index: 6;
   overflow: hidden;
-  left: var(--hot-x);
-  top: var(--hot-y);
-  transform: translate(-50%, -50%);
   pointer-events: none;
-  background: #0a0c0b;
-  transition: left 0.05s linear, top 0.05s linear;
+  background: #0c100e;
+  clip-path: circle(50% at 50% 50%);
+  animation: fxTrack 8s ease-in-out infinite;
 }
-.demo-lens--sm {
-  width: min(42%, 88px);
+.fx-lens--sm {
+  width: 86px;
+  height: 86px;
+  margin-left: -43px;
+  margin-top: -43px;
   border-width: 2px;
 }
-.demo-lens-view {
+.fx-lens-zoom {
   position: absolute;
-  inset: 0;
-  overflow: hidden;
-  border-radius: 50%;
-}
-.demo-lens .scene-world--zoom {
-  position: absolute;
+  width: 220%;
+  height: 220%;
   left: 0;
   top: 0;
-  /* sized by JS to match scene; fallback */
-  width: 400px;
-  height: 280px;
-  transform-origin: 0 0;
+  animation: fxZoomPan 8s ease-in-out infinite;
   will-change: transform;
-  overflow: visible;
 }
-.scene-world--zoom-inner {
-  position: absolute !important;
-  inset: 0 !important;
+.fx-zoom-card {
+  position: absolute;
+  left: 12%;
+  top: 14%;
+  width: 70%;
+  padding: 14px 16px;
+  border-radius: 10px;
+  background: #161a1f;
+  border: 1px solid rgba(52, 211, 153, 0.25);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
 }
-.demo-crosshair {
+.fx-zoom-kicker {
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  color: var(--muted-2);
+  margin-bottom: 0.35rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.fx-zoom-title {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--accent-soft);
+  line-height: 1.2;
+  margin-bottom: 0.45rem;
+}
+.fx-zoom-line {
+  font-size: 0.78rem;
+  color: #e4e4e7;
+  line-height: 1.4;
+  margin-bottom: 0.25rem;
+}
+.fx-lens--sm .fx-zoom-title { font-size: 0.82rem; }
+.fx-lens--sm .fx-zoom-line { font-size: 0.65rem; }
+
+.fx-cross {
   position: absolute;
   left: 50%;
   top: 50%;
   width: 18px;
   height: 18px;
   transform: translate(-50%, -50%);
-  z-index: 3;
+  z-index: 4;
   pointer-events: none;
 }
-.demo-crosshair::before,
-.demo-crosshair::after {
+.fx-cross::before,
+.fx-cross::after {
   content: "";
   position: absolute;
   left: 50%;
@@ -592,65 +644,66 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
   background: var(--red);
   box-shadow: 0 0 8px rgba(248, 113, 113, 0.75);
 }
-.demo-crosshair::before {
+.fx-cross::before {
   width: 16px;
   height: 2px;
   transform: translate(-50%, -50%);
 }
-.demo-crosshair::after {
+.fx-cross::after {
   width: 2px;
   height: 16px;
   transform: translate(-50%, -50%);
 }
 
 /* Docked panel */
-.demo-dock {
+.fx-dock {
   position: absolute;
   right: 10px;
   bottom: 10px;
-  width: 46%;
-  height: 42%;
-  min-height: 72px;
+  width: 48%;
+  height: 44%;
+  min-width: 120px;
+  min-height: 78px;
   border-radius: 10px;
   border: 2px solid var(--green);
   box-shadow:
-    0 0 0 1px rgba(0,0,0,0.4),
-    0 12px 28px rgba(0,0,0,0.45),
-    0 0 24px var(--green-glow);
+    0 0 0 1px rgba(0, 0, 0, 0.4),
+    0 12px 28px rgba(0, 0, 0, 0.45),
+    0 0 22px var(--green-glow);
   overflow: hidden;
   z-index: 6;
-  background: #0a0c0b;
+  background: #0c100e;
   pointer-events: none;
 }
-.demo-dock-chrome {
+.fx-dock-bar {
   height: 22px;
   display: flex;
   align-items: center;
   padding: 0 8px;
-  background: rgba(52, 211, 153, 0.12);
-  border-bottom: 1px solid rgba(52, 211, 153, 0.25);
+  background: rgba(52, 211, 153, 0.14);
+  border-bottom: 1px solid rgba(52, 211, 153, 0.28);
   font-family: var(--font-mono);
   font-size: 0.58rem;
   color: var(--accent-soft);
   letter-spacing: 0.04em;
 }
-.demo-dock-view {
+.fx-dock-zoom {
   position: absolute;
   left: 0;
   right: 0;
   top: 22px;
   bottom: 0;
   overflow: hidden;
-  background: #0a0c0b;
 }
-.demo-dock .scene-world--zoom {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 400px;
-  height: 280px;
-  transform-origin: 0 0;
+.fx-dock-zoom .fx-zoom-card {
+  left: 8%;
+  top: 10%;
+  width: 84%;
+  animation: fxDockPan 9s ease-in-out infinite;
   will-change: transform;
+}
+.fx-dock-zoom .fx-zoom-title {
+  font-size: 1.15rem;
 }
 
 .product-caption {
@@ -809,21 +862,13 @@ section { position: relative; z-index: 1; }
 .mode-preview {
   height: 210px;
   position: relative;
-  background:
-    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px),
-    linear-gradient(145deg, #101510, #0b0f0c 55%, #0a1210);
-  background-size: 20px 20px, 20px 20px, auto;
   overflow: hidden;
-}
-.mode-preview.demo-scene {
-  height: 210px;
 }
 .mode-live {
   position: absolute;
   top: 10px;
   right: 10px;
-  z-index: 9;
+  z-index: 12;
   font-family: var(--font-mono);
   font-size: 0.58rem;
   letter-spacing: 0.08em;
@@ -1145,11 +1190,16 @@ section { position: relative; z-index: 1; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .demo-cursor,
-  .demo-lens,
-  .demo-dock .scene-world--zoom,
-  .demo-lens .scene-world--zoom {
-    transition: none !important;
+  .fx-cursor,
+  .fx-lens,
+  .fx-lens-zoom,
+  .fx-dock-zoom .fx-zoom-card {
+    animation: none !important;
+  }
+  .fx-lens,
+  .fx-cursor {
+    left: 48%;
+    top: 46%;
   }
   .reveal { opacity: 1; transform: none; transition: none; }
   .btn:hover,
@@ -1158,7 +1208,16 @@ section { position: relative; z-index: 1; }
 }
 
 @media (max-width: 720px) {
-  .scene-doc { display: none; }
-  .scene-mail { width: 84%; left: 8%; height: 68%; }
-  .demo-lens { width: min(44%, 120px); }
+  .fx-win--notes { display: none; }
+  .fx-win--mail {
+    width: 84%;
+    left: 8%;
+    height: 70%;
+  }
+  .fx-lens {
+    width: 110px;
+    height: 110px;
+    margin-left: -55px;
+    margin-top: -55px;
+  }
 }
