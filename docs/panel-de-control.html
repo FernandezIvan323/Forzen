@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Panel de control de Forzen: guía completa de Ajustes — General, Apariencia, Filtros, Controles, Comportamiento y más." />
+  <meta name="robots" content="index, follow" />
+  <title>Panel de control — Forzen Ajustes</title>
+  <link rel="canonical" href="https://FernandezIvan323.github.io/Forzen/panel-de-control.html" />
+  <link rel="icon" href="favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" href="favicon-32.png" sizes="32x32" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css?v=8" />
+</head>
+<body>
+  <div class="bg-fx" aria-hidden="true">
+    <div class="orb orb-a"></div>
+    <div class="orb orb-b"></div>
+    <div class="noise"></div>
+  </div>
+
+  <header class="site-header">
+    <div class="container nav-inner">
+      <a class="logo" href="index.html" aria-label="Forzen inicio">
+        <span class="logo-mark" aria-hidden="true"></span>
+        FOR<span>ZEN</span>
+      </a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" aria-label="Abrir menú">
+        <span></span>
+      </button>
+      <nav class="nav-links" id="primary-nav" aria-label="Principal">
+        <a href="index.html">Inicio</a>
+        <a href="index.html#features">Funciones</a>
+        <a href="panel-de-control.html" aria-current="page">Panel de control</a>
+        <a class="nav-cta" href="download.html">Descargar</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero pc-hero">
+      <div class="container" style="max-width: 720px;">
+        <p class="eyebrow">
+          <span class="eyebrow-dot" aria-hidden="true"></span>
+          Guía de Ajustes · v1.2.0
+        </p>
+        <h1>Panel de <em>control</em></h1>
+        <p class="hero-lead">
+          Recorre cada sección de Ajustes como en la app. Qué hace cada control,
+          cómo se ve y tips para configurar Forzen antes de usarlo.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="download.html">Descargar Forzen</a>
+          <a class="btn btn-ghost" href="#general">Empezar por General</a>
+        </div>
+        <p class="pc-open-hint">
+          En la app: <kbd class="kbd">Ctrl + Alt + O</kbd> o icono de bandeja → Ajustes.
+        </p>
+      </div>
+    </section>
+
+    <div class="container pc-layout">
+      <aside class="pc-toc" aria-label="Secciones del panel">
+        <p class="pc-toc-label">Secciones</p>
+        <a href="#abrir">Abrir y guardar</a>
+        <a href="#general">General</a>
+        <a href="#apariencia">Apariencia</a>
+        <a href="#filtros">Filtros</a>
+        <a href="#controles">Controles</a>
+        <a href="#texto">Texto</a>
+        <a href="#comportamiento">Comportamiento</a>
+        <a href="#avanzado">Avanzado</a>
+      </aside>
+
+      <div class="pc-main">
+
+        <!-- Abrir y guardar -->
+        <section class="pc-section reveal" id="abrir">
+          <header class="pc-section-head">
+            <p class="section-kicker">// base</p>
+            <h2>Abrir y guardar</h2>
+            <p>La ventana de Ajustes es una app normal: aparece en la barra de tareas, se puede minimizar y no bloquea el escritorio.</p>
+          </header>
+
+          <div class="pc-mock" aria-hidden="true">
+            <div class="pc-mock-chrome">
+              <i></i><i></i><i></i>
+              <span>Forzen — Ajustes</span>
+            </div>
+            <div class="pc-mock-body">
+              <div class="pc-mock-side">
+                <span class="on">General</span>
+                <span>Apariencia</span>
+                <span>Filtros</span>
+                <span>Controles</span>
+              </div>
+              <div class="pc-mock-content">
+                <div class="pc-mock-title">General</div>
+                <div class="pc-mock-sub">Zoom, modo y posición del panel</div>
+                <div class="pc-mock-card">
+                  <div class="pc-mock-card-h">Nivel de zoom</div>
+                  <div class="pc-mock-slider"><b style="width:42%"></b></div>
+                  <div class="pc-mock-val">3.0×</div>
+                </div>
+                <div class="pc-mock-foot">
+                  <span class="pill">Aplicar</span>
+                  <span class="pill ghost">Restaurar</span>
+                  <span class="pill ghost">Cerrar</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pc-controls">
+            <article class="pc-control">
+              <h3>Abrir Ajustes</h3>
+              <p>Atajo por defecto <kbd class="kbd">Ctrl + Alt + O</kbd>, o clic derecho en el icono de la bandeja → Ajustes.</p>
+              <span class="pc-meta">Global · reasignable</span>
+            </article>
+            <article class="pc-control">
+              <h3>Aplicar / Guardar</h3>
+              <p>Escribe los cambios en disco (Preferencias de Windows). Al reabrir Ajustes verás los valores guardados.</p>
+              <span class="pc-meta">Barra inferior</span>
+            </article>
+            <article class="pc-control">
+              <h3>Restaurar</h3>
+              <p>Vuelve a valores de fábrica de la sección o de la configuración según el botón de la barra.</p>
+              <span class="pc-meta">Barra inferior</span>
+            </article>
+            <article class="pc-control">
+              <h3>Minimizar / barra de tareas</h3>
+              <p>Ajustes se comporta como ventana normal: puedes minimizarla y volver desde la barra de tareas.</p>
+              <span class="pc-meta">Ventana</span>
+            </article>
+          </div>
+        </section>
+
+        <!-- General -->
+        <section class="pc-section reveal" id="general">
+          <header class="pc-section-head">
+            <p class="section-kicker">// general</p>
+            <h2>General</h2>
+            <p>El corazón del aumento: cuánto amplías, en qué modo y dónde se coloca el panel acoplado.</p>
+          </header>
+
+          <div class="pc-mock" aria-hidden="true">
+            <div class="pc-mock-chrome"><i></i><i></i><i></i><span>General</span></div>
+            <div class="pc-mock-body">
+              <div class="pc-mock-side">
+                <span class="on">General</span>
+                <span>Apariencia</span>
+                <span>Filtros</span>
+              </div>
+              <div class="pc-mock-content">
+                <div class="pc-mock-card">
+                  <div class="pc-mock-card-h">Modo de ampliación</div>
+                  <div class="pc-mock-seg">
+                    <b class="on">Lupa</b><b>Acoplado</b>
+                  </div>
+                </div>
+                <div class="pc-mock-card">
+                  <div class="pc-mock-card-h">Tamaño de la lupa (px)</div>
+                  <div class="pc-mock-spins"><span>320</span><span>×</span><span>320</span></div>
+                </div>
+                <div class="pc-mock-card">
+                  <div class="pc-mock-card-h">Posición del panel</div>
+                  <div class="pc-mock-combo">Arriba derecha ▾</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pc-controls">
+            <article class="pc-control">
+              <h3>Nivel de zoom</h3>
+              <p>Slider de <strong>1× a 8×</strong>. Define cuánto se amplía lo que hay bajo el cursor (o en el panel acoplado). También con atajos de teclado y la bandeja.</p>
+              <span class="pc-meta">1× – 8× · paso 0.5</span>
+            </article>
+            <article class="pc-control">
+              <h3>Modo Lupa</h3>
+              <p>Ventana circular o rectangular que <strong>sigue el cursor</strong>. Ideal para leer y trabajar en el día a día. Click-through: los clics pasan al escritorio.</p>
+              <span class="pc-meta">Por defecto</span>
+            </article>
+            <article class="pc-control">
+              <h3>Modo Acoplado</h3>
+              <p>Panel fijo en una esquina (o centro). Amplía la zona del cursor <strong>sin tapar toda la pantalla</strong>. Útil con hojas de cálculo o ventanas grandes.</p>
+              <span class="pc-meta">Atajo: Ctrl+Alt+M</span>
+            </article>
+            <article class="pc-control">
+              <h3>Tamaño de la lupa (px)</h3>
+              <p>Ancho y alto en píxeles del área ampliada (100–1200). Más grande = más contexto; más pequeño = menos estorbo.</p>
+              <span class="pc-meta">Spinners editables</span>
+            </article>
+            <article class="pc-control">
+              <h3>Posición del panel acoplado</h3>
+              <p>Elige esquina o centro: arriba/abajo × izquierda/derecha, o centro. <strong>Al elegir posición se activa el modo Acoplado.</strong> Recomendado: arriba derecha.</p>
+              <span class="pc-meta">5 posiciones</span>
+            </article>
+          </div>
+        </section>
+
+        <!-- Apariencia -->
+        <section class="pc-section reveal" id="apariencia">
+          <header class="pc-section-head">
+            <p class="section-kicker">// apariencia</p>
+            <h2>Apariencia</h2>
+            <p>Cómo se ve la ventana de Ajustes y el contorno de la lupa: tema, borde, forma y mira.</p>
+          </header>
+
+          <div class="pc-mock" aria-hidden="true">
+            <div class="pc-mock-chrome"><i></i><i></i><i></i><span>Apariencia</span></div>
+            <div class="pc-mock-body">
+              <div class="pc-mock-side">
+                <span>General</span>
+                <span class="on">Apariencia</span>
+                <span>Filtros</span>
+              </div>
+              <div class="pc-mock-content">
+                <div class="pc-mock-card">
+                  <div class="pc-mock-card-h">Tema de la interfaz</div>
+                  <div class="pc-mock-combo"><i class="sw"></i> Forzen Dark ▾</div>
+                </div>
+                <div class="pc-mock-card">
+                  <div class="pc-mock-card-h">Forma</div>
+                  <div class="pc-mock-radios">
+                    <span class="on">○ Circular</span>
+                    <span>○ Rectangular</span>
+                    <span>○ Redondeado</span>
+                  </div>
+                </div>
+                <div class="pc-mock-lens-row">
+                  <div class="pc-mock-lens-circle"></div>
+                  <div class="pc-mock-lens-label">Borde + mira</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pc-controls">
+            <article class="pc-control">
+              <h3>Tema de la interfaz</h3>
+              <p>Cinco presets para la ventana de Ajustes: <strong>Forzen Dark</strong> (por defecto), Midnight, Alto contraste, Slate y Solar (claro). Cambia colores de fondo, texto y acento.</p>
+              <span class="pc-meta">5 temas</span>
+            </article>
+            <article class="pc-control">
+              <h3>Borde de la lupa — grosor</h3>
+              <p>Ancho del contorno alrededor del área ampliada (0–10 px). Un borde visible ayuda a localizar la lupa en monitores grandes.</p>
+              <span class="pc-meta">0 – 10 px</span>
+            </article>
+            <article class="pc-control">
+              <h3>Borde — color y opacidad</h3>
+              <p>Selector de color y opacidad del contorno. Por defecto verde acento; puedes contrastarlo con el escritorio.</p>
+              <span class="pc-meta">Color + 0–100%</span>
+            </article>
+            <article class="pc-control">
+              <h3>Forma</h3>
+              <p><strong>Circular</strong>, <strong>rectangular</strong> o <strong>redondeado</strong>. En redondeado puedes ajustar el radio de las esquinas (0–80 px).</p>
+              <span class="pc-meta">3 formas</span>
+            </article>
+            <article class="pc-control">
+              <h3>Punto de mira (crosshair)</h3>
+              <p>Cruz en el centro de la lupa que marca el “hot-point” (píxel del cursor). Activa/desactiva y elige color (por defecto rojo).</p>
+              <span class="pc-meta">On/off + color</span>
+            </article>
+            <article class="pc-control">
+              <h3>Suavizado bilinear</h3>
+              <p>Mejora la calidad del escalado del zoom. Más suave al leer texto; si priorizas nitidez “pixelada”, puedes desactivarlo.</p>
+              <span class="pc-meta">Calidad</span>
+            </article>
+          </div>
+        </section>
+
+        <!-- Filtros -->
+        <section class="pc-section reveal" id="filtros">
+          <header class="pc-section-head">
+            <p class="section-kicker">// filtros</p>
+            <h2>Filtros</h2>
+            <p>Color y legibilidad aplicados en vivo a la imagen de la lupa (no a todo el escritorio).</p>
+          </header>
+
+          <div class="pc-mock" aria-hidden="true">
+            <div class="pc-mock-chrome"><i></i><i></i><i></i><span>Filtros</span></div>
+            <div class="pc-mock-body">
+              <div class="pc-mock-side">
+                <span>General</span>
+                <span>Apariencia</span>
+                <span class="on">Filtros</span>
+              </div>
+              <div class="pc-mock-content">
+                <div class="pc-mock-card">
+                  <div class="pc-mock-card-h">Modo de filtro</div>
+                  <div class="pc-mock-list">
+                    <span>○ Ninguno</span>
+                    <span class="on">● Invertir colores</span>
+                    <span>○ Alto contraste</span>
+                    <span>○ Escala de grises</span>
+                  </div>
+                </div>
+                <div class="pc-mock-card">
+                  <div class="pc-mock-card-h">Brillo · Contraste · Saturación</div>
+                  <div class="pc-mock-slider"><b style="width:50%"></b></div>
+                  <div class="pc-mock-slider"><b style="width:55%"></b></div>
+                  <div class="pc-mock-slider"><b style="width:40%"></b></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pc-controls">
+            <article class="pc-control">
+              <h3>Ninguno</h3>
+              <p>Sin filtro de color: ves la captura tal cual, solo ampliada.</p>
+              <span class="pc-meta">Por defecto</span>
+            </article>
+            <article class="pc-control">
+              <h3>Invertir colores</h3>
+              <p>Invierte la imagen (útil en documentos claros o fatiga visual nocturna).</p>
+              <span class="pc-meta">Filtro</span>
+            </article>
+            <article class="pc-control">
+              <h3>Alto contraste</h3>
+              <p>Aumenta la separación entre claros y oscuros para textos y UI densas.</p>
+              <span class="pc-meta">Filtro</span>
+            </article>
+            <article class="pc-control">
+              <h3>Escala de grises</h3>
+              <p>Quita el color. Reduce distracción al leer.</p>
+              <span class="pc-meta">Filtro</span>
+            </article>
+            <article class="pc-control">
+              <h3>Daltonismo</h3>
+              <p>Simulaciones / ayudas: <strong>Protanopía</strong> (rojo), <strong>Deuteranopía</strong> (verde), <strong>Tritanopía</strong> (azul).</p>
+              <span class="pc-meta">3 modos</span>
+            </article>
+            <article class="pc-control">
+              <h3>Brillo, contraste y saturación</h3>
+              <p>Sliders 0–200 (100 ≈ neutro). Se aplican en vivo sobre la lupa junto al modo de filtro.</p>
+              <span class="pc-meta">0 – 200</span>
+            </article>
+          </div>
+        </section>
+
+        <!-- Controles -->
+        <section class="pc-section reveal" id="controles">
+          <header class="pc-section-head">
+            <p class="section-kicker">// controles</p>
+            <h2>Controles</h2>
+            <p>Atajos globales de teclado. Funcionan aunque otra app tenga el foco.</p>
+          </header>
+
+          <div class="pc-mock" aria-hidden="true">
+            <div class="pc-mock-chrome"><i></i><i></i><i></i><span>Controles</span></div>
+            <div class="pc-mock-body">
+              <div class="pc-mock-side">
+                <span>Filtros</span>
+                <span class="on">Controles</span>
+                <span>Texto</span>
+              </div>
+              <div class="pc-mock-content">
+                <div class="pc-mock-card">
+                  <div class="pc-mock-card-h">Atajos globales</div>
+                  <div class="pc-mock-hk"><span>Zoom +</span><kbd>Ctrl+Alt+↑</kbd></div>
+                  <div class="pc-mock-hk"><span>Zoom −</span><kbd>Ctrl+Alt+↓</kbd></div>
+                  <div class="pc-mock-hk"><span>Cambiar modo</span><kbd>Ctrl+Alt+M</kbd></div>
+                  <div class="pc-mock-hk"><span>Abrir ajustes</span><kbd>Ctrl+Alt+O</kbd></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pc-controls">
+            <article class="pc-control">
+              <h3>Zoom + / Zoom −</h3>
+              <p>Sube o baja el nivel de aumento. Por defecto <kbd class="kbd">Ctrl+Alt+↑</kbd> y <kbd class="kbd">Ctrl+Alt+↓</kbd>.</p>
+              <span class="pc-meta">Atajo</span>
+            </article>
+            <article class="pc-control">
+              <h3>Pausar / Reanudar</h3>
+              <p>Congela o reactiva la captura de la lupa. Útil si quieres fijar una zona un momento.</p>
+              <span class="pc-meta">Ctrl+Alt+Z</span>
+            </article>
+            <article class="pc-control">
+              <h3>Cambiar modo</h3>
+              <p>Alterna Lupa ↔ Acoplado sin abrir Ajustes.</p>
+              <span class="pc-meta">Ctrl+Alt+M</span>
+            </article>
+            <article class="pc-control">
+              <h3>Abrir ajustes</h3>
+              <p>Abre esta ventana de Panel de control en la app.</p>
+              <span class="pc-meta">Ctrl+Alt+O</span>
+            </article>
+            <article class="pc-control">
+              <h3>Salir</h3>
+              <p>Cierra Forzen por completo (deja de capturar y quita el icono de bandeja).</p>
+              <span class="pc-meta">Ctrl+Alt+X</span>
+            </article>
+            <article class="pc-control">
+              <h3>Cambiar un atajo</h3>
+              <p>Pulsa <strong>Cambiar</strong> junto a la acción y escribe el nuevo combo (Ctrl/Alt/Shift + tecla). <kbd class="kbd">Esc</kbd> cancela.</p>
+              <span class="pc-meta">Personalizar</span>
+            </article>
+            <article class="pc-control">
+              <h3>Restaurar atajos por defecto</h3>
+              <p>Botón en Controles, o de emergencia: <kbd class="kbd">Ctrl+Alt+Shift+R</kbd>, o bandeja → Restaurar atajos si algo quedó mal configurado.</p>
+              <span class="pc-meta">Seguridad</span>
+            </article>
+          </div>
+        </section>
+
+        <!-- Texto -->
+        <section class="pc-section reveal" id="texto">
+          <header class="pc-section-head">
+            <p class="section-kicker">// texto</p>
+            <h2>Texto</h2>
+            <p>Sección opcional de la app para reconocimiento de texto y lectura en voz. Depende de componentes del sistema (no es el núcleo de la lupa).</p>
+          </header>
+
+          <div class="pc-mock" aria-hidden="true">
+            <div class="pc-mock-chrome"><i></i><i></i><i></i><span>Texto</span></div>
+            <div class="pc-mock-body">
+              <div class="pc-mock-side">
+                <span>Controles</span>
+                <span class="on">Texto</span>
+                <span>Comportamiento</span>
+              </div>
+              <div class="pc-mock-content">
+                <div class="pc-mock-card">
+                  <div class="pc-mock-card-h">Reconocimiento de texto</div>
+                  <div class="pc-mock-sub">Estado OCR según el sistema</div>
+                </div>
+                <div class="pc-mock-card">
+                  <div class="pc-mock-card-h">Texto a voz</div>
+                  <div class="pc-mock-sub">Windows Speech (si disponible)</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pc-controls">
+            <article class="pc-control">
+              <h3>OCR (reconocimiento)</h3>
+              <p>Si el motor está disponible en tu PC, puede reconocer texto bajo la lupa. Si no, la sección indica qué falta instalar.</p>
+              <span class="pc-meta">Opcional</span>
+            </article>
+            <article class="pc-control">
+              <h3>Texto a voz</h3>
+              <p>Lee en voz alta el resultado del OCR usando la voz del sistema (offline cuando el SO lo permite).</p>
+              <span class="pc-meta">Opcional</span>
+            </article>
+            <article class="pc-control">
+              <h3>Preferencias experimentales</h3>
+              <p>Casillas de OCR automático / leer tras OCR: funciones experimentales. La lupa funciona igual sin activarlas.</p>
+              <span class="pc-meta">Avanzado</span>
+            </article>
+          </div>
+        </section>
+
+        <!-- Comportamiento -->
+        <section class="pc-section reveal" id="comportamiento">
+          <header class="pc-section-head">
+            <p class="section-kicker">// comportamiento</p>
+            <h2>Comportamiento</h2>
+            <p>Inicio con el sistema y rendimiento de la captura.</p>
+          </header>
+
+          <div class="pc-mock" aria-hidden="true">
+            <div class="pc-mock-chrome"><i></i><i></i><i></i><span>Comportamiento</span></div>
+            <div class="pc-mock-body">
+              <div class="pc-mock-side">
+                <span>Texto</span>
+                <span class="on">Comportamiento</span>
+                <span>Avanzado</span>
+              </div>
+              <div class="pc-mock-content">
+                <div class="pc-mock-card">
+                  <div class="pc-mock-list">
+                    <span class="on">☑ Iniciar con Windows</span>
+                    <span>☐ Mostrar FPS en pantalla</span>
+                  </div>
+                </div>
+                <div class="pc-mock-card">
+                  <div class="pc-mock-card-h">FPS objetivo</div>
+                  <div class="pc-mock-spins"><span>60</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pc-controls">
+            <article class="pc-control">
+              <h3>Iniciar con Windows</h3>
+              <p>Registra Forzen en el inicio de sesión (HKCU Run). La lupa estará lista al encender el PC sin abrirla a mano.</p>
+              <span class="pc-meta">Autostart</span>
+            </article>
+            <article class="pc-control">
+              <h3>Mostrar FPS en pantalla</h3>
+              <p>Contador opcional de fotogramas por segundo sobre la lupa. Sirve para diagnosticar fluidez; en uso normal suele ir apagado.</p>
+              <span class="pc-meta">Overlay</span>
+            </article>
+            <article class="pc-control">
+              <h3>FPS objetivo</h3>
+              <p>Tope de captura entre <strong>15 y 120</strong> (paso 5). Más alto = más fluido y más CPU. Valor típico: 60.</p>
+              <span class="pc-meta">15 – 120</span>
+            </article>
+          </div>
+        </section>
+
+        <!-- Avanzado -->
+        <section class="pc-section reveal" id="avanzado">
+          <header class="pc-section-head">
+            <p class="section-kicker">// avanzado</p>
+            <h2>Avanzado</h2>
+            <p>Sistema, motor de captura e información de la instalación.</p>
+          </header>
+
+          <div class="pc-mock" aria-hidden="true">
+            <div class="pc-mock-chrome"><i></i><i></i><i></i><span>Avanzado</span></div>
+            <div class="pc-mock-body">
+              <div class="pc-mock-side">
+                <span>Comportamiento</span>
+                <span class="on">Avanzado</span>
+              </div>
+              <div class="pc-mock-content">
+                <div class="pc-mock-card">
+                  <div class="pc-mock-card-h">Sistema</div>
+                  <div class="pc-mock-sub">Iniciar con Windows · comando de lanzamiento</div>
+                </div>
+                <div class="pc-mock-card">
+                  <div class="pc-mock-card-h">Captura</div>
+                  <div class="pc-mock-sub">Pantalla estable · sin eco de la lupa · click-through</div>
+                </div>
+                <div class="pc-mock-card">
+                  <div class="pc-mock-card-h">Acerca de</div>
+                  <div class="pc-mock-sub">Forzen v1.2.0 · MIT · Java / Windows</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pc-controls">
+            <article class="pc-control">
+              <h3>Sistema / autostart</h3>
+              <p>Misma idea que en Comportamiento: inicio con sesión. Aquí se muestra el comando real que Windows usará para lanzar Forzen.</p>
+              <span class="pc-meta">Registro HKCU</span>
+            </article>
+            <article class="pc-control">
+              <h3>Captura de pantalla</h3>
+              <p>Forzen copia la pantalla de forma que <strong>la propia lupa no se capture a sí misma</strong> (evita el “eco” infinito) y deja pasar los clics al escritorio (click-through).</p>
+              <span class="pc-meta">Estable · nativo</span>
+            </article>
+            <article class="pc-control">
+              <h3>Acerca de</h3>
+              <p>Versión instalada (p. ej. 1.2.0), licencia MIT, versión de Java y sistema operativo. Útil al reportar un bug.</p>
+              <span class="pc-meta">Info</span>
+            </article>
+          </div>
+        </section>
+
+        <section class="pc-cta-block reveal">
+          <h2>¿Listo para probarlo?</h2>
+          <p>Instala Forzen y abre Ajustes con <kbd class="kbd">Ctrl + Alt + O</kbd>. Todo lo de esta guía está ahí.</p>
+          <div class="hero-actions" style="margin-bottom:0;">
+            <a class="btn btn-primary" href="download.html">Descargar Forzen 1.2.0</a>
+            <a class="btn btn-ghost" href="index.html">Volver al inicio</a>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">FOR<span>ZEN</span></div>
+      <div class="footer-links">
+        <a href="index.html">Inicio</a>
+        <a href="panel-de-control.html">Panel de control</a>
+        <a href="download.html">Descargar</a>
+        <a href="https://github.com/FernandezIvan323/Forzen/releases">Releases</a>
+      </div>
+      <p class="footer-copy">Panel de control · Forzen 1.2.0 · Guía de Ajustes</p>
+    </div>
+  </footer>
+
+  <script src="app.js?v=8"></script>
+</body>
+</html>
