@@ -1732,9 +1732,9 @@ section { position: relative; z-index: 1; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .pc-float-lens,
-  .pc-hero-lens,
-  .pc-ambient-glow { animation: none !important; }
+  /* Panel lupas: NOT killed here — Windows "disable animations" sets this media
+     query and would freeze decorative ambient. Motion is gated by .pc-ambient--animate
+     (panel-ambient.js / toggle "Animar fondo"). */
   /* Demos still move via JS (product showcase); only soften page chrome */
   .reveal { opacity: 1; transform: none; transition: none; }
   .btn:hover,
@@ -1819,28 +1819,13 @@ section { position: relative; z-index: 1; }
   position: absolute;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
+  width: 100%;
+  /* height set by panel-ambient.js to full document scrollHeight */
+  min-height: 100%;
   z-index: 0;
   pointer-events: none;
   overflow: hidden;
-  /* Hide decorations under text column (TOC + main ~920px); show right rail */
-  mask-image: linear-gradient(
-    to right,
-    transparent 0,
-    transparent min(54rem, 62%),
-    rgba(0, 0, 0, 0.35) min(56rem, 66%),
-    #000 min(58rem, 70%),
-    #000 100%
-  );
-  -webkit-mask-image: linear-gradient(
-    to right,
-    transparent 0,
-    transparent min(54rem, 62%),
-    rgba(0, 0, 0, 0.35) min(56rem, 66%),
-    #000 min(58rem, 70%),
-    #000 100%
-  );
+  /* No mask — JS parks lenses only in the empty right rail */
 }
 .pc-ambient-grid {
   position: absolute;
@@ -1862,21 +1847,19 @@ section { position: relative; z-index: 1; }
     rgba(16, 255, 140, 0.06) 40%,
     transparent 70%
   );
-  animation: pcGlowDrift 14s ease-in-out infinite;
+  /* motion only when .pc-ambient--animate (see below) */
+  animation: none;
   will-change: transform;
 }
 .pc-ambient-glow.g1 {
   top: 8%;
   right: 2%;
-  animation-duration: 14s;
 }
 .pc-ambient-glow.g2 {
   top: 58%;
   right: 0;
   width: min(48vw, 520px);
   height: min(48vw, 520px);
-  animation-duration: 18s;
-  animation-delay: -6s;
   opacity: 0.9;
 }
 .pc-float-lens {
@@ -1891,9 +1874,9 @@ section { position: relative; z-index: 1; }
     0 0 32px rgba(16, 255, 140, 0.28),
     inset 0 0 28px rgba(16, 255, 140, 0.1);
   background: radial-gradient(circle at 40% 35%, rgba(16, 255, 140, 0.16), transparent 62%);
-  animation: pcLensFloat 14s ease-in-out infinite;
+  /* Default: static until --animate (Windows reduce-motion no longer blocks) */
+  animation: none;
   will-change: transform;
-  /* Default park in right rail (overridden per slot) */
   right: 6%;
   left: auto;
 }
@@ -1921,16 +1904,40 @@ section { position: relative; z-index: 1; }
   transform: rotate(42deg);
   box-shadow: 0 0 12px var(--accent-glow);
 }
-/* Slots along full document height — right rail only */
-.pc-float-lens.l1 { top: 5%;  right: 8%;  width: 48px;  height: 48px;  animation-duration: 12s; animation-delay: 0s;    opacity: 0.36; }
-.pc-float-lens.l2 { top: 14%; right: 18%; width: 68px;  height: 68px;  animation-duration: 15s; animation-delay: -2s;   opacity: 0.4; }
-.pc-float-lens.l3 { top: 26%; right: 5%;  width: 44px;  height: 44px;  animation-duration: 11s; animation-delay: -4s;   opacity: 0.34; }
-.pc-float-lens.l4 { top: 38%; right: 14%; width: 56px;  height: 56px;  animation-duration: 13s; animation-delay: -1s;   opacity: 0.38; }
-.pc-float-lens.l5 { top: 50%; right: 7%;  width: 72px;  height: 72px;  animation-duration: 16s; animation-delay: -5s;   opacity: 0.42; }
-.pc-float-lens.l6 { top: 62%; right: 20%; width: 40px;  height: 40px;  animation-duration: 12s; animation-delay: -3s;   opacity: 0.32; }
-.pc-float-lens.l7 { top: 72%; right: 4%;  width: 60px;  height: 60px;  animation-duration: 14s; animation-delay: -7s;   opacity: 0.37; }
-.pc-float-lens.l8 { top: 82%; right: 16%; width: 50px;  height: 50px;  animation-duration: 13s; animation-delay: -2.5s; opacity: 0.35; }
-.pc-float-lens.l9 { top: 92%; right: 9%;  width: 64px;  height: 64px;  animation-duration: 15s; animation-delay: -6s;   opacity: 0.39; }
+/* Fallback slots before JS runs (JS overwrites top/left in px) */
+.pc-float-lens.l1 { top: 5%;  right: 8%;  width: 48px;  height: 48px;  opacity: 0.36; }
+.pc-float-lens.l2 { top: 14%; right: 18%; width: 68px;  height: 68px;  opacity: 0.4; }
+.pc-float-lens.l3 { top: 26%; right: 5%;  width: 44px;  height: 44px;  opacity: 0.34; }
+.pc-float-lens.l4 { top: 38%; right: 14%; width: 56px;  height: 56px;  opacity: 0.38; }
+.pc-float-lens.l5 { top: 50%; right: 7%;  width: 72px;  height: 72px;  opacity: 0.42; }
+.pc-float-lens.l6 { top: 62%; right: 20%; width: 40px;  height: 40px;  opacity: 0.32; }
+.pc-float-lens.l7 { top: 72%; right: 4%;  width: 60px;  height: 60px;  opacity: 0.37; }
+.pc-float-lens.l8 { top: 82%; right: 16%; width: 50px;  height: 50px;  opacity: 0.35; }
+.pc-float-lens.l9 { top: 92%; right: 9%;  width: 64px;  height: 64px;  opacity: 0.39; }
+
+/* Decorative motion — independent of prefers-reduced-motion / Windows */
+.pc-ambient--animate .pc-float-lens {
+  animation: pcLensFloat 12s ease-in-out infinite;
+}
+.pc-ambient--animate .pc-float-lens.l1 { animation-duration: 11s; animation-delay: 0s; }
+.pc-ambient--animate .pc-float-lens.l2 { animation-duration: 14s; animation-delay: -2s; }
+.pc-ambient--animate .pc-float-lens.l3 { animation-duration: 10s; animation-delay: -4s; }
+.pc-ambient--animate .pc-float-lens.l4 { animation-duration: 13s; animation-delay: -1s; }
+.pc-ambient--animate .pc-float-lens.l5 { animation-duration: 15s; animation-delay: -5s; }
+.pc-ambient--animate .pc-float-lens.l6 { animation-duration: 11s; animation-delay: -3s; }
+.pc-ambient--animate .pc-float-lens.l7 { animation-duration: 12s; animation-delay: -6s; }
+.pc-ambient--animate .pc-float-lens.l8 { animation-duration: 13s; animation-delay: -2.5s; }
+.pc-ambient--animate .pc-float-lens.l9 { animation-duration: 14s; animation-delay: -7s; }
+.pc-ambient--animate .pc-ambient-glow {
+  animation: pcGlowDrift 14s ease-in-out infinite;
+}
+.pc-ambient--animate .pc-ambient-glow.g2 {
+  animation-duration: 18s;
+  animation-delay: -6s;
+}
+.pc-ambient--animate .pc-hero-lens {
+  animation: pcHeroTravel 16s ease-in-out infinite;
+}
 
 @keyframes pcLensFloat {
   0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg) scale(1); }
@@ -1943,7 +1950,7 @@ section { position: relative; z-index: 1; }
   50% { transform: translate3d(-8%, 12%, 0) scale(1.15); opacity: 0.8; }
 }
 
-/* Hero lens: vertical tour of the right rail along full page height */
+/* Hero lens: base position from JS; travel uses --pc-hero-travel (px down page) */
 .pc-hero-lens {
   position: absolute;
   top: 5%;
@@ -1951,11 +1958,10 @@ section { position: relative; z-index: 1; }
   left: auto;
   width: 120px;
   height: 120px;
-  animation:
-    pcHeroY 18s ease-in-out infinite,
-    pcHeroWobble 12s ease-in-out infinite;
+  animation: none;
   opacity: 0.45;
-  will-change: top, transform;
+  will-change: transform;
+  --pc-hero-travel: 1200px;
 }
 .pc-hero-lens-glass {
   display: block;
@@ -1996,72 +2002,16 @@ section { position: relative; z-index: 1; }
   transform: rotate(42deg);
   box-shadow: 0 0 16px var(--accent-glow);
 }
-/* % top is relative to full .pc-ambient (= full page), so it travels the whole guide */
-@keyframes pcHeroY {
-  0%, 100% { top: 5%; }
-  50% { top: 82%; }
-}
-@keyframes pcHeroWobble {
+@keyframes pcHeroTravel {
   0%, 100% { transform: translate3d(0, 0, 0) rotate(-8deg); }
-  33% { transform: translate3d(-36px, 0, 0) rotate(6deg); }
-  66% { transform: translate3d(20px, 0, 0) rotate(-4deg); }
+  25% { transform: translate3d(-30px, calc(var(--pc-hero-travel, 1200px) * 0.35), 0) rotate(4deg); }
+  50% { transform: translate3d(12px, var(--pc-hero-travel, 1200px), 0) rotate(10deg); }
+  75% { transform: translate3d(-18px, calc(var(--pc-hero-travel, 1200px) * 0.55), 0) rotate(-4deg); }
 }
 .page-panel .bg-fx .orb-a { opacity: 0.55; }
 .page-panel .bg-fx .orb-b { opacity: 0.5; }
 
-/* Narrow screens: lighter ambient on edges only (less mask, smaller lenses) */
-@media (max-width: 1100px) {
-  .pc-ambient {
-    mask-image: linear-gradient(
-      to right,
-      transparent 0,
-      transparent 48%,
-      rgba(0, 0, 0, 0.25) 58%,
-      #000 72%,
-      #000 100%
-    );
-    -webkit-mask-image: linear-gradient(
-      to right,
-      transparent 0,
-      transparent 48%,
-      rgba(0, 0, 0, 0.25) 58%,
-      #000 72%,
-      #000 100%
-    );
-  }
-  .pc-hero-lens { width: 88px; height: 88px; opacity: 0.32; }
-  .pc-float-lens { opacity: 0.28; }
-}
-@media (max-width: 720px) {
-  .pc-ambient {
-    /* Mobile: soft presence at bottom/side, not over stacked content */
-    mask-image: linear-gradient(
-      to bottom,
-      transparent 0,
-      transparent 12%,
-      rgba(0, 0, 0, 0.2) 20%,
-      #000 100%
-    );
-    -webkit-mask-image: linear-gradient(
-      to bottom,
-      transparent 0,
-      transparent 12%,
-      rgba(0, 0, 0, 0.2) 20%,
-      #000 100%
-    );
-    opacity: 0.55;
-  }
-  .pc-float-lens.l1,
-  .pc-float-lens.l3,
-  .pc-float-lens.l5,
-  .pc-float-lens.l7,
-  .pc-float-lens.l9 { right: 4%; }
-  .pc-float-lens.l2,
-  .pc-float-lens.l4,
-  .pc-float-lens.l6,
-  .pc-float-lens.l8 { right: 12%; opacity: 0.22; }
-  .pc-hero-lens { width: 72px; height: 72px; right: 6%; opacity: 0.28; }
-}
+/* Mobile tweaks are mostly handled by panel-ambient.js gutter logic */
 
 /* TOC pegado a la izquierda + contenido (misma altura desde arriba) */
 .pc-layout {
