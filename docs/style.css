@@ -502,64 +502,43 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 }
 .fx-muted { color: var(--muted-2); margin-top: 0.35rem; }
 
-/* Shared motion path (lens + cursor) */
-@keyframes fxTrack {
-  0%, 100% { left: 32%; top: 42%; }
-  20%      { left: 52%; top: 30%; }
-  45%      { left: 68%; top: 48%; }
-  70%      { left: 48%; top: 64%; }
-  85%      { left: 28%; top: 56%; }
+/* Hotspot = point under cursor; moved by JS (works even with reduced-motion OS) */
+.fx-hotspot {
+  position: absolute;
+  left: 36%;
+  top: 44%;
+  width: 0;
+  height: 0;
+  z-index: 8;
+  pointer-events: none;
+  will-change: left, top;
 }
-@keyframes fxTrackDock {
-  0%, 100% { left: 28%; top: 38%; }
-  25%      { left: 48%; top: 34%; }
-  50%      { left: 62%; top: 52%; }
-  75%      { left: 40%; top: 62%; }
-}
-/* Opposite pan so zoom content feels linked to focus */
-@keyframes fxZoomPan {
-  0%, 100% { transform: translate(-18%, -22%) scale(1); }
-  20%      { transform: translate(-38%, -10%) scale(1); }
-  45%      { transform: translate(-52%, -28%) scale(1); }
-  70%      { transform: translate(-34%, -42%) scale(1); }
-  85%      { transform: translate(-14%, -36%) scale(1); }
-}
-@keyframes fxDockPan {
-  0%, 100% { transform: translate(-10%, -8%); }
-  25%      { transform: translate(-28%, -4%); }
-  50%      { transform: translate(-40%, -20%); }
-  75%      { transform: translate(-22%, -30%); }
+.fx-hotspot--cursor-only {
+  z-index: 10;
 }
 
-/* Cursor */
+/* Cursor tip at hotspot origin */
 .fx-cursor {
   position: absolute;
   width: 16px;
   height: 20px;
+  left: 0;
+  top: 0;
   z-index: 10;
-  left: 32%;
-  top: 42%;
-  margin: 0;
   pointer-events: none;
   filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.65));
   background: #f4f4f5;
   clip-path: polygon(0 0, 0 82%, 22% 64%, 40% 100%, 54% 94%, 34% 56%, 68% 56%);
-  animation: fxTrack 8s ease-in-out infinite;
-}
-.fx-cursor--dock {
-  animation-name: fxTrackDock;
-  animation-duration: 9s;
 }
 
-/* Circular lens */
+/* Circular lens centered on hotspot */
 .fx-lens {
   position: absolute;
   width: 132px;
   height: 132px;
-  left: 32%;
-  top: 42%;
-  margin-left: -66px;
-  margin-top: -66px;
+  left: 0;
+  top: 0;
+  transform: translate(-50%, -50%);
   border-radius: 50%;
   border: 2.5px solid var(--green);
   box-shadow:
@@ -571,13 +550,10 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
   pointer-events: none;
   background: #0c100e;
   clip-path: circle(50% at 50% 50%);
-  animation: fxTrack 8s ease-in-out infinite;
 }
 .fx-lens--sm {
   width: 86px;
   height: 86px;
-  margin-left: -43px;
-  margin-top: -43px;
   border-width: 2px;
 }
 .fx-lens-zoom {
@@ -586,7 +562,6 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
   height: 220%;
   left: 0;
   top: 0;
-  animation: fxZoomPan 8s ease-in-out infinite;
   will-change: transform;
 }
 .fx-zoom-card {
@@ -699,7 +674,6 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
   left: 8%;
   top: 10%;
   width: 84%;
-  animation: fxDockPan 9s ease-in-out infinite;
   will-change: transform;
 }
 .fx-dock-zoom .fx-zoom-title {
@@ -1190,17 +1164,7 @@ section { position: relative; z-index: 1; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .fx-cursor,
-  .fx-lens,
-  .fx-lens-zoom,
-  .fx-dock-zoom .fx-zoom-card {
-    animation: none !important;
-  }
-  .fx-lens,
-  .fx-cursor {
-    left: 48%;
-    top: 46%;
-  }
+  /* Demos still move via JS (product showcase); only soften page chrome */
   .reveal { opacity: 1; transform: none; transition: none; }
   .btn:hover,
   .bento-card:hover,
