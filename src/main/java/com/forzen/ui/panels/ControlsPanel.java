@@ -48,7 +48,7 @@ public class ControlsPanel extends VBox {
             addRow(HotkeyAction.TOGGLE_PAUSE, "Pausar / Reanudar");
             addRow(HotkeyAction.CYCLE_MODE, "Cambiar modo");
             addRow(HotkeyAction.OPEN_SETTINGS, "Abrir ajustes");
-            addRow(HotkeyAction.OCR_READ, "OCR + leer");
+            addRow(HotkeyAction.OCR_READ, "OCR + leer (experimental)");
             addRow(HotkeyAction.EXIT, "Salir");
         }
 

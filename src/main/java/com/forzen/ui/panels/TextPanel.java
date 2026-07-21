@@ -17,20 +17,25 @@ public class TextPanel extends VBox {
         setStyle("-fx-background-color: transparent;");
 
         boolean ocrOk = ocrEngine != null && ocrEngine.isAvailable();
+        Label experimentalBanner = new Label(
+                "Experimental — no forma parte del núcleo de la lupa. Requiere Tesseract en el sistema.");
+        experimentalBanner.setStyle("-fx-text-fill: " + theme.muted() + "; -fx-font-size: 12px; -fx-font-style: italic;");
+        experimentalBanner.setWrapText(true);
+
         Label ocrStatus = new Label(ocrOk
-                ? "OCR disponible (Tess4J)"
-                : "OCR no disponible — instala Tesseract + tessdata.");
+                ? "OCR disponible (Tess4J) — experimental"
+                : "OCR no disponible — instala Tesseract + tessdata (opcional).");
         ocrStatus.setStyle("-fx-text-fill: " + (ocrOk ? theme.accent() : theme.danger()) + "; -fx-font-size: 13px;");
         ocrStatus.setWrapText(true);
 
-        CheckBox autoOcr = new CheckBox("Preferencia OCR automático (experimental)");
+        CheckBox autoOcr = new CheckBox("OCR automático (experimental)");
         autoOcr.setStyle(theme.bodyStyle());
         autoOcr.selectedProperty().bindBidirectional(zoomController.autoOcrProperty());
         autoOcr.setDisable(!ocrOk);
 
-        VBox ocrCard = PanelSupport.card(theme, "Reconocimiento de texto",
-                ocrStatus, autoOcr,
-                PanelSupport.hint(theme, "Atajo: Ctrl+Alt+T — reconoce el área de la lupa."));
+        VBox ocrCard = PanelSupport.card(theme, "Reconocimiento de texto (experimental)",
+                experimentalBanner, ocrStatus, autoOcr,
+                PanelSupport.hint(theme, "Atajo: Ctrl+Alt+T — reconoce el área de la lupa. La lupa funciona sin OCR."));
 
         if (ocrEngine != null && !ocrOk && ocrEngine.getLastError() != null && !ocrEngine.getLastError().isBlank()) {
             ocrCard.getChildren().add(PanelSupport.hint(theme, "Detalle: " + ocrEngine.getLastError()));
@@ -42,18 +47,18 @@ public class TextPanel extends VBox {
                 : "TTS no disponible en este sistema");
         ttsStatus.setStyle("-fx-text-fill: " + (ttsOk ? theme.accent() : theme.danger()) + "; -fx-font-size: 13px;");
 
-        CheckBox autoTts = new CheckBox("Leer en voz alta tras OCR");
+        CheckBox autoTts = new CheckBox("Leer en voz alta tras OCR (experimental)");
         autoTts.setStyle(theme.bodyStyle());
         autoTts.selectedProperty().bindBidirectional(zoomController.autoTtsProperty());
         autoTts.setDisable(!ttsOk);
 
-        VBox ttsCard = PanelSupport.card(theme, "Texto a voz",
+        VBox ttsCard = PanelSupport.card(theme, "Texto a voz (experimental)",
                 ttsStatus, autoTts,
-                PanelSupport.hint(theme, "Síntesis offline con System.Speech."));
+                PanelSupport.hint(theme, "Síntesis offline con System.Speech. Opcional; no afecta el zoom."));
 
         getChildren().setAll(PanelSupport.page(theme,
                 "Texto",
-                "OCR y lectura en voz alta.",
+                "OCR y lectura en voz alta — funciones experimentales, no del núcleo de la lupa.",
                 ocrCard, ttsCard));
     }
 }
