@@ -1936,7 +1936,7 @@ section { position: relative; z-index: 1; }
   animation-delay: -6s;
 }
 .pc-ambient--animate .pc-hero-lens {
-  animation: pcHeroTravel 16s ease-in-out infinite;
+  animation: pcHeroTravel 36s ease-in-out infinite;
 }
 
 @keyframes pcLensFloat {
