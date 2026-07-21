@@ -9,54 +9,60 @@
     var zoom = host.querySelector('[data-live-zoom]');
     if (!scene || !glass || !zoom) return;
 
-    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var scale = 2.2;
+    var scale = 2.15;
 
     function syncClone() {
+      var r = host.getBoundingClientRect();
+      if (r.width < 8 || r.height < 8) return;
       zoom.innerHTML = '';
       var clone = scene.cloneNode(true);
       clone.removeAttribute('data-live-scene');
       clone.classList.add('live-lens-clone-inner');
-      zoom.appendChild(clone);
-      var r = host.getBoundingClientRect();
+      // Match scene size exactly for correct hot-point math
       zoom.style.width = r.width + 'px';
       zoom.style.height = r.height + 'px';
+      zoom.appendChild(clone);
     }
 
     function paint(clientX, clientY) {
       var r = host.getBoundingClientRect();
+      if (r.width < 8 || r.height < 8) return;
       var x = clientX - r.left;
       var y = clientY - r.top;
       x = Math.max(0, Math.min(r.width, x));
       y = Math.max(0, Math.min(r.height, y));
+
       glass.style.left = x + 'px';
       glass.style.top = y + 'px';
-      var gr = glass.getBoundingClientRect();
-      var tx = gr.width / 2 - x * scale;
-      var ty = gr.height / 2 - y * scale;
+
+      // Glass is centered via negative margin; size is fixed in CSS
+      var gw = glass.offsetWidth || 140;
+      var gh = glass.offsetHeight || 140;
+      var tx = gw / 2 - x * scale;
+      var ty = gh / 2 - y * scale;
       zoom.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + scale + ')';
     }
 
     syncClone();
-    if (reduce) {
-      paint(host.clientWidth * 0.45, host.clientHeight * 0.45);
-      return;
-    }
 
-    host.addEventListener('mousemove', function (e) {
+    // Always follow pointer (mouse + touch)
+    host.addEventListener('pointermove', function (e) {
       paint(e.clientX, e.clientY);
     });
-    host.addEventListener('mouseenter', function () {
-      glass.classList.add('is-on');
+    host.addEventListener('pointerdown', function (e) {
+      host.setPointerCapture(e.pointerId);
+      paint(e.clientX, e.clientY);
     });
-    host.addEventListener('mouseleave', function () {
-      glass.classList.remove('is-on');
-    });
+
     window.addEventListener('resize', function () {
       syncClone();
+      var r = host.getBoundingClientRect();
+      paint(r.left + r.width * 0.42, r.top + r.height * 0.48);
     });
-    // Initial center
+
+    // Center start
     requestAnimationFrame(function () {
+      syncClone();
       var r = host.getBoundingClientRect();
       paint(r.left + r.width * 0.42, r.top + r.height * 0.48);
     });
@@ -108,19 +114,19 @@
     var status = document.getElementById('hotkey-play-status');
     if (!box || !status) return;
     var zoom = 1;
+    var MAX = 1.75;
     box.addEventListener('keydown', function (e) {
-      // Only when focused inside the demo box
       if (!(e.ctrlKey && e.altKey)) return;
       if (e.key === 'ArrowUp' || e.key === '+') {
         e.preventDefault();
-        zoom = Math.min(2.5, zoom + 0.15);
+        zoom = Math.min(MAX, +(zoom + 0.12).toFixed(2));
         box.style.setProperty('--hk-zoom', String(zoom));
-        status.textContent = 'Zoom simulado: ' + zoom.toFixed(1) + '× (Ctrl+Alt+↑)';
+        status.textContent = 'Zoom: ' + zoom.toFixed(1) + '×  ·  Ctrl+Alt+↑';
       } else if (e.key === 'ArrowDown' || e.key === '-') {
         e.preventDefault();
-        zoom = Math.max(1, zoom - 0.15);
+        zoom = Math.max(1, +(zoom - 0.12).toFixed(2));
         box.style.setProperty('--hk-zoom', String(zoom));
-        status.textContent = 'Zoom simulado: ' + zoom.toFixed(1) + '× (Ctrl+Alt+↓)';
+        status.textContent = 'Zoom: ' + zoom.toFixed(1) + '×  ·  Ctrl+Alt+↓';
       }
     });
   }

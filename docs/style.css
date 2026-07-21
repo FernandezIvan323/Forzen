@@ -956,11 +956,17 @@ section { position: relative; z-index: 1; }
 }
 .section-kicker {
   font-family: var(--font-mono);
-  font-size: 0.78rem;
-  letter-spacing: 0.12em;
+  font-size: clamp(0.95rem, 1.6vw, 1.12rem);
+  font-weight: 700;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--green);
-  margin-bottom: 0.65rem;
+  margin-bottom: 0.75rem;
+  text-shadow: 0 0 22px var(--green-glow);
+  display: inline-block;
+}
+.pc-section-head .section-kicker {
+  font-size: clamp(0.98rem, 1.7vw, 1.15rem);
 }
 .section-head h2 {
   font-family: var(--font-display);
@@ -2258,7 +2264,7 @@ section { position: relative; z-index: 1; }
   border-radius: var(--radius-lg);
   border: 1px solid var(--border);
   overflow: hidden;
-  cursor: none;
+  cursor: crosshair;
   background:
     linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px),
@@ -2288,30 +2294,35 @@ section { position: relative; z-index: 1; }
 }
 .live-lens-glass {
   position: absolute;
-  width: 130px;
-  height: 130px;
-  margin: -65px 0 0 -65px;
+  width: 140px;
+  height: 140px;
+  left: 40%;
+  top: 45%;
+  margin: -70px 0 0 -70px;
   border-radius: 50%;
-  border: 2.5px solid var(--accent);
+  border: 3px solid var(--accent);
   box-shadow: 0 0 0 1px rgba(0,0,0,0.5), 0 0 28px var(--accent-glow);
   overflow: hidden;
   pointer-events: none;
   z-index: 3;
-  opacity: 0.92;
+  opacity: 1;
   background: #0a0a0c;
   clip-path: circle(50% at 50% 50%);
+  contain: paint;
 }
-.live-lens-glass.is-on { opacity: 1; }
 .live-lens-zoom {
   position: absolute;
-  left: 0; top: 0;
+  left: 0;
+  top: 0;
   transform-origin: 0 0;
   will-change: transform;
+  pointer-events: none;
 }
 .live-lens-clone-inner {
-  position: absolute;
-  inset: 0;
+  position: absolute !important;
+  inset: 0 !important;
   padding: 1.25rem 1.4rem;
+  box-sizing: border-box;
 }
 .live-lens-hint {
   margin-top: 0.65rem;
@@ -2425,24 +2436,35 @@ section { position: relative; z-index: 1; }
   background: var(--surface);
   padding: 1.25rem;
   outline: none;
+  overflow: hidden;
 }
 .hotkey-play:focus-visible {
   outline: 3px solid var(--accent);
   outline-offset: 3px;
 }
+.hotkey-play-sample-wrap {
+  overflow: hidden;
+  max-width: 100%;
+  padding: 0.5rem 0;
+}
 .hotkey-play-sample {
+  display: inline-block;
+  max-width: 100%;
   transform: scale(var(--hk-zoom));
   transform-origin: left center;
   transition: transform 0.15s ease;
   font-size: 1rem;
   color: var(--text);
-  padding: 0.75rem 0;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 .hotkey-play-status {
   font-family: var(--font-mono);
   font-size: 0.78rem;
   color: var(--muted-2);
   margin-top: 0.5rem;
+  overflow-wrap: anywhere;
 }
 
 /* Roadmap */
@@ -2452,28 +2474,30 @@ section { position: relative; z-index: 1; }
   gap: 0.75rem;
 }
 .roadmap-item {
-  padding: 1.1rem 1.15rem;
+  padding: 1.2rem 1.2rem;
   border-radius: var(--radius);
   border: 1px solid var(--border);
   background: var(--surface);
 }
 .roadmap-item .tag {
   font-family: var(--font-mono);
-  font-size: 0.65rem;
+  font-size: 0.78rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--accent-soft);
-  margin-bottom: 0.45rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
 }
 .roadmap-item h3 {
   font-family: var(--font-display);
-  font-size: 1rem;
-  margin-bottom: 0.35rem;
+  font-size: 1.15rem;
+  margin-bottom: 0.4rem;
+  font-weight: 600;
 }
 .roadmap-item p {
   color: var(--muted);
-  font-size: 0.86rem;
-  line-height: 1.45;
+  font-size: 0.98rem;
+  line-height: 1.5;
 }
 @media (max-width: 720px) {
   .roadmap { grid-template-columns: 1fr; }
