@@ -11,8 +11,24 @@
   <link rel="icon" type="image/png" href="favicon-32.png" sizes="32x32" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=8" />
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css?v=12" />
+  <meta property="og:title" content="Descargar Forzen 1.2.0 — Windows" />
+  <meta property="og:description" content="Instalador con asistente. Runtime incluido. Gratuito y open source." />
+  <meta property="og:url" content="https://FernandezIvan323.github.io/Forzen/download.html" />
+  <meta property="og:image" content="https://FernandezIvan323.github.io/Forzen/favicon-256.png" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Forzen",
+    "softwareVersion": "1.2.0",
+    "operatingSystem": "Windows 10, Windows 11",
+    "applicationCategory": "AccessibilityApplication",
+    "downloadUrl": "https://github.com/FernandezIvan323/Forzen/releases/download/v1.2.0/Forzen-Setup-1.2.0.exe",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+  }
+  </script>
 </head>
 <body>
   <div class="bg-fx" aria-hidden="true">
@@ -27,6 +43,22 @@
         <span class="logo-mark" aria-hidden="true"></span>
         FOR<span>ZEN</span>
       </a>
+      <div class="a11y-bar" role="region" aria-label="Accesibilidad de la página">
+        <button type="button" class="a11y-toggle" aria-expanded="false" aria-controls="a11y-panel" title="Opciones de lectura">A·a</button>
+        <div id="a11y-panel" class="a11y-panel" hidden>
+          <div class="a11y-row">
+            <span class="a11y-row-label">Tamaño de texto</span>
+            <button type="button" class="a11y-btn" data-a11y-font="100" aria-pressed="true">100%</button>
+            <button type="button" class="a11y-btn" data-a11y-font="125" aria-pressed="false">125%</button>
+            <button type="button" class="a11y-btn" data-a11y-font="150" aria-pressed="false">150%</button>
+          </div>
+          <div class="a11y-row">
+            <span class="a11y-row-label">Visual</span>
+            <button type="button" class="a11y-btn" data-a11y-hc aria-pressed="false">Ultra contraste</button>
+            <button type="button" class="a11y-btn" data-a11y-legible aria-pressed="false">Fuente legible</button>
+          </div>
+        </div>
+      </div>
       <nav class="nav-links" id="primary-nav" aria-label="Principal">
         <a href="index.html">Inicio</a>
         <a href="panel-de-control.html">Panel de control</a>
@@ -57,8 +89,28 @@
           </a>
         </div>
         <p class="hero-lead" style="font-size: 0.9rem; margin-bottom: 0;">
-          Archivo: <strong>Forzen-Setup-1.2.0.exe</strong> · Si el enlace no abre aún, usa las notas del release cuando el binario esté publicado.
+          Archivo: <strong>Forzen-Setup-1.2.0.exe</strong> (~126&nbsp;MB) · Windows 10/11 64 bits
         </p>
+
+        <div class="trust-block">
+          <h3>Verifica el instalador</h3>
+          <p>
+            Comprueba que el archivo no fue alterado. En PowerShell:
+            <code>Get-FileHash .\Forzen-Setup-1.2.0.exe -Algorithm SHA256</code>
+          </p>
+          <div class="sha-row">
+            <code class="sha-code" id="sha256-value">DC98E14C2C1D4FA9E1A55B77BED2882955C42549CB9617072EF695D3932BD2D2</code>
+            <button type="button" class="btn btn-ghost" data-copy-sha="#sha256-value">Copiar SHA-256</button>
+          </div>
+          <div class="trust-actions">
+            <a class="btn btn-ghost" href="https://www.virustotal.com/gui/home/upload" rel="noopener noreferrer" target="_blank">
+              Analizar en VirusTotal
+            </a>
+            <a class="btn btn-ghost" href="https://github.com/FernandezIvan323/Forzen/issues/new" rel="noopener noreferrer" target="_blank">
+              ¿Problema? Repórtalo en GitHub
+            </a>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -112,6 +164,9 @@
             Descargar Forzen-Setup-1.2.0.exe
           </a>
           <a class="btn btn-ghost" href="index.html">Volver al inicio</a>
+          <a class="btn btn-ghost" href="https://github.com/FernandezIvan323/Forzen/issues/new" rel="noopener noreferrer" target="_blank">
+            Reportar un problema
+          </a>
         </div>
       </div>
     </section>
@@ -129,5 +184,7 @@
       <p class="footer-copy">Forzen 1.2.0 · Open source · Sin telemetría</p>
     </div>
   </footer>
+  <script src="a11y.js?v=12"></script>
+  <script src="app.js?v=12"></script>
 </body>
 </html>
