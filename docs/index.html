@@ -101,35 +101,52 @@
           </div>
         </div>
 
-        <!-- Placeholder de producto de calidad (CSS, no captura real) -->
-        <div class="product-stage reveal" aria-label="Vista previa ilustrada de Forzen">
+        <!-- Demo animada: modo Lupa -->
+        <div class="product-stage reveal" aria-label="Animación del modo Lupa de Forzen">
           <div class="product-glow" aria-hidden="true"></div>
           <div class="desktop-frame">
             <div class="desktop-chrome" aria-hidden="true">
               <i></i><i></i><i></i>
-              <span class="title">Escritorio · Forzen en segundo plano</span>
+              <span class="title">Forzen · modo Lupa</span>
+              <span class="demo-badge">LIVE DEMO</span>
             </div>
-            <div class="desktop-body">
-              <div class="desk-window w1" aria-hidden="true">
-                <div class="bar"><b></b><b></b><b></b></div>
-                <div class="lines">
-                  <span></span><span></span><span></span><span></span><span></span>
+            <div class="desktop-body demo-scene demo-scene--lens" data-demo="lens" aria-hidden="true">
+              <div class="scene-world" data-scene>
+                <div class="scene-app scene-mail">
+                  <div class="scene-app-bar">
+                    <span class="scene-dots"></span>
+                    <span class="scene-app-title">Correo — Bandeja de entrada</span>
+                  </div>
+                  <div class="scene-app-body">
+                    <p class="scene-h">Reunión de accesibilidad</p>
+                    <p class="scene-p">Mañana 10:00 · sala B · agenda adjunta</p>
+                    <p class="scene-p">Confirmar asistencia y compartir notas.</p>
+                    <p class="scene-p muted">De: Ana Ruiz · hace 12 min</p>
+                  </div>
+                </div>
+                <div class="scene-app scene-doc">
+                  <div class="scene-app-bar">
+                    <span class="scene-dots"></span>
+                    <span class="scene-app-title">Notas.md</span>
+                  </div>
+                  <div class="scene-app-body">
+                    <p class="scene-h">Checklist</p>
+                    <p class="scene-p">• Zoom 1x–8x estable</p>
+                    <p class="scene-p">• Multi-monitor + DPI</p>
+                    <p class="scene-p">• Click-through nativo</p>
+                  </div>
                 </div>
               </div>
-              <div class="desk-window w2" aria-hidden="true">
-                <div class="bar"><b></b><b></b><b></b></div>
-                <div class="lines">
-                  <span></span><span></span><span></span><span></span>
+              <div class="demo-cursor" data-cursor></div>
+              <div class="demo-lens" data-lens>
+                <div class="demo-lens-view">
+                  <div class="scene-world scene-world--zoom" data-zoom-scene></div>
                 </div>
-              </div>
-              <div class="lens" aria-hidden="true">
-                <div class="lens-glass"></div>
-                <div class="lens-cross-h"></div>
-                <div class="lens-cross-v"></div>
+                <div class="demo-crosshair"></div>
               </div>
             </div>
           </div>
-          <p class="product-caption">Ilustración · Modo Lens · sigue el cursor · click-through</p>
+          <p class="product-caption">Animación · Modo Lupa · sigue el cursor · zoom en vivo</p>
         </div>
       </div>
     </section>
@@ -230,27 +247,65 @@
         </div>
         <div class="modes-grid modes-grid-2">
           <article class="mode-card reveal">
-            <div class="mode-preview" aria-hidden="true">
-              <div class="fake-ui">
-                <span></span><span></span><span></span><span></span>
+            <div class="mode-preview demo-scene demo-scene--lens" data-demo="lens" aria-hidden="true">
+              <div class="scene-world" data-scene>
+                <div class="scene-app scene-mail compact">
+                  <div class="scene-app-bar">
+                    <span class="scene-dots"></span>
+                    <span class="scene-app-title">Navegador</span>
+                  </div>
+                  <div class="scene-app-body">
+                    <p class="scene-h">Artículo de prensa</p>
+                    <p class="scene-p">La lupa sigue el puntero con precisión.</p>
+                    <p class="scene-p">Texto pequeño se vuelve legible al instante.</p>
+                    <p class="scene-p muted">forzen.app · lectura cómoda</p>
+                  </div>
+                </div>
               </div>
-              <div class="lens-dot"></div>
+              <div class="demo-cursor" data-cursor></div>
+              <div class="demo-lens demo-lens--sm" data-lens>
+                <div class="demo-lens-view">
+                  <div class="scene-world scene-world--zoom" data-zoom-scene></div>
+                </div>
+                <div class="demo-crosshair"></div>
+              </div>
+              <span class="mode-live">Animado</span>
             </div>
             <div class="mode-body">
               <h3>Lupa</h3>
-              <p>Círculo o rectángulo que sigue el cursor. Ideal para el día a día.</p>
+              <p>Círculo que sigue el cursor y amplía lo que miras. Ideal para el día a día.</p>
             </div>
           </article>
           <article class="mode-card reveal">
-            <div class="mode-preview dock" aria-hidden="true">
-              <div class="fake-ui">
-                <span></span><span></span><span></span><span></span>
+            <div class="mode-preview demo-scene demo-scene--dock" data-demo="dock" aria-hidden="true">
+              <div class="scene-world" data-scene>
+                <div class="scene-app scene-mail compact">
+                  <div class="scene-app-bar">
+                    <span class="scene-dots"></span>
+                    <span class="scene-app-title">Hoja de cálculo</span>
+                  </div>
+                  <div class="scene-app-body">
+                    <p class="scene-h">Presupuesto Q3</p>
+                    <p class="scene-p">Fila 12 · Total: $4.280</p>
+                    <p class="scene-p">Celda C7 resaltada al pasar</p>
+                    <p class="scene-p muted">El panel no tapa todo el escritorio</p>
+                  </div>
+                </div>
               </div>
-              <div class="lens-dot"></div>
+              <div class="demo-cursor" data-cursor></div>
+              <div class="demo-dock" data-dock>
+                <div class="demo-dock-chrome">
+                  <span>Acoplado · 3×</span>
+                </div>
+                <div class="demo-dock-view">
+                  <div class="scene-world scene-world--zoom" data-zoom-scene></div>
+                </div>
+              </div>
+              <span class="mode-live">Animado</span>
             </div>
             <div class="mode-body">
               <h3>Acoplado</h3>
-              <p>Panel fijo en una esquina. Amplía sin tapar todo el escritorio.</p>
+              <p>Panel fijo en una esquina. Amplía la zona del cursor sin tapar toda la pantalla.</p>
             </div>
           </article>
         </div>
