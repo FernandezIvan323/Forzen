@@ -20,7 +20,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=15" />
+  <link rel="stylesheet" href="style.css?v=16" />
 </head>
 <body class="page-panel">
   <div class="bg-fx" aria-hidden="true">
@@ -28,12 +28,19 @@
     <div class="orb orb-b"></div>
     <div class="noise"></div>
   </div>
-  <div class="pc-bg-lenses" aria-hidden="true">
+  <div class="pc-ambient" aria-hidden="true">
+    <div class="pc-ambient-grid"></div>
+    <div class="pc-ambient-glow"></div>
     <span class="pc-float-lens l1"></span>
     <span class="pc-float-lens l2"></span>
     <span class="pc-float-lens l3"></span>
     <span class="pc-float-lens l4"></span>
     <span class="pc-float-lens l5"></span>
+    <span class="pc-float-lens l6"></span>
+    <!-- Hero lens: larger path (option B) -->
+    <span class="pc-hero-lens">
+      <span class="pc-hero-lens-glass"></span>
+    </span>
   </div>
 
   <header class="site-header">
@@ -63,8 +70,7 @@
         <span></span>
       </button>
       <nav class="nav-links" id="primary-nav" aria-label="Principal">
-        <a href="index.html">Inicio</a>
-        <a href="index.html#features">Funciones</a>
+        <a href="panel-de-control.html" aria-current="page">Panel de control</a>
         <a class="nav-cta" href="download.html">Descargar</a>
       </nav>
     </div>
@@ -609,7 +615,7 @@
     </div>
   </footer>
 
-  <script src="a11y.js?v=15"></script>
-  <script src="app.js?v=15"></script>
+  <script src="a11y.js?v=16"></script>
+  <script src="app.js?v=16"></script>
 </body>
 </html>
