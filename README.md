@@ -1,6 +1,6 @@
 # Forzen
 
-**Lupa de sistema inteligente para personas con baja visión.**
+**Lupa para personas con baja visión.**
 
 Amplía cualquier área de tu pantalla al instante. Hecho en Java, para Windows 10/11.
 
